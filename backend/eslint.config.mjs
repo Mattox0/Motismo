@@ -59,9 +59,10 @@ export default tseslint.config(
       ],
       '@typescript-eslint/no-extraneous-class': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-misused-spread': 'off',
+      '@typescript-eslint/no-unnecessary-condition': 'off',
 
       // Règles de performance
-      'no-await-in-loop': 'warn',
       'max-depth': ['error', 4],
       'complexity': ['error', 10],
 

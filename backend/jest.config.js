@@ -7,7 +7,6 @@ module.exports = {
     "^.+\\.(t|j)s$": "ts-jest",
   },
   collectCoverageFrom: ["src/**/*.(t|j)s"],
-  coverageDirectory: "../coverage",
   rootDir: ".",
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",

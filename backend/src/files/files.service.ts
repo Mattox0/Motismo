@@ -4,7 +4,6 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { Injectable } from "@nestjs/common";
-import { Express } from "express";
 import { Readable } from "node:stream";
 
 import { s3Client } from "@/s3.config";

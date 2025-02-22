@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from "@nestjs/typeorm";
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from "nestjs-i18n";
 import * as path from "node:path";
+import { UsersModule } from "@/user/user.module";
+import { AuthModule } from "@/auth/auth.module";
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import * as path from "node:path";
         AcceptLanguageResolver,
       ],
     }),
+    UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

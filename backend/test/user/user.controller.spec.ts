@@ -74,6 +74,15 @@ describe("UserController", () => {
     userController = module.get<UserController>(UserController);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    jest.resetModules();
+    jest.clearAllTimers();
+  });
+
   describe("getAll", () => {
     it("should return an array of users", async () => {
       const users: User[] = [mockUser];

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Delete,
   Get,
@@ -39,6 +40,22 @@ export class FileUploadController {
   @ApiCreatedResponse({ description: "File successfully uploaded" })
   @ApiBadRequestResponse({ description: "File is missing or invalid" })
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException("File is missing");
+    }
+
+    if (!file.buffer) {
+      throw new BadRequestException("File buffer is required");
+    }
+
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+      throw new BadRequestException("Invalid file type");
+    }
+
+    if (file.buffer.length === 0) {
+      throw new BadRequestException("Empty file not allowed");
+    }
+
     const key = await this.fileUploadService.uploadFile(file);
 
     return {
