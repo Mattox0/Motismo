@@ -1,0 +1,54 @@
+import { Injectable } from "@nestjs/common";
+import { Redis } from "ioredis";
+
+@Injectable()
+export class RedisService {
+  private redisClient: Redis;
+
+  constructor() {
+    this.redisClient = new Redis(process.env.REDISCLOUD_URL ?? "");
+  }
+
+  async set(key: string, value: string): Promise<void> {
+    await this.redisClient.set(key, value);
+  }
+
+  get(key: string): Promise<string | null> {
+    return this.redisClient.get(key);
+  }
+
+  async hset(key: string, fieldAndValues: string[]): Promise<void> {
+    if (fieldAndValues.length % 2 !== 0) {
+      throw new Error("The number of arguments must be even.");
+    }
+    await this.redisClient.hset(key, ...fieldAndValues);
+  }
+
+  hget(key: string, field: string): Promise<string | null> {
+    return this.redisClient.hget(key, field);
+  }
+
+  hgetall(key: string): Promise<Record<string, string>> {
+    return this.redisClient.hgetall(key);
+  }
+
+  exists(key: string): Promise<number> {
+    return this.redisClient.exists(key);
+  }
+
+  keys(pattern: string): Promise<string[]> {
+    return this.redisClient.keys(pattern);
+  }
+
+  async del(key: string): Promise<void> {
+    await this.redisClient.del(key);
+  }
+
+  async push(key: string, value: string): Promise<void> {
+    await this.redisClient.lpush(key, value);
+  }
+
+  lgetall(key: string) {
+    return this.redisClient.lrange(key, 0, -1);
+  }
+}

@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import cookieParser from "cookie-parser";
 import { I18nValidationExceptionFilter, I18nValidationPipe } from "nestjs-i18n";
 import { AppModule } from "./app.module";
+import { type MicroserviceOptions, Transport } from "@nestjs/microservices";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -13,13 +14,26 @@ async function bootstrap() {
     },
   });
 
+  const microserviceOptions: MicroserviceOptions = {
+    transport: Transport.REDIS,
+    options: {
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379,
+      username: process.env.REDIS_USERNAME,
+      password: process.env.REDIS_PASSWORD,
+    },
+  };
+
+  app.connectMicroservice(microserviceOptions);
+
   // SWAGGER
   const config = new DocumentBuilder()
-    .setTitle("Food")
-    .setDescription("The food API description")
+    .setTitle("Motismo")
+    .setDescription("The Motismo API description")
     .setVersion("1.0")
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
+
   SwaggerModule.setup("swagger", app, documentFactory);
 
   // I18N
