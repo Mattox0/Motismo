@@ -67,9 +67,6 @@ export class UserService {
     return this.usersRepository
       .createQueryBuilder("user")
       .where("user.email = :email", { email: email })
-      .leftJoinAndSelect("user.rating", "rating")
-      .leftJoinAndSelect("user.loan", "loan")
-      .leftJoinAndSelect("user.product", "product")
       .addSelect("user.password")
       .getOne();
   }
@@ -78,9 +75,6 @@ export class UserService {
     const user = this.usersRepository
       .createQueryBuilder("user")
       .where("user.id = :id", { id: id })
-      .leftJoinAndSelect("user.rating", "rating")
-      .leftJoinAndSelect("user.loan", "loan")
-      .leftJoinAndSelect("user.product", "product")
       .addSelect("user.password")
       .getOne();
 

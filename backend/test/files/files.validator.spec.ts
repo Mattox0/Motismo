@@ -3,7 +3,6 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { ParseFilePipeDocument } from "@/files/files.validator";
 import { TranslationService } from "@/translation/translation.service";
 
-// Mock de imageRegex
 jest.mock("@/utils/regex.variable", () => ({
   imageRegex: /\.(jpg|jpeg|png|gif)$/i,
 }));

@@ -10,6 +10,10 @@ import { User } from "@/user/user.entity";
 import { Role } from "@/user/role.enum";
 import { UserUpdatedDto } from "@/user/dto/userUpdated.dto";
 
+jest.mock("bcrypt", () => ({
+  hash: jest.fn().mockImplementation(() => "hashed-new-password"),
+}));
+
 describe("UserController", () => {
   let userController: UserController;
   let mockUserService: Partial<UserService>;
@@ -59,6 +63,7 @@ describe("UserController", () => {
       uploadFile: jest
         .fn()
         .mockResolvedValue({ url: "http://example.com/file.jpg" }),
+      getFile: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -151,6 +156,115 @@ describe("UserController", () => {
         userController.update(nonAdminUser, mockUser, {}),
       ).rejects.toThrow(
         new HttpException("error.USER_NOT_ADMIN", HttpStatus.UNAUTHORIZED),
+      );
+    });
+
+    it("should hash password when updating password", async () => {
+      const newPassword = "newPassword123";
+      const hashedPassword = "hashed-new-password";
+      const userUpdateData: UserUpdatedDto = { password: newPassword };
+      const updatedUser = { ...mockUser, password: hashedPassword };
+
+      jest.spyOn(mockUserService, "checkUnknownUser").mockResolvedValue(false);
+      jest.spyOn(mockUserService, "update").mockResolvedValue(undefined);
+      jest.spyOn(mockUserService, "findOneUser").mockResolvedValue(updatedUser);
+
+      const result = await userController.update(
+        mockUser,
+        mockUser,
+        userUpdateData,
+      );
+
+      expect(mockUserService.update).toHaveBeenCalledWith(mockUser.id, {
+        password: hashedPassword,
+      });
+      expect(result).toEqual(updatedUser);
+    });
+
+    it("should update user with uploaded file", async () => {
+      const apiBaseUrl = "http://localhost:3000";
+
+      process.env.VITE_API_BASE_URL = apiBaseUrl;
+
+      const mockFile: Express.Multer.File = {
+        fieldname: "file",
+        originalname: "test.jpg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        buffer: Buffer.from("test"),
+        size: 1024,
+      } as Express.Multer.File;
+
+      const fileName = "uploaded-file-name.jpg";
+      const userUpdateData: UserUpdatedDto = { username: "updatedUser" };
+      const expectedImageUrl = `${apiBaseUrl}/files/${fileName}`;
+
+      jest
+        .spyOn(mockFileUploadService, "uploadFile")
+        .mockResolvedValue(fileName);
+
+      const updatedUser = {
+        ...mockUser,
+        ...userUpdateData,
+        image: expectedImageUrl,
+      };
+
+      jest.spyOn(mockUserService, "checkUnknownUser").mockResolvedValue(false);
+      jest.spyOn(mockUserService, "update").mockResolvedValue(undefined);
+      jest.spyOn(mockUserService, "findOneUser").mockResolvedValue(updatedUser);
+
+      const result = await userController.update(
+        mockUser,
+        mockUser,
+        userUpdateData,
+        mockFile,
+      );
+
+      expect(mockFileUploadService.uploadFile).toHaveBeenCalledWith(mockFile);
+      expect(mockUserService.update).toHaveBeenCalledWith(mockUser.id, {
+        username: "updatedUser",
+        image: expectedImageUrl,
+      });
+      expect(result).toEqual(updatedUser);
+
+      delete process.env.VITE_API_BASE_URL;
+    });
+
+    it("should throw NOT_FOUND if user not found after update", async () => {
+      const mockFile: Express.Multer.File = {
+        fieldname: "file",
+        originalname: "test.jpg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        buffer: Buffer.from("test"),
+        size: 1024,
+      } as Express.Multer.File;
+
+      const fileName = "uploaded-file-name.jpg";
+      const userUpdateData: UserUpdatedDto = { username: "updatedUser" };
+
+      jest
+        .spyOn(mockFileUploadService, "uploadFile")
+        .mockResolvedValue(fileName);
+
+      jest.spyOn(mockUserService, "checkUnknownUser").mockResolvedValue(false);
+      jest.spyOn(mockUserService, "update").mockResolvedValue(undefined);
+      jest.spyOn(mockUserService, "findOneUser").mockResolvedValue(null);
+
+      jest
+        .spyOn(mockTranslationService, "translate")
+        .mockResolvedValue("error.USER_NOT_FOUND");
+
+      await expect(
+        userController.update(mockUser, mockUser, userUpdateData, mockFile),
+      ).rejects.toThrow(
+        new HttpException("error.USER_NOT_FOUND", HttpStatus.NOT_FOUND),
+      );
+
+      expect(mockUserService.update).toHaveBeenCalled();
+      expect(mockUserService.findOneUser).toHaveBeenCalledWith(mockUser.id);
+      expect(mockTranslationService.translate).toHaveBeenCalledWith(
+        "error.USER_NOT_FOUND",
       );
     });
   });

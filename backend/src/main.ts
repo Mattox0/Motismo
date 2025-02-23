@@ -5,7 +5,7 @@ import { I18nValidationExceptionFilter, I18nValidationPipe } from "nestjs-i18n";
 import { AppModule } from "./app.module";
 import { type MicroserviceOptions, Transport } from "@nestjs/microservices";
 
-async function bootstrap() {
+export async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: process.env.FRONT_BASE_URL,
