@@ -1,0 +1,52 @@
+import {
+  CanActivate,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+
+import { TranslationService } from "@/translation/translation.service";
+import { uuidRegex } from "@/utils/regex.variable";
+import { Quizz } from "@/quizz/quizz.entity";
+import { IRequestWithParamQuizz } from "../types/IRequestWithParamQuizz";
+
+@Injectable()
+export class QuizzGuard implements CanActivate {
+  constructor(
+    @InjectRepository(Quizz)
+    private quizzRepository: Repository<Quizz>,
+    private readonly translationsService: TranslationService,
+  ) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest<IRequestWithParamQuizz>();
+    const quizzId = request.params.quizzId;
+
+    if (!uuidRegex.test(quizzId)) {
+      throw new HttpException(
+        await this.translationsService.translate("error.ID_INVALID"),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const quizz = await this.quizzRepository.findOne({
+      where: {
+        id: quizzId,
+      },
+    });
+
+    if (!quizz) {
+      throw new HttpException(
+        await this.translationsService.translate("error.RATING_NOT_FOUND"),
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    request.quizz = quizz;
+
+    return true;
+  }
+}
