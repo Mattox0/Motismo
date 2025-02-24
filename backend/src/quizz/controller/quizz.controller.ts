@@ -1,5 +1,19 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
 import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  Put,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from "@nestjs/common";
+import {
+  ApiBadRequestResponse,
+  ApiConsumes,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -11,6 +25,14 @@ import { FileUploadService } from "@/files/files.service";
 import { TranslationService } from "@/translation/translation.service";
 import { Quizz } from "@/quizz/quizz.entity";
 import { QuizzService } from "@/quizz/service/quizz.service";
+import { CurrentUser } from "@/user/decorators/currentUser.decorator";
+import { User } from "@/user/user.entity";
+import { CreateQuizzDto } from "@/quizz/dto/createQuizzDto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ParseFilePipeDocument } from "@/files/files.validator";
+import { QuizzRequest } from "@/quizz/decorator/quizz.decorator";
+import { QuizzGuard } from "@/quizz/guards/quizz.guard";
+import { UpdatedQuizzDto } from "@/quizz/dto/updatedQuizzDto";
 
 @UseGuards(UserAuthGuard)
 @ApiTags("quizz")
@@ -32,5 +54,74 @@ export class QuizzController {
   })
   getAll(): Promise<Quizz[]> {
     return this.quizzService.getAll();
+  }
+
+  @Get("/:quizzId")
+  @UseGuards(QuizzGuard)
+  @ApiOperation({ summary: "Returns a quizz by id" })
+  @ApiOkResponse({ description: "Quizz found successfully" })
+  @ApiBadRequestResponse({ description: "Invalid id" })
+  getById(@QuizzRequest() quizz: Quizz): Quizz {
+    return quizz;
+  }
+
+  @Post("")
+  @UseInterceptors(FileInterceptor("image"))
+  @ApiConsumes("multipart/form-data")
+  @ApiOperation({ summary: "Create a new quizz" })
+  @ApiOkResponse({ description: "Quizz created successfully" })
+  @ApiBadRequestResponse({ description: "Invalid data" })
+  async create(
+    @CurrentUser() user: User,
+    @Body() body: CreateQuizzDto,
+    @UploadedFile(ParseFilePipeDocument) file?: Express.Multer.File,
+  ): Promise<void> {
+    const quizzData = Object.assign({}, body);
+
+    if (file) {
+      const fileName = await this.fileUploadService.uploadFile(file);
+
+      quizzData.image = `${process.env.VITE_API_BASE_URL ?? ""}/files/${fileName}`;
+    }
+
+    await this.quizzService.create(quizzData, user.id);
+  }
+
+  @Put("/:quizzId")
+  @UseGuards(QuizzGuard)
+  @UseInterceptors(FileInterceptor("image"))
+  @ApiConsumes("multipart/form-data")
+  @ApiOperation({ summary: "Update a quizz by id" })
+  @ApiOkResponse({ description: "Quizz updated successfully" })
+  @ApiBadRequestResponse({ description: "Invalid id" })
+  async update(
+    @CurrentUser() user: User,
+    @QuizzRequest() quizz: Quizz,
+    @Body() body: UpdatedQuizzDto,
+    @UploadedFile(ParseFilePipeDocument) file?: Express.Multer.File,
+  ): Promise<void> {
+    if (user.id !== quizz.author.id) {
+      throw new HttpException(
+        await this.translationService.translate("error.USER_NOT_AUTHOR"),
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (file) {
+      const fileName = await this.fileUploadService.uploadFile(file);
+
+      body.image = `${process.env.VITE_API_BASE_URL ?? ""}/files/${fileName}`;
+    }
+
+    await this.quizzService.update(quizz.id, body);
+  }
+
+  @Delete("/:quizzId")
+  @UseGuards(QuizzGuard)
+  @ApiOperation({ summary: "Delete a quizz by id" })
+  @ApiOkResponse({ description: "Quizz deleted successfully" })
+  @ApiBadRequestResponse({ description: "Invalid id" })
+  async delete(@QuizzRequest() quizz: Quizz): Promise<void> {
+    await this.quizzService.delete(quizz.id);
   }
 }

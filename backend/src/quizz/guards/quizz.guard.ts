@@ -11,7 +11,7 @@ import { Repository } from "typeorm";
 import { TranslationService } from "@/translation/translation.service";
 import { uuidRegex } from "@/utils/regex.variable";
 import { Quizz } from "@/quizz/quizz.entity";
-import { IRequestWithParamQuizz } from "../types/IRequestWithParamQuizz";
+import { IRequestWithParamQuizz } from "@/quizz/types/IRequestWithParamQuizz";
 
 @Injectable()
 export class QuizzGuard implements CanActivate {
@@ -36,11 +36,14 @@ export class QuizzGuard implements CanActivate {
       where: {
         id: quizzId,
       },
+      relations: {
+        author: true,
+      },
     });
 
     if (!quizz) {
       throw new HttpException(
-        await this.translationsService.translate("error.RATING_NOT_FOUND"),
+        await this.translationsService.translate("error.QUIZZ_NOT_FOUND"),
         HttpStatus.NOT_FOUND,
       );
     }

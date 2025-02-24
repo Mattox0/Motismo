@@ -14,6 +14,8 @@ export type I18nTranslations = {
         "UNAUTHORIZED": string;
         "PERMISSION_DENIED": string;
         "ID_INVALID": string;
+        "QUIZZ_NOT_FOUND": string;
+        "USER_NOT_AUTHOR": string;
     };
     "user": {
         "HELLO": string;

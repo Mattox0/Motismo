@@ -5,6 +5,9 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from "nestjs-i18n";
 import * as path from "node:path";
 import { UsersModule } from "@/user/user.module";
 import { AuthModule } from "@/auth/auth.module";
+import { QuizzModule } from "@/quizz/quizz.module";
+import { TranslationService } from "@/translation/translation.service";
+import { FileUploadModule } from "./files/files.module";
 
 @Module({
   imports: [
@@ -21,7 +24,6 @@ import { AuthModule } from "@/auth/auth.module";
         username: configService.get("POSTGRES_USER"),
         password: configService.get("POSTGRES_PASSWORD"),
         database: configService.get("POSTGRES_DATABASE"),
-        entities: [],
         autoLoadEntities: true,
         synchronize: true,
         extra: {
@@ -49,10 +51,12 @@ import { AuthModule } from "@/auth/auth.module";
         AcceptLanguageResolver,
       ],
     }),
+    QuizzModule,
     UsersModule,
     AuthModule,
+    FileUploadModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [TranslationService],
 })
 export class AppModule {}

@@ -2,10 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
 import { Role } from "@/user/role.enum";
+import { Quizz } from "@/quizz/quizz.entity";
 
 @Entity()
 export class User {
@@ -29,4 +31,7 @@ export class User {
 
   @CreateDateColumn()
   creationDate: Date;
+
+  @OneToMany(() => Quizz, (quizz) => quizz.author)
+  quizz?: Quizz[];
 }

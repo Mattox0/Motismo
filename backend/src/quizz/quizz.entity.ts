@@ -1,7 +1,9 @@
+import { User } from "@/user/user.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -16,8 +18,11 @@ export class Quizz {
   @Column({ type: "varchar", nullable: false })
   description: string;
 
-  @Column({ type: "varchar", nullable: false })
+  @Column({ type: "varchar", nullable: true })
   image?: string;
+
+  @ManyToOne(() => User, (user) => user.quizz)
+  author: User;
 
   @CreateDateColumn()
   creationDate: Date;

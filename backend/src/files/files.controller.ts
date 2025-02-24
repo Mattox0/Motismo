@@ -64,7 +64,7 @@ export class FileUploadController {
     };
   }
 
-  @Get(":key")
+  @Get("/:key")
   @ApiOperation({ summary: "Retrieve a file by its key" })
   @ApiParam({
     name: "key",
@@ -78,7 +78,7 @@ export class FileUploadController {
     fileStream.pipe(response);
   }
 
-  @Delete(":key")
+  @Delete("/:key")
   @ApiOperation({ summary: "Delete a file by its key" })
   @ApiParam({
     name: "key",

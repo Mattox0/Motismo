@@ -1,0 +1,260 @@
+import { Test, TestingModule } from "@nestjs/testing";
+import { QuizzController } from "@/quizz/controller/quizz.controller";
+import { QuizzService } from "@/quizz/service/quizz.service";
+import { TranslationService } from "@/translation/translation.service";
+import { FileUploadService } from "@/files/files.service";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Quizz } from "@/quizz/quizz.entity";
+import { User } from "@/user/user.entity";
+import { CreateQuizzDto } from "@/quizz/dto/createQuizzDto";
+import { UpdatedQuizzDto } from "@/quizz/dto/updatedQuizzDto";
+import { Repository } from "typeorm";
+import { Role } from "@/user/role.enum";
+import { UserService } from "@/user/service/user.service";
+import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
+import { HttpException, HttpStatus } from "@nestjs/common";
+
+jest.mock("bcrypt", () => ({
+  hash: jest.fn().mockImplementation(() => "hashed-new-password"),
+}));
+
+describe("QuizzController", () => {
+  let quizzController: QuizzController;
+  let mockQuizzService: Partial<QuizzService>;
+  let mockTranslationService: Partial<TranslationService>;
+  let mockFileUploadService: Partial<FileUploadService>;
+  let mockQuizzRepository: Partial<Repository<Quizz>>;
+
+  const mockQuizz: Quizz = {
+    id: "quizz-id",
+    title: "Quizz title",
+    description: "Quizz description",
+    author: {} as User,
+    creationDate: new Date(),
+  };
+
+  const mockUser: User = {
+    id: "user-id",
+    username: "testuser",
+    email: "test@example.com",
+    password: "hashed-password",
+    creationDate: new Date(),
+    role: Role.Customer,
+  };
+
+  const mockQuizzs: Quizz[] = [mockQuizz];
+
+  const mockUserAuthGuard = {
+    canActivate: jest.fn().mockReturnValue(true),
+  };
+
+  beforeEach(async () => {
+    mockQuizzRepository = {};
+
+    mockQuizzService = {
+      getAll: jest.fn().mockResolvedValue(mockQuizzs),
+      create: jest.fn().mockResolvedValue(mockQuizz),
+      update: jest.fn().mockResolvedValue(mockQuizz),
+      delete: jest.fn().mockResolvedValue(undefined),
+    };
+
+    mockTranslationService = {
+      translate: jest.fn((key) => Promise.resolve(key)),
+    };
+
+    mockFileUploadService = {
+      uploadFile: jest.fn().mockResolvedValue("http://example.com/file.jpg"),
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [QuizzController],
+      providers: [
+        { provide: QuizzService, useValue: mockQuizzService },
+        { provide: TranslationService, useValue: mockTranslationService },
+        { provide: FileUploadService, useValue: mockFileUploadService },
+        { provide: getRepositoryToken(Quizz), useValue: mockQuizzRepository },
+        { provide: UserService, useValue: {} },
+        { provide: UserAuthGuard, useValue: mockUserAuthGuard },
+      ],
+    }).compile();
+
+    quizzController = module.get<QuizzController>(QuizzController);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    jest.resetModules();
+    jest.clearAllTimers();
+  });
+
+  describe("getAll", () => {
+    it("should return an array of quizzs", async () => {
+      const quizzs: Quizz[] = [mockQuizz];
+
+      jest.spyOn(mockQuizzService, "getAll").mockResolvedValue(quizzs);
+
+      expect(await quizzController.getAll()).toEqual(quizzs);
+    });
+  });
+
+  describe("getById", () => {
+    it("should return a quizz by id", () => {
+      const result = quizzController.getById(mockQuizz);
+
+      expect(result).toEqual(mockQuizz);
+    });
+  });
+
+  describe("createQuizz", () => {
+    it("should create a new quizz", async () => {
+      const createQuizzDto: CreateQuizzDto = {
+        title: "New Quizz",
+        description: "New Quizz description",
+      };
+
+      jest.spyOn(mockQuizzService, "create").mockResolvedValue();
+
+      await quizzController.create(mockUser, createQuizzDto, undefined);
+
+      expect(mockQuizzService.create).toHaveBeenCalledWith(
+        expect.objectContaining(createQuizzDto),
+        mockUser.id,
+      );
+    });
+
+    it("should upload a file when creating a quizz", async () => {
+      const createQuizzDto: CreateQuizzDto = {
+        title: "New Quizz",
+        description: "New Quizz description",
+      };
+
+      const file: Express.Multer.File = {
+        fieldname: "file",
+        originalname: "test.jpg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        buffer: Buffer.from("test"),
+        size: 1024,
+      } as Express.Multer.File;
+
+      jest
+        .spyOn(mockFileUploadService, "uploadFile")
+        .mockResolvedValue("http://example.com/new-file.jpg");
+
+      jest.spyOn(mockQuizzService, "create").mockResolvedValue();
+
+      await quizzController.create(mockUser, createQuizzDto, file);
+
+      expect(mockQuizzService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...createQuizzDto,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          image: expect.stringContaining("http://example.com/new-file.jpg"),
+        }),
+        mockUser.id,
+      );
+    });
+  });
+
+  describe("updateQuizz", () => {
+    it("should update a quizz", async () => {
+      const quizzId = "quizz-id";
+      const updatedQuizzDto: UpdatedQuizzDto = {
+        title: "Updated Quizz",
+        description: "Updated Quizz description",
+      };
+
+      // Définir l'auteur du quizz comme l'utilisateur actuel
+      mockQuizz.author = mockUser;
+
+      jest.spyOn(mockQuizzService, "update").mockResolvedValue();
+
+      await quizzController.update(
+        mockUser,
+        mockQuizz,
+        updatedQuizzDto,
+        undefined,
+      );
+
+      expect(mockQuizzService.update).toHaveBeenCalledWith(
+        quizzId,
+        expect.objectContaining(updatedQuizzDto),
+      );
+    });
+
+    it("should upload a file when updating a quizz", async () => {
+      const quizzId = "quizz-id";
+      const updatedQuizzDto: UpdatedQuizzDto = {
+        title: "Updated Quizz",
+        description: "Updated Quizz description",
+      };
+
+      const file: Express.Multer.File = {
+        fieldname: "file",
+        originalname: "test.jpg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        buffer: Buffer.from("test"),
+        size: 1024,
+      } as Express.Multer.File;
+
+      jest
+        .spyOn(mockFileUploadService, "uploadFile")
+        .mockResolvedValue("http://example.com/new-file.jpg");
+
+      jest.spyOn(mockQuizzService, "update").mockResolvedValue();
+
+      await quizzController.update(mockUser, mockQuizz, updatedQuizzDto, file);
+
+      expect(mockQuizzService.update).toHaveBeenCalledWith(
+        quizzId,
+        expect.objectContaining({
+          ...updatedQuizzDto,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          image: expect.stringContaining("http://example.com/new-file.jpg"),
+        }),
+      );
+    });
+
+    it("should throw an HttpException if user is not the author", async () => {
+      const updatedQuizzDto: UpdatedQuizzDto = {
+        title: "Updated Quizz",
+        description: "Updated Quizz description",
+      };
+
+      // Définir l'auteur du quizz comme un autre utilisateur
+      mockQuizz.author = { id: "other-user-id" } as User;
+
+      jest.spyOn(mockQuizzService, "update").mockResolvedValue();
+
+      try {
+        await quizzController.update(
+          mockUser,
+          mockQuizz,
+          updatedQuizzDto,
+          undefined,
+        );
+      } catch (e) {
+        const error = e as HttpException;
+
+        expect(error).toBeInstanceOf(HttpException);
+        expect(error.getStatus()).toBe(HttpStatus.UNAUTHORIZED);
+      }
+    });
+  });
+
+  describe("deleteQuizz", () => {
+    it("should delete a quizz", async () => {
+      const quizzId = "quizz-id";
+
+      jest.spyOn(mockQuizzService, "delete").mockResolvedValue(undefined);
+
+      await quizzController.delete(mockQuizz);
+
+      expect(mockQuizzService.delete).toHaveBeenCalledWith(quizzId);
+    });
+  });
+});
