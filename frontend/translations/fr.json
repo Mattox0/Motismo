@@ -1,0 +1,42 @@
+{
+  "app": {
+    "name": "Motismo",
+    "description": "Gestionnaire de mots de passe sécurisé"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "passwords": "Mots de passe",
+    "settings": "Paramètres"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "welcome": "Content de vous revoir !",
+    "loginDescription": "Connectez-vous pour accéder à votre compte QuizMaster",
+    "orContinueWith": "ou continuer avec",
+    "errors": {
+      "invalidCredentials": "Email ou mot de passe incorrect",
+      "emailRequired": "L'email est requis",
+      "passwordRequired": "Le mot de passe est requis"
+    }
+  },
+  "passwords": {
+    "add": "Ajouter un mot de passe",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "search": "Rechercher",
+    "noResults": "Aucun résultat trouvé"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "confirm": "Confirmer",
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue"
+  }
+}

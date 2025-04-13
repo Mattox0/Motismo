@@ -1,0 +1,42 @@
+{
+  "app": {
+    "name": "Motismo",
+    "description": "Secure password manager"
+  },
+  "navigation": {
+    "home": "Home",
+    "passwords": "Passwords",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "welcome": "Welcome back!",
+    "loginDescription": "Sign in to access your QuizMaster account",
+    "orContinueWith": "or continue with",
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required"
+    }
+  },
+  "passwords": {
+    "add": "Add password",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "noResults": "No results found"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  }
+} 

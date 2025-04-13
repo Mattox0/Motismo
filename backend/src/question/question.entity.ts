@@ -1,16 +1,17 @@
-import { Question } from "@/question/question.entity";
-import { User } from "@/user/user.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
+  TableInheritance,
 } from "typeorm";
+import { QuestionType } from "@/question/questionType";
+import { Quizz } from "@/quizz/quizz.entity";
 
 @Entity()
-export class Quizz {
+@TableInheritance({ column: { type: "varchar", name: "type" } })
+export class Question {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -18,16 +19,13 @@ export class Quizz {
   title: string;
 
   @Column({ type: "varchar", nullable: false })
-  description: string;
+  questionType: QuestionType;
 
   @Column({ type: "varchar", nullable: true })
   image?: string;
 
-  @ManyToOne(() => User, (user) => user.quizz)
-  author: User;
-
-  @OneToMany(() => Question, (question) => question.quizz)
-  questions?: Question[];
+  @ManyToOne(() => Quizz, (quizz) => quizz.questions)
+  quizz: Quizz;
 
   @CreateDateColumn()
   creationDate: Date;

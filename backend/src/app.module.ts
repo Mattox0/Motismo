@@ -7,7 +7,11 @@ import { UsersModule } from "@/user/user.module";
 import { AuthModule } from "@/auth/auth.module";
 import { QuizzModule } from "@/quizz/quizz.module";
 import { TranslationService } from "@/translation/translation.service";
-import { FileUploadModule } from "./files/files.module";
+import { FileUploadModule } from "@/files/files.module";
+import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
+import { QuestionModule } from "@/question/question.module";
+import { MatchingQuestion } from "./question/entity/matchingQuestion.entity";
+import { WordCloudQuestion } from "./question/entity/wordCloudQuestion.entity";
 
 @Module({
   imports: [
@@ -24,6 +28,7 @@ import { FileUploadModule } from "./files/files.module";
         username: configService.get("POSTGRES_USER"),
         password: configService.get("POSTGRES_PASSWORD"),
         database: configService.get("POSTGRES_DATABASE"),
+        entities: [ChoiceQuestion, WordCloudQuestion, MatchingQuestion],
         autoLoadEntities: true,
         synchronize: true,
         extra: {
@@ -53,6 +58,7 @@ import { FileUploadModule } from "./files/files.module";
     }),
     QuizzModule,
     UsersModule,
+    QuestionModule,
     AuthModule,
     FileUploadModule,
   ],
