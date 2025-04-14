@@ -1,12 +1,10 @@
 {
   "app": {
     "name": "Motismo",
-    "description": "Gestionnaire de mots de passe sécurisé"
+    "description": "Application de quizz interactifs"
   },
   "navigation": {
-    "home": "Accueil",
-    "passwords": "Mots de passe",
-    "settings": "Paramètres"
+    "home": "Accueil"
   },
   "auth": {
     "login": "Connexion",
@@ -14,22 +12,29 @@
     "logout": "Déconnexion",
     "email": "Email",
     "password": "Mot de passe",
+    "name": "Pseudo",
+    "confirmPassword": "Confirmer le mot de passe",
     "forgotPassword": "Mot de passe oublié ?",
     "welcome": "Content de vous revoir !",
+    "registerWelcome": "Créez un compte",
     "loginDescription": "Connectez-vous pour accéder à votre compte QuizMaster",
+    "registerDescription": "Créez un compte pour accéder à votre compte QuizMaster",
     "orContinueWith": "ou continuer avec",
+    "namePlaceholder": "Entrez votre pseudo",
+    "emailPlaceholder": "Entrez votre email",
+    "passwordPlaceholder": "Entrez votre mot de passe",
+    "confirmPasswordPlaceholder": "Confirmez votre mot de passe",
     "errors": {
       "invalidCredentials": "Email ou mot de passe incorrect",
       "emailRequired": "L'email est requis",
       "passwordRequired": "Le mot de passe est requis"
     }
   },
-  "passwords": {
-    "add": "Ajouter un mot de passe",
-    "edit": "Modifier",
-    "delete": "Supprimer",
-    "search": "Rechercher",
-    "noResults": "Aucun résultat trouvé"
+  "validation": {
+    "nameRequired": "Le pseudo est requis",
+    "invalidEmail": "Email invalide",
+    "passwordMinLength": "Minimum 8 caractères",
+    "passwordsMustMatch": "Les mots de passe doivent correspondre"
   },
   "common": {
     "save": "Enregistrer",

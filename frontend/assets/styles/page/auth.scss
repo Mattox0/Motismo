@@ -11,6 +11,7 @@
     background-color: white;
     border-radius: 16px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    transition: height 1s ease-in-out;
 
     .auth-nav {
       display: flex;
@@ -42,6 +43,55 @@
 
     .auth-content {
       padding: 2rem;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      padding-right: 10px;
+      scrollbar-width: thin;
+      transition: height 0.3s ease-in-out;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+      }
+
+      .forms-container {
+        position: relative;
+        min-height: 200px;
+        
+        .auth-form-wrapper {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          left: 0;
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(10px);
+          transition: 
+            opacity 0.3s ease-in-out,
+            transform 0.3s ease-in-out,
+            visibility 0s linear 0.3s;
+          
+          &.active {
+            position: relative;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            transition: 
+              opacity 0.3s ease-in-out,
+              transform 0.3s ease-in-out,
+              visibility 0s linear;
+          }
+        } 
+      }
 
       .auth-title {
         font-size: 2rem;
@@ -60,7 +110,7 @@
       .auth-form {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
 
         .form-group {
           display: flex;
@@ -164,5 +214,27 @@
         }
       }
     }
+  }
+}
+
+@media screen and (max-height: 700px) {
+  .auth-content {
+    padding: 1rem;
+    max-height: calc(100vh - 80px);
+  }
+  
+  .auth-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .auth-description {
+    margin-bottom: 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .auth-content {
+    padding: 1rem;
   }
 }

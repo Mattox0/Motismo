@@ -1,12 +1,10 @@
 {
   "app": {
     "name": "Motismo",
-    "description": "Secure password manager"
+    "description": "Interactive quiz application"
   },
   "navigation": {
-    "home": "Home",
-    "passwords": "Passwords",
-    "settings": "Settings"
+    "home": "Home"
   },
   "auth": {
     "login": "Login",
@@ -14,22 +12,29 @@
     "logout": "Logout",
     "email": "Email",
     "password": "Password",
+    "name": "Username",
+    "confirmPassword": "Confirm password",
     "forgotPassword": "Forgot password?",
     "welcome": "Welcome back!",
+    "registerWelcome": "Create an account",
     "loginDescription": "Sign in to access your QuizMaster account",
+    "registerDescription": "Create an account to access your QuizMaster account",
     "orContinueWith": "or continue with",
+    "namePlaceholder": "Enter your username",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPasswordPlaceholder": "Confirm your password",
     "errors": {
-      "invalidCredentials": "Invalid email or password",
+      "invalidCredentials": "Incorrect email or password",
       "emailRequired": "Email is required",
       "passwordRequired": "Password is required"
     }
   },
-  "passwords": {
-    "add": "Add password",
-    "edit": "Edit",
-    "delete": "Delete",
-    "search": "Search",
-    "noResults": "No results found"
+  "validation": {
+    "nameRequired": "Username is required",
+    "invalidEmail": "Invalid email",
+    "passwordMinLength": "Minimum 8 characters",
+    "passwordsMustMatch": "Passwords must match"
   },
   "common": {
     "save": "Save",
@@ -39,4 +44,4 @@
     "loading": "Loading...",
     "error": "An error occurred"
   }
-} 
+}

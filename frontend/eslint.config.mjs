@@ -45,7 +45,7 @@ const eslintConfig = [
       // Règles générales
       "no-console": ["warn", { allow: ["warn", "error"] }],
       "no-debugger": "warn",
-      "no-unused-vars": "warn", // Utiliser la règle TypeScript à la place
+      'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
       "prefer-const": "error",
       "no-var": "error",
       "eqeqeq": ["error", "always"],
