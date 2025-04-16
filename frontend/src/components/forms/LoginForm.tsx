@@ -1,15 +1,21 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import EmailIcon from '@mui/icons-material/EmailRounded';
 import KeyIcon from '@mui/icons-material/VpnKeyRounded';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import Input from '@/components/forms/Input';
+import { useAuth } from '@/hooks/useAuth';
+import { ApiError } from '@/types/ApiError';
 import { createLoginSchema } from '@/types/schemas/createLoginForm';
+import { showToast } from '@/utils/toast';
 
 const LoginForm = () => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { login } = useAuth();
 
   const schema = createLoginSchema(t);
   type FormData = z.infer<typeof schema>;
@@ -24,10 +30,11 @@ const LoginForm = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // Appel API ici
-      console.log('Form data:', data);
+      await login(data.email, data.password);
+      showToast.success(t('auth.loginSuccess'));
+      router.push('/');
     } catch (error) {
-      console.error('Error:', error);
+      showToast.error((error as ApiError)?.data?.message);
     }
   };
 
@@ -35,6 +42,7 @@ const LoginForm = () => {
     <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
       <Input
         label="Email"
+        type="email"
         startAdornment={<EmailIcon />}
         placeholder="votre@email.com"
         registration={register('email')}
@@ -48,6 +56,7 @@ const LoginForm = () => {
         placeholder="••••••••"
         registration={register('password')}
         error={errors.password?.message}
+        autoComplete="current-password"
       />
 
       <button type="submit" className="btn btn-colored" disabled={isSubmitting}>

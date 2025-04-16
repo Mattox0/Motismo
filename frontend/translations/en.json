@@ -24,6 +24,8 @@
     "emailPlaceholder": "Enter your email",
     "passwordPlaceholder": "Enter your password",
     "confirmPasswordPlaceholder": "Confirm your password",
+    "registerSuccess": "Registration successful",
+    "loginSuccess": "Login successful",
     "errors": {
       "invalidCredentials": "Incorrect email or password",
       "emailRequired": "Email is required",

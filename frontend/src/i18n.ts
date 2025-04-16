@@ -1,9 +1,10 @@
 'use client';
 
-import enTranslations from '@root/translations/en.json';
-import frTranslations from '@root/translations/fr.json';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+
+import enTranslations from '@root/translations/en.json';
+import frTranslations from '@root/translations/fr.json';
 
 i18n.use(initReactI18next);
 

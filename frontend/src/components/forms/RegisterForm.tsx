@@ -2,23 +2,29 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import EmailIcon from '@mui/icons-material/EmailOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import Input from '@/components/forms/Input';
+import { useAuth } from '@/hooks/useAuth';
+import { ApiError } from '@/types/ApiError';
 import { createRegisterSchema } from '@/types/schemas/createRegisterSchema';
+import { showToast } from '@/utils/toast';
 
 const RegisterForm = () => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { register: authRegister } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const schema = createRegisterSchema(t);
   type FormData = z.infer<typeof schema>;
 
   const {
-    register,
+    register: formRegister,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
@@ -28,16 +34,16 @@ const RegisterForm = () => {
   const onSubmit = async (data: FormData) => {
     setServerError(null);
     try {
-      // Simulation d'enregistrement - à remplacer par votre logique d'API
-      console.log('Register data:', data);
-
-      // Simulation d'un délai pour montrer le chargement
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Rediriger après inscription ou montrer un message de succès
+      await authRegister({
+        email: data.email,
+        password: data.password,
+        username: data.name,
+      });
+      showToast.success(t('auth.registerSuccess'));
+      router.push('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);
-      setServerError(t('auth.registerError'));
+      showToast.error((error as ApiError)?.data?.message);
     }
   };
 
@@ -47,10 +53,12 @@ const RegisterForm = () => {
 
       <Input
         label={t('auth.name')}
+        type="text"
         startAdornment={<PersonOutlinedIcon />}
         placeholder={t('auth.namePlaceholder')}
-        registration={register('name')}
+        registration={formRegister('name')}
         error={errors.name?.message}
+        autoComplete="name"
       />
 
       <Input
@@ -58,7 +66,7 @@ const RegisterForm = () => {
         type="email"
         startAdornment={<EmailIcon />}
         placeholder={t('auth.emailPlaceholder')}
-        registration={register('email')}
+        registration={formRegister('email')}
         error={errors.email?.message}
       />
 
@@ -67,8 +75,9 @@ const RegisterForm = () => {
         isPassword
         startAdornment={<LockOutlinedIcon />}
         placeholder={t('auth.passwordPlaceholder')}
-        registration={register('password')}
+        registration={formRegister('password')}
         error={errors.password?.message}
+        autoComplete="new-password"
       />
 
       <Input
@@ -76,8 +85,9 @@ const RegisterForm = () => {
         isPassword
         startAdornment={<LockOutlinedIcon />}
         placeholder={t('auth.confirmPasswordPlaceholder')}
-        registration={register('confirmPassword')}
+        registration={formRegister('confirmPassword')}
         error={errors.confirmPassword?.message}
+        autoComplete="new-password"
       />
 
       <button type="submit" className="btn btn-colored" disabled={isSubmitting}>

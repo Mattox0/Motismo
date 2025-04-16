@@ -29,6 +29,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       className = '',
       id,
       type,
+      autoComplete = 'off',
       ...rest
     },
     ref
@@ -58,6 +59,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             type={inputType}
             className={`form-input ${error ? 'input-error' : ''} ${startAdornment ? 'has-start-icon' : ''} ${endAdornment || isPassword ? 'has-end-icon' : ''} ${className}`}
             aria-invalid={!!error}
+            autoComplete={autoComplete}
             {...registration}
             {...rest}
           />

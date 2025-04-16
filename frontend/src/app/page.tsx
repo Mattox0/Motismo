@@ -1,9 +1,9 @@
-import { Navbar } from '@/components/Navbar';
+import { GlobalLayout } from '@/layout/GlobalLayout';
 
 export default function Home() {
   return (
-    <div className="bg-red-500">
-      <Navbar />
-    </div>
+    <GlobalLayout>
+      <p>oui</p>
+    </GlobalLayout>
   );
 }

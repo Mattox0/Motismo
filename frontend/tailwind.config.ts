@@ -5,7 +5,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
+        poppins: ['var(--font-poppins)', 'sans-serif'],
       },
       colors: {
         primary: {

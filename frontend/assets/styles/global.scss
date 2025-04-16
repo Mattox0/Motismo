@@ -1,7 +1,7 @@
 @use './core/init.scss';
 @use './core/input.scss';
 @use './core/button.scss';
+@use './core/title.scss';
 @use './page/auth.scss';
+@use './components/navbar.scss';
 @use 'tailwindcss';
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');

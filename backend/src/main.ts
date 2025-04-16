@@ -8,7 +8,7 @@ import { type MicroserviceOptions, Transport } from "@nestjs/microservices";
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: process.env.FRONT_BASE_URL,
+      origin: process.env.VITE_API_BASE_URL,
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     },
