@@ -4,7 +4,25 @@
     "description": "Application de quizz interactifs"
   },
   "navigation": {
-    "home": "Accueil"
+    "home": "Accueil",
+    "about": "A propos",
+    "contact": "Contact",
+    "login": "Se connecter",
+    "logout": "Se déconnecter"
+  },
+  "hero": {
+    "title": "Créez, partagez et jouez à des quizz interactifs",
+    "subtitle": "Créez, partagez et jouez à des quiz interactifs en quelques clics. Parfait pour les enseignants, les formateurs et les amis.",
+    "join": {
+      "quizz": "Rejoignez maintenant",
+      "quizzDescription": "Entrez le code d'un quizz pour rejoindre une session en cours et tester vos connaissances avec d'autres joueurs.",
+      "quizzInput": "Entrez le code du quizz",
+      "quizzInputPlaceholder": "Ex: 123456"
+    },
+    "create": {
+      "quizz": "Commencer la création",
+      "quizzDescription": "Concevez votre propre quizz personnalisé en quelques minutes. Ajoutez des questions, des images et bien plus."
+    }
   },
   "auth": {
     "login": "Connexion",
@@ -36,7 +54,9 @@
     "nameRequired": "Le pseudo est requis",
     "invalidEmail": "Email invalide",
     "passwordMinLength": "Minimum 8 caractères",
-    "passwordsMustMatch": "Les mots de passe doivent correspondre"
+    "passwordsMustMatch": "Les mots de passe doivent correspondre",
+    "codeLength": "Le code doit contenir 6 caractères",
+    "codeInvalidFormat": "Format de code invalide"
   },
   "common": {
     "save": "Enregistrer",

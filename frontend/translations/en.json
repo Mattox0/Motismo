@@ -4,7 +4,27 @@
     "description": "Interactive quiz application"
   },
   "navigation": {
-    "home": "Home"
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "hero": {
+    "title": "Create, share and play interactive quizzes",
+    "subtitle": "Create, share and play interactive quizzes in just a few clicks. Perfect for teachers, trainers and friends.",
+    "join": {
+      "quizz": "Join now",
+      "quizzDescription": "Join an interactive quiz and test your knowledge.",
+      "quizzInput": "Enter the quiz code",
+      "quizzInputPlaceholder": "Ex: 123456"
+    },
+    "create": {
+      "quizz": "Create a quiz",
+      "quizzDescription": "Create an interactive quiz and share it with your friends.",
+      "quizzInput": "Enter the quiz title",
+      "quizzInputPlaceholder": "Ex: Quiz de culture générale"
+    }
   },
   "auth": {
     "login": "Login",
@@ -36,7 +56,9 @@
     "nameRequired": "Username is required",
     "invalidEmail": "Invalid email",
     "passwordMinLength": "Minimum 8 characters",
-    "passwordsMustMatch": "Passwords must match"
+    "passwordsMustMatch": "Passwords must match",
+    "codeLength": "Code must be 6 characters",
+    "codeInvalidFormat": "Invalid code format"
   },
   "common": {
     "save": "Save",

@@ -1,0 +1,28 @@
+.hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding-block: 5rem;
+  padding-inline: 2rem;
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+  }
+
+  .hero-subtitle {
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: white;
+    text-align: center;
+    max-width: 800px;
+    margin-inline: auto;
+  }
+
+  .hero-ctas {
+    margin-top: 4rem;
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+  }
+}

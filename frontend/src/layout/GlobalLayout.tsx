@@ -1,16 +1,16 @@
-import { FC, ReactNode } from 'react';
+'use client';
 
 import { Navbar } from '@/components/Navbar';
 
 interface GlobalLayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-export const GlobalLayout: FC<GlobalLayoutProps> = ({ children }) => {
+export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   return (
-    <div>
+    <main className="min-h-screen">
       <Navbar />
       {children}
-    </div>
+    </main>
   );
 };

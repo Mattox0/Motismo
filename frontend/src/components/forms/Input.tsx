@@ -14,6 +14,9 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
   registration?: UseFormRegisterReturn;
   isPassword?: boolean;
   className?: string;
+  id?: string;
+  type?: string;
+  autoComplete?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
