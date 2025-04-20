@@ -27,6 +27,19 @@
       background-color: white;
       color: var(--secondary-color);
     }
+
+    &.white {
+      background-color: white;
+      color: var(--secondary-color);
+      border: 2px solid white;
+
+      &:hover {
+        background-color: var(--secondary-color);
+        border: 2px solid var(--secondary-color);
+        color: white;
+      }
+    }
+
   }
 
   &.btn-colored {

@@ -1,0 +1,49 @@
+.fonctionality-section {
+  .fonctionality-tag {
+    text-transform: uppercase;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 2rem;
+  }
+
+  .fonctionality-items {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    margin-top: 2rem;
+    justify-content: space-between;
+    
+    .fonctionality-item {
+      display: flex;
+      gap: 1rem;
+
+      .fonctionality-item-content {
+        flex: 1;
+      }
+
+      .fonctionality-item-icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        background-color: var(--secondary-color-dark);
+        border-radius: 8px;
+        color: var(--white-color);
+      }
+
+      .fonctionality-item-icon {
+        width: 2rem;
+        height: 2rem;
+      }
+
+      .fonctionality-item-title {
+        margin-bottom: .5rem;
+      }
+
+      .fonctionality-item-description {
+        color: var(--text-grey);
+      }
+    }
+  }
+}

@@ -23,6 +23,39 @@
     margin-top: 4rem;
     display: flex;
     gap: 2rem;
-    justify-content: center;
+    justify-content: space-evenly;
+  }
+}
+
+.footer-hero {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  padding-block: 5rem;
+  padding-inline: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  .footer-hero-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    color: white;
+    text-align: center;
+  }
+
+  .footer-hero-description {
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: white;
+    text-align: center;  
+    max-width: 800px;
+  }
+
+  .footer-hero-button {
+    max-width: 500px;
+    font-weight: 700;
+    padding-inline: 3rem;
+    width: fit-content;
   }
 }

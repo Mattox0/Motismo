@@ -52,6 +52,46 @@
       "passwordRequired": "Password is required"
     }
   },
+  "fonctionality": {
+    "tag": "Features",
+    "title": "Why choose Motismo?",
+    "item1": {
+      "title": "Quick creation",
+      "description": "Intuitive and simple interface to create quizzes in just a few minutes with different types of questions."
+    },
+    "item2": {
+      "title": "Multiplayer mode",
+      "description": "Play in real time with other players and see the results instantly."
+    },
+    "item3": {
+      "title": "Detailed analyses",
+      "description": "Get complete statistics on the performance of participants in your quizzes."
+    }
+  },
+  "footerHero": {
+    "title": "Ready to create your quiz?",
+    "description": "Join the many users who are already transforming their knowledge into interactive experiences.",
+    "button": "Start now"
+  },
+  "howItWorks": {
+    "title": "HOW IT WORKS",
+    "subtitle": "Create and launch a quiz in 3 steps",
+    "steps": {
+      "1": {
+        "title": "Create your quiz",
+        "description": "Add your questions, choose the types of questions and personalize the design. You can also import questions from our library."
+      },
+      "2": {
+        "title": "Share the code",
+        "description": "Once your quiz is ready, a unique code is generated. Share this code with your participants to allow them to join."
+      },
+      "3": {
+        "title": "Launch and play",
+        "description": "When everyone is ready, launch the quiz! The questions are displayed in real time on all devices with a countdown."
+      }
+    }
+  },
+  
   "validation": {
     "nameRequired": "Username is required",
     "invalidEmail": "Invalid email",

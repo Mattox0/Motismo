@@ -8,6 +8,7 @@
   --primary-color-light: #DBEAFE;
   --secondary-color: #9333EA;
   --secondary-color-light: #F3E8FF;
+  --secondary-color-dark: #6466F1;
   --tertiary-color: #16A34A;
   --tertiary-color-light: #DCFCE7;
   --border-color: #E5E7EB;
@@ -18,6 +19,7 @@
   --error-color: #FF3B30;
   --success-color: #34C759;
   --warning-color: #FF9500;
+  --white-color: #FFFFFF;
 }
 
 html,
@@ -58,4 +60,9 @@ select {
 
 .text-center {
   text-align: center;
+}
+
+.section {
+  padding-inline: 2rem;
+  padding-block: 4rem;
 }

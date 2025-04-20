@@ -50,6 +50,45 @@
       "passwordRequired": "Le mot de passe est requis"
     }
   },
+  "fonctionality": {
+    "tag": "Fonctionnalités",
+    "title": "Pourquoi choisir Motismo ?",
+    "item1": {
+      "title": "Création rapide",
+      "description": "Interface intuitive et simple pour créer des quizz en quelques minutes avec différents types de questions."
+    },
+    "item2": {
+      "title": "Mode multijoueur",
+      "description": "Jouez en temps réel avec d'autres joueurs et voyez les résultats instantanément."
+    },
+    "item3": {
+      "title": "Analyses détaillées",
+      "description": "Obtenez des statistiques complètes sur les performances des participants à vos quizz."
+    }
+  },
+  "footerHero": {
+    "title": "Prêt à créer votre quiz ?",
+    "description": "Rejoignez les nombreux d'utilisateurs qui transforment déjà leurs connaissances en expériences interactives.",
+    "button": "Commencer maintenant"
+  },
+  "howItWorks": {
+    "title": "COMMENT ÇA MARCHE",
+    "subtitle": "Créez et lancez un quiz en 3 étapes",
+    "steps": {
+      "1": {
+        "title": "Créez votre quiz",
+        "description": "Ajoutez vos questions, choisissez les types de questions et personnalisez le design. Vous pouvez aussi importer des questions depuis notre bibliothèque."
+      },
+      "2": {
+        "title": "Partagez le code",
+        "description": "Une fois votre quiz prêt, un code unique est généré. Partagez ce code avec vos participants pour qu'ils puissent rejoindre."
+      },
+      "3": {
+        "title": "Lancez et jouez",
+        "description": "Quand tout le monde est prêt, lancez le quiz ! Les questions s'affichent en temps réel sur tous les appareils avec un compte à rebours."
+      }
+    }
+  },
   "validation": {
     "nameRequired": "Le pseudo est requis",
     "invalidEmail": "Email invalide",
