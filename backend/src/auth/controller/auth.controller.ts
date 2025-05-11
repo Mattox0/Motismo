@@ -26,9 +26,9 @@ import { LoginResponse } from "@/auth/dto/loginResponse";
 import { RegisterDto } from "@/auth/dto/register.dto";
 import { AuthService } from "@/auth/service/auth.service";
 import { FileUploadService } from "@/files/files.service";
-import { ParseFilePipeDocument } from "@/files/files.validator";
 import { TranslationService } from "@/translation/translation.service";
 import { UserService } from "@/user/service/user.service";
+import { ParseFilesPipe } from "@/files/files.validator";
 
 const expirationTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
@@ -91,7 +91,7 @@ export class AuthController {
   async register(
     @Body() body: RegisterDto,
     @Res() response: Response,
-    @UploadedFile(ParseFilePipeDocument) file?: Express.Multer.File,
+    @UploadedFile(ParseFilesPipe) file?: Express.Multer.File,
   ): Promise<object> {
     if (await this.userService.checkUnknownUser(body)) {
       throw new HttpException(

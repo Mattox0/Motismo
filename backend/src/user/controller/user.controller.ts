@@ -25,7 +25,6 @@ import { Express } from "express";
 
 import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
 import { FileUploadService } from "@/files/files.service";
-import { ParseFilePipeDocument } from "@/files/files.validator";
 import { TranslationService } from "@/translation/translation.service";
 import { CurrentUser } from "@/user/decorators/currentUser.decorator";
 import { UserRequest } from "@/user/decorators/user.decorator";
@@ -35,7 +34,7 @@ import { User } from "@/user/user.entity";
 import { UserUpdatedDto } from "@/user/dto/userUpdated.dto";
 import { Role } from "../role.enum";
 import hashPassword from "@/utils/auth.variable";
-
+import { ParseFilesPipe } from "@/files/files.validator";
 @UseGuards(UserAuthGuard)
 @ApiTags("users")
 @ApiUnauthorizedResponse({ description: "User not connected" })
@@ -92,7 +91,7 @@ export class UserController {
     @CurrentUser() me: User,
     @UserRequest() user: User,
     @Body() body: UserUpdatedDto,
-    @UploadedFile(ParseFilePipeDocument) file?: Express.Multer.File,
+    @UploadedFile(ParseFilesPipe) file?: Express.Multer.File,
   ): Promise<User> {
     if (me.role !== Role.Admin && me.id !== user.id) {
       throw new HttpException(

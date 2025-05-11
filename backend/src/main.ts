@@ -4,6 +4,7 @@ import * as cookieParser from "cookie-parser";
 import { I18nValidationExceptionFilter, I18nValidationPipe } from "nestjs-i18n";
 import { AppModule } from "@/app.module";
 import { type MicroserviceOptions, Transport } from "@nestjs/microservices";
+import { ValidationPipe } from "@nestjs/common";
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -47,6 +48,8 @@ export async function bootstrap() {
       detailedErrors: false,
     }),
   );
+
+  app.useGlobalPipes(new ValidationPipe());
 
   app.use(cookieParser());
 

@@ -8,5 +8,10 @@
   "PERMISSION_DENIED": "Tu n'as pas les permissions nécessaires pour accéder à cette ressource",
   "ID_INVALID": "L'id est invalide",
   "QUIZZ_NOT_FOUND": "Le quizz n'existe pas",
-  "USER_NOT_AUTHOR": "Tu n'es pas l'auteur de ce quizz"
+  "USER_NOT_AUTHOR": "Tu n'es pas l'auteur de ce quizz",
+  "CARD_NOT_FOUND": "La carte n'existe pas",
+  "INVALID_ORDER": "L'ordre de la carte est invalide",
+  "EXTENSION_NOT_ALLOWED": "L'extension du fichier n'est pas autorisée",
+  "INVALID_FILE": "Le fichier est invalide",
+  "INVALID_ORDER_VALUE": "La valeur de l'ordre est invalide"
 }

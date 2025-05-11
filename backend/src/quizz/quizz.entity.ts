@@ -8,7 +8,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-
+import { IQuizzType } from "./types/QuestionType";
+import { Card } from "@/cards/card.entity";
 @Entity()
 export class Quizz {
   @PrimaryGeneratedColumn("uuid")
@@ -26,8 +27,14 @@ export class Quizz {
   @ManyToOne(() => User, (user) => user.quizz)
   author: User;
 
+  @Column({ type: "enum", enum: IQuizzType, default: IQuizzType.QUESTIONS })
+  quizzType: IQuizzType;
+
   @OneToMany(() => Question, (question) => question.quizz)
   questions?: Question[];
+
+  @OneToMany(() => Card, (card) => card.quizz)
+  cards?: Card[];
 
   @CreateDateColumn()
   creationDate: Date;

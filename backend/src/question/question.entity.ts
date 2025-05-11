@@ -27,6 +27,9 @@ export class Question {
   @ManyToOne(() => Quizz, (quizz) => quizz.questions)
   quizz: Quizz;
 
+  @Column({ type: "int", nullable: false })
+  order: number;
+
   @CreateDateColumn()
   creationDate: Date;
 }

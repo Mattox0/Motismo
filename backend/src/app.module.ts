@@ -12,6 +12,7 @@ import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
 import { QuestionModule } from "@/question/question.module";
 import { MatchingQuestion } from "./question/entity/matchingQuestion.entity";
 import { WordCloudQuestion } from "./question/entity/wordCloudQuestion.entity";
+import { CardModule } from "./cards/card.module";
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { WordCloudQuestion } from "./question/entity/wordCloudQuestion.entity";
     QuestionModule,
     AuthModule,
     FileUploadModule,
+    CardModule,
   ],
   controllers: [],
   providers: [TranslationService],

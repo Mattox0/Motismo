@@ -16,6 +16,11 @@ export type I18nTranslations = {
         "ID_INVALID": string;
         "QUIZZ_NOT_FOUND": string;
         "USER_NOT_AUTHOR": string;
+        "CARD_NOT_FOUND": string;
+        "INVALID_ORDER": string;
+        "EXTENSION_NOT_ALLOWED": string;
+        "INVALID_FILE": string;
+        "INVALID_ORDER_VALUE": string;
     };
     "user": {
         "HELLO": string;
@@ -29,12 +34,14 @@ export type I18nTranslations = {
         "MAX": string;
         "MIN_NUMBER": string;
         "MAX_NUMBER": string;
+        "NOT_NUMBER": string;
         "NOT_STRING": string;
         "NOT_INT": string;
         "NOT_BOOLEAN": string;
         "NOT_DATE": string;
         "IS_NOT_ARRAY": string;
         "IS_NOT_UUID": string;
+        "NOT_ENUM": string;
     };
 };
 /* prettier-ignore */

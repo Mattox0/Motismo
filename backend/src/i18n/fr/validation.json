@@ -7,10 +7,13 @@
   "MAX": "{property} doit contenir au maximum {constraints.0} caractères",
   "MIN_NUMBER": "{property} doit être plus petit que {constraints.0}",
   "MAX_NUMBER": "{property} doit être plus grand que {constraints.0}",
+  "NOT_NUMBER": "{property} n'est pas un nombre",
   "NOT_STRING": "{property} n'est pas un string",
   "NOT_INT": "{property} n'est pas un nombre",
   "NOT_BOOLEAN": "{property} doit être un boolean",
   "NOT_DATE": "{property} doit être une date",
   "IS_NOT_ARRAY": "{property} doit être un tableau",
-  "IS_NOT_UUID": "{property} n'est pas un uuid"
+  "IS_NOT_UUID": "{property} n'est pas un uuid",
+  "NOT_ENUM": "{property} n'est pas un {enum}"
+  
 }

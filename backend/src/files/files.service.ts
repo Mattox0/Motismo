@@ -12,6 +12,12 @@ import { s3Client } from "@/s3.config";
 export class FileUploadService {
   private readonly bucketName = process.env.AWS_BUCKET || "data";
 
+  private extractFileKey(url: string): string {
+    const urlParts = url.split("/");
+
+    return urlParts[urlParts.length - 1];
+  }
+
   async uploadFile(file: Express.Multer.File): Promise<string> {
     const key = `${Date.now().toString()}-${file.originalname}`;
     const command = new PutObjectCommand({
@@ -37,12 +43,17 @@ export class FileUploadService {
     return Body as Readable;
   }
 
-  async deleteFile(key: string): Promise<void> {
+  async deleteFile(url: string): Promise<void> {
+    const key = this.extractFileKey(url);
     const command = new DeleteObjectCommand({
       Bucket: this.bucketName,
       Key: key,
     });
 
     await s3Client.send(command);
+  }
+
+  getFileUrl(key: string): string {
+    return `${process.env.VITE_API_BASE_URL ?? ""}/files/${key}`;
   }
 }

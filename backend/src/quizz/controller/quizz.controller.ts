@@ -5,6 +5,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Inject,
   Post,
   Put,
   UploadedFile,
@@ -29,10 +30,10 @@ import { CurrentUser } from "@/user/decorators/currentUser.decorator";
 import { User } from "@/user/user.entity";
 import { CreateQuizzDto } from "@/quizz/dto/createQuizzDto";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ParseFilePipeDocument } from "@/files/files.validator";
 import { QuizzRequest } from "@/quizz/decorator/quizz.decorator";
 import { QuizzGuard } from "@/quizz/guards/quizz.guard";
 import { UpdatedQuizzDto } from "@/quizz/dto/updatedQuizzDto";
+import { ParseFilesPipe } from "@/files/files.validator";
 
 @UseGuards(UserAuthGuard)
 @ApiTags("quizz")
@@ -43,6 +44,7 @@ export class QuizzController {
     private quizzService: QuizzService,
     private readonly translationService: TranslationService,
     private readonly fileUploadService: FileUploadService,
+    @Inject(ParseFilesPipe) private readonly parseFilesPipe: ParseFilesPipe,
   ) {}
 
   @Get("")
@@ -74,14 +76,14 @@ export class QuizzController {
   async create(
     @CurrentUser() user: User,
     @Body() body: CreateQuizzDto,
-    @UploadedFile(ParseFilePipeDocument) file?: Express.Multer.File,
+    @UploadedFile(ParseFilesPipe) file?: Express.Multer.File,
   ): Promise<void> {
     const quizzData = Object.assign({}, body);
 
     if (file) {
       const fileName = await this.fileUploadService.uploadFile(file);
 
-      quizzData.image = `${process.env.VITE_API_BASE_URL ?? ""}/files/${fileName}`;
+      quizzData.image = this.fileUploadService.getFileUrl(fileName);
     }
 
     await this.quizzService.create(quizzData, user.id);
@@ -98,7 +100,7 @@ export class QuizzController {
     @CurrentUser() user: User,
     @QuizzRequest() quizz: Quizz,
     @Body() body: UpdatedQuizzDto,
-    @UploadedFile(ParseFilePipeDocument) file?: Express.Multer.File,
+    @UploadedFile(ParseFilesPipe) file?: Express.Multer.File,
   ): Promise<void> {
     if (user.id !== quizz.author.id) {
       throw new HttpException(
