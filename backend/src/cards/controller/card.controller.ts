@@ -91,29 +91,31 @@ export class CardController {
       versoImage?: Express.Multer.File[];
     },
   ): Promise<void> {
-    const validatedFiles = await this.parseFilesPipe.transform(files);
+    if (files) {
+      const validatedFiles = await this.parseFilesPipe.transform(files);
 
-    if (!validatedFiles || "originalname" in validatedFiles) {
-      throw new HttpException(
-        await this.translationService.translate("error.INVALID_FILE"),
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+      if (!validatedFiles || "originalname" in validatedFiles) {
+        throw new HttpException(
+          await this.translationService.translate("error.INVALID_FILE"),
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
-    if (validatedFiles.rectoImage?.[0]) {
-      const key = await this.fileUploadService.uploadFile(
-        validatedFiles.rectoImage[0],
-      );
+      if (validatedFiles.rectoImage?.[0]) {
+        const key = await this.fileUploadService.uploadFile(
+          validatedFiles.rectoImage[0],
+        );
 
-      createCardDto.rectoImage = this.fileUploadService.getFileUrl(key);
-    }
+        createCardDto.rectoImage = this.fileUploadService.getFileUrl(key);
+      }
 
-    if (validatedFiles.versoImage?.[0]) {
-      const key = await this.fileUploadService.uploadFile(
-        validatedFiles.versoImage[0],
-      );
+      if (validatedFiles.versoImage?.[0]) {
+        const key = await this.fileUploadService.uploadFile(
+          validatedFiles.versoImage[0],
+        );
 
-      createCardDto.versoImage = this.fileUploadService.getFileUrl(key);
+        createCardDto.versoImage = this.fileUploadService.getFileUrl(key);
+      }
     }
 
     await this.cardService.createCard(quizz, createCardDto);
@@ -138,29 +140,31 @@ export class CardController {
       versoImage?: Express.Multer.File[];
     },
   ): Promise<void> {
-    const validatedFiles = await this.parseFilesPipe.transform(files);
+    if (files) {
+      const validatedFiles = await this.parseFilesPipe.transform(files);
 
-    if (!validatedFiles || "originalname" in validatedFiles) {
-      throw new HttpException(
-        await this.translationService.translate("error.INVALID_FILE"),
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+      if (!validatedFiles || "originalname" in validatedFiles) {
+        throw new HttpException(
+          await this.translationService.translate("error.INVALID_FILE"),
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
-    if (validatedFiles.rectoImage?.[0]) {
-      const key = await this.fileUploadService.uploadFile(
-        validatedFiles.rectoImage[0],
-      );
+      if (validatedFiles.rectoImage?.[0]) {
+        const key = await this.fileUploadService.uploadFile(
+          validatedFiles.rectoImage[0],
+        );
 
-      updateCardDto.rectoImage = this.fileUploadService.getFileUrl(key);
-    }
+        updateCardDto.rectoImage = this.fileUploadService.getFileUrl(key);
+      }
 
-    if (validatedFiles.versoImage?.[0]) {
-      const key = await this.fileUploadService.uploadFile(
-        validatedFiles.versoImage[0],
-      );
+      if (validatedFiles.versoImage?.[0]) {
+        const key = await this.fileUploadService.uploadFile(
+          validatedFiles.versoImage[0],
+        );
 
-      updateCardDto.versoImage = this.fileUploadService.getFileUrl(key);
+        updateCardDto.versoImage = this.fileUploadService.getFileUrl(key);
+      }
     }
 
     await this.cardService.updateCard(quizz, card, updateCardDto);

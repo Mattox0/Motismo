@@ -9,6 +9,8 @@ import { UpdatedQuizzDto } from "@/quizz/dto/updatedQuizzDto";
 import { UserService } from "@/user/service/user.service";
 import { HttpException } from "@nestjs/common";
 import { Role } from "@/user/role.enum";
+import { IQuizzType } from "@/quizz/types/QuestionType";
+import { FileUploadService } from "@/files/files.service";
 
 const mockQuizzRepository = {
   find: jest.fn(),
@@ -23,6 +25,10 @@ const mockTranslationService = {
 
 const mockUserService = {
   findOneUser: jest.fn(),
+};
+
+const mockFileUploadService = {
+  uploadFile: jest.fn(),
 };
 
 describe("QuizzService", () => {
@@ -45,6 +51,10 @@ describe("QuizzService", () => {
           provide: UserService,
           useValue: mockUserService,
         },
+        {
+          provide: FileUploadService,
+          useValue: mockFileUploadService,
+        },
       ],
     }).compile();
 
@@ -58,6 +68,7 @@ describe("QuizzService", () => {
         id: "1",
         title: "Quizz 1",
         description: "Description 1",
+        quizzType: IQuizzType.QUESTIONS,
         author: {
           id: "1",
           username: "Author 1",
@@ -82,6 +93,7 @@ describe("QuizzService", () => {
       const createQuizzDto: CreateQuizzDto = {
         title: "Quizz 1",
         description: "Description 1",
+        quizzType: IQuizzType.QUESTIONS,
       };
 
       const user = {
@@ -115,6 +127,7 @@ describe("QuizzService", () => {
       const createQuizzDto: CreateQuizzDto = {
         title: "Quizz 1",
         description: "Description 1",
+        quizzType: IQuizzType.QUESTIONS,
       };
 
       mockUserService.findOneUser.mockResolvedValue(null);

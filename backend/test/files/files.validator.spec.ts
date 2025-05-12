@@ -1,14 +1,14 @@
 import { HttpException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-import { ParseFilePipeDocument } from "@/files/files.validator";
+import { ParseFilesPipe } from "@/files/files.validator";
 import { TranslationService } from "@/translation/translation.service";
 
 jest.mock("@/utils/regex.variable", () => ({
   imageRegex: /\.(jpg|jpeg|png|gif)$/i,
 }));
 
-describe("ParseFilePipeDocument", () => {
-  let pipe: ParseFilePipeDocument;
+describe("ParseFilesPipe", () => {
+  let pipe: ParseFilesPipe;
   let mockTranslationService: Partial<TranslationService>;
 
   beforeEach(async () => {
@@ -18,7 +18,7 @@ describe("ParseFilePipeDocument", () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ParseFilePipeDocument,
+        ParseFilesPipe,
         {
           provide: TranslationService,
           useValue: mockTranslationService,
@@ -26,7 +26,7 @@ describe("ParseFilePipeDocument", () => {
       ],
     }).compile();
 
-    pipe = module.get<ParseFilePipeDocument>(ParseFilePipeDocument);
+    pipe = module.get<ParseFilesPipe>(ParseFilesPipe);
   });
 
   afterEach(() => {
@@ -43,11 +43,14 @@ describe("ParseFilePipeDocument", () => {
     expect(result).toBeUndefined();
   });
 
-  it("should accept valid image extensions", async () => {
+  it("should validate single file upload", async () => {
     const mockFile: Express.Multer.File = {
+      fieldname: "image",
       originalname: "test.jpg",
-      buffer: Buffer.from("test"),
+      encoding: "7bit",
       mimetype: "image/jpeg",
+      buffer: Buffer.from("test"),
+      size: 4,
     } as Express.Multer.File;
 
     const result = await pipe.transform(mockFile);
@@ -55,27 +58,43 @@ describe("ParseFilePipeDocument", () => {
     expect(result).toBe(mockFile);
   });
 
-  it("should accept multiple valid image extensions", async () => {
-    const validExtensions = [".jpg", ".jpeg", ".png", ".gif"];
+  it("should validate multiple files upload", async () => {
+    const mockFiles = {
+      image: [
+        {
+          fieldname: "image",
+          originalname: "test.jpg",
+          encoding: "7bit",
+          mimetype: "image/jpeg",
+          buffer: Buffer.from("test"),
+          size: 4,
+        } as Express.Multer.File,
+      ],
+      document: [
+        {
+          fieldname: "document",
+          originalname: "test.png",
+          encoding: "7bit",
+          mimetype: "image/png",
+          buffer: Buffer.from("test"),
+          size: 4,
+        } as Express.Multer.File,
+      ],
+    };
 
-    for (const ext of validExtensions) {
-      const mockFile: Express.Multer.File = {
-        originalname: `test${ext}`,
-        buffer: Buffer.from("test"),
-        mimetype: `image/${ext.slice(1)}`,
-      } as Express.Multer.File;
+    const result = await pipe.transform(mockFiles);
 
-      const result = await pipe.transform(mockFile);
-
-      expect(result).toBe(mockFile);
-    }
+    expect(result).toEqual(mockFiles);
   });
 
   it("should reject invalid file extensions", async () => {
     const mockFile: Express.Multer.File = {
+      fieldname: "image",
       originalname: "test.pdf",
-      buffer: Buffer.from("test"),
+      encoding: "7bit",
       mimetype: "application/pdf",
+      buffer: Buffer.from("test"),
+      size: 4,
     } as Express.Multer.File;
 
     await expect(pipe.transform(mockFile)).rejects.toThrow(HttpException);
@@ -86,9 +105,12 @@ describe("ParseFilePipeDocument", () => {
 
   it("should handle uppercase extensions", async () => {
     const mockFile: Express.Multer.File = {
+      fieldname: "image",
       originalname: "test.JPG",
-      buffer: Buffer.from("test"),
+      encoding: "7bit",
       mimetype: "image/jpeg",
+      buffer: Buffer.from("test"),
+      size: 4,
     } as Express.Multer.File;
 
     const result = await pipe.transform(mockFile);
@@ -98,9 +120,12 @@ describe("ParseFilePipeDocument", () => {
 
   it("should reject files with no extension", async () => {
     const mockFile: Express.Multer.File = {
+      fieldname: "image",
       originalname: "test",
-      buffer: Buffer.from("test"),
+      encoding: "7bit",
       mimetype: "application/octet-stream",
+      buffer: Buffer.from("test"),
+      size: 4,
     } as Express.Multer.File;
 
     await expect(pipe.transform(mockFile)).rejects.toThrow(HttpException);

@@ -13,6 +13,8 @@ import { Role } from "@/user/role.enum";
 import { UserService } from "@/user/service/user.service";
 import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
 import { HttpException, HttpStatus } from "@nestjs/common";
+import { IQuizzType } from "@/quizz/types/QuestionType";
+import { ParseFilesPipe } from "@/files/files.validator";
 
 jest.mock("bcrypt", () => ({
   hash: jest.fn().mockImplementation(() => "hashed-new-password"),
@@ -24,6 +26,7 @@ describe("QuizzController", () => {
   let mockTranslationService: Partial<TranslationService>;
   let mockFileUploadService: Partial<FileUploadService>;
   let mockQuizzRepository: Partial<Repository<Quizz>>;
+  let mockParseFilesPipe: Partial<ParseFilesPipe>;
 
   const mockQuizz: Quizz = {
     id: "quizz-id",
@@ -31,6 +34,7 @@ describe("QuizzController", () => {
     description: "Quizz description",
     author: {} as User,
     creationDate: new Date(),
+    quizzType: IQuizzType.QUESTIONS,
   };
 
   const mockUser: User = {
@@ -53,8 +57,8 @@ describe("QuizzController", () => {
 
     mockQuizzService = {
       getAll: jest.fn().mockResolvedValue(mockQuizzs),
-      create: jest.fn().mockResolvedValue(mockQuizz),
-      update: jest.fn().mockResolvedValue(mockQuizz),
+      create: jest.fn().mockResolvedValue(undefined),
+      update: jest.fn().mockResolvedValue(undefined),
       delete: jest.fn().mockResolvedValue(undefined),
     };
 
@@ -63,7 +67,30 @@ describe("QuizzController", () => {
     };
 
     mockFileUploadService = {
-      uploadFile: jest.fn().mockResolvedValue("http://example.com/file.jpg"),
+      uploadFile: jest
+        .fn()
+        .mockResolvedValue("http://example.com/new-file.jpg"),
+      getFileUrl: jest
+        .fn()
+        .mockResolvedValue("http://example.com/new-file.jpg"),
+    };
+
+    mockParseFilesPipe = {
+      transform: jest.fn().mockImplementation((value: unknown) => {
+        if (value && typeof value === "object" && "fieldname" in value) {
+          const file = value as Express.Multer.File;
+
+          return {
+            fieldname: file.fieldname,
+            originalname: file.originalname,
+            mimetype: file.mimetype,
+            buffer: file.buffer,
+            size: file.size,
+          };
+        }
+
+        return value;
+      }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -75,6 +102,7 @@ describe("QuizzController", () => {
         { provide: getRepositoryToken(Quizz), useValue: mockQuizzRepository },
         { provide: UserService, useValue: {} },
         { provide: UserAuthGuard, useValue: mockUserAuthGuard },
+        { provide: ParseFilesPipe, useValue: mockParseFilesPipe },
       ],
     }).compile();
 
@@ -113,14 +141,15 @@ describe("QuizzController", () => {
       const createQuizzDto: CreateQuizzDto = {
         title: "New Quizz",
         description: "New Quizz description",
+        quizzType: IQuizzType.QUESTIONS,
       };
 
-      jest.spyOn(mockQuizzService, "create").mockResolvedValue();
+      jest.spyOn(mockQuizzService, "create").mockResolvedValue(undefined);
 
       await quizzController.create(mockUser, createQuizzDto, undefined);
 
       expect(mockQuizzService.create).toHaveBeenCalledWith(
-        expect.objectContaining(createQuizzDto),
+        createQuizzDto,
         mockUser.id,
       );
     });
@@ -129,6 +158,7 @@ describe("QuizzController", () => {
       const createQuizzDto: CreateQuizzDto = {
         title: "New Quizz",
         description: "New Quizz description",
+        quizzType: IQuizzType.QUESTIONS,
       };
 
       const file: Express.Multer.File = {
@@ -140,20 +170,22 @@ describe("QuizzController", () => {
         size: 1024,
       } as Express.Multer.File;
 
+      const fileName = "test.jpg";
+      const fileUrl = "http://example.com/new-file.jpg";
+
       jest
         .spyOn(mockFileUploadService, "uploadFile")
-        .mockResolvedValue("http://example.com/new-file.jpg");
-
-      jest.spyOn(mockQuizzService, "create").mockResolvedValue();
+        .mockResolvedValue(fileName);
+      jest.spyOn(mockFileUploadService, "getFileUrl").mockReturnValue(fileUrl);
+      jest.spyOn(mockQuizzService, "create").mockResolvedValue(undefined);
 
       await quizzController.create(mockUser, createQuizzDto, file);
 
       expect(mockQuizzService.create).toHaveBeenCalledWith(
-        expect.objectContaining({
+        {
           ...createQuizzDto,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          image: expect.stringContaining("http://example.com/new-file.jpg"),
-        }),
+          image: fileUrl,
+        },
         mockUser.id,
       );
     });
