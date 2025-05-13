@@ -112,10 +112,10 @@ export class QuizzController {
     if (file) {
       const fileName = await this.fileUploadService.uploadFile(file);
 
-      body.image = `${process.env.VITE_API_BASE_URL ?? ""}/files/${fileName}`;
+      body.image = this.fileUploadService.getFileUrl(fileName);
     }
 
-    await this.quizzService.update(quizz.id, body);
+    await this.quizzService.update(quizz, body);
   }
 
   @Delete("/:quizzId")

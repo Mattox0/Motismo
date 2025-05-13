@@ -105,4 +105,27 @@ describe("FileUploadService", () => {
       );
     });
   });
+
+  describe("getFileUrl", () => {
+    it("should return the correct URL for a file", () => {
+      const key = "test-key.jpg";
+      const result = service.getFileUrl(key);
+
+      expect(result).toBe(`/files/${key}`);
+    });
+
+    it("should handle files with special characters in the key", () => {
+      const key = "test file (1).jpg";
+      const result = service.getFileUrl(key);
+
+      expect(result).toBe(`/files/${key}`);
+    });
+
+    it("should handle files with different extensions", () => {
+      const key = "test-file.png";
+      const result = service.getFileUrl(key);
+
+      expect(result).toBe(`/files/${key}`);
+    });
+  });
 });

@@ -181,6 +181,6 @@ export class CardController {
     @QuizzRequest() quizz: Quizz,
     @CardRequest() card: Card,
   ): Promise<void> {
-    return this.cardService.deleteCard(quizz, card);
+    return this.cardService.delete(quizz, card);
   }
 }

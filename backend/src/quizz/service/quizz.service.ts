@@ -50,42 +50,6 @@ export class QuizzService {
     await this.quizzRepository.save(quizz);
   }
 
-  async update(quizzId: string, quizz: UpdatedQuizzDto): Promise<void> {
-    const query = await this.quizzRepository
-      .createQueryBuilder()
-      .update(Quizz)
-      .set(quizz)
-      .where("id = :id", { id: quizzId })
-      .execute();
-
-    if (query.affected === 0) {
-      throw new HttpException(
-        await this.translationService.translate("error.QUIZZ_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return;
-  }
-
-  async delete(quizzId: string): Promise<void> {
-    const query = await this.quizzRepository
-      .createQueryBuilder()
-      .delete()
-      .from(Quizz)
-      .where("id = :id", { id: quizzId })
-      .execute();
-
-    if (query.affected === 0) {
-      throw new HttpException(
-        await this.translationService.translate("error.QUIZZ_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return;
-  }
-
   private async deleteUnusedImages(
     quizz: Quizz,
     updateQuizzDto: UpdatedQuizzDto,
@@ -99,27 +63,14 @@ export class QuizzService {
     }
   }
 
-  async updateQuizz(
-    id: string,
-    updateQuizzDto: UpdatedQuizzDto,
-  ): Promise<void> {
-    const quizz = await this.quizzRepository.findOne({
-      where: { id },
-    });
-
-    if (!quizz) {
-      throw new NotFoundException(
-        await this.translationService.translate("error.QUIZZ_NOT_FOUND"),
-      );
-    }
-
+  async update(quizz: Quizz, updateQuizzDto: UpdatedQuizzDto): Promise<void> {
     await this.deleteUnusedImages(quizz, updateQuizzDto);
 
     const query = await this.quizzRepository
       .createQueryBuilder()
       .update(Quizz)
       .set(updateQuizzDto)
-      .where("id = :id", { id })
+      .where("id = :id", { id: quizz.id })
       .execute();
 
     if (query.affected === 0) {
@@ -132,7 +83,7 @@ export class QuizzService {
     return;
   }
 
-  async deleteQuizz(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     const quizz = await this.quizzRepository.findOne({
       where: { id },
     });

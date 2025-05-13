@@ -5,4 +5,4 @@ import { TranslationService } from "./translation.service";
   providers: [TranslationService],
   exports: [TranslationService],
 })
-export class TranslationModule {} 
+export class TranslationModule {}

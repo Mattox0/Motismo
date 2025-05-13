@@ -2,12 +2,12 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { TranslationService } from "@/translation/translation.service";
 import { I18nService } from "nestjs-i18n";
 
-const mockI18nService = {
-  translate: jest.fn(),
-};
-
 describe("TranslationService", () => {
   let service: TranslationService;
+
+  const mockI18nService = {
+    translate: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,7 +21,9 @@ describe("TranslationService", () => {
     }).compile();
 
     service = module.get<TranslationService>(TranslationService);
+  });
 
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -30,40 +32,78 @@ describe("TranslationService", () => {
       const key = "test.key";
       const translatedValue = "Translated Value";
       const options = { lang: "fr" };
-      const translateSpy = jest
-        .spyOn(mockI18nService, "translate")
-        .mockResolvedValue(translatedValue);
+
+      mockI18nService.translate.mockResolvedValue(translatedValue);
 
       const result = await service.translate(key, options);
 
       expect(result).toBe(translatedValue);
-      expect(translateSpy).toHaveBeenCalledWith(key, options);
+      expect(mockI18nService.translate).toHaveBeenCalledWith(key, options);
     });
 
     it("should throw an error when translation fails", async () => {
       const key = "test.key";
       const options = { lang: "fr" };
-      const translateSpy = jest
-        .spyOn(mockI18nService, "translate")
-        .mockRejectedValue(new Error("Translation failed"));
+
+      mockI18nService.translate.mockRejectedValue(
+        new Error("Translation failed"),
+      );
 
       await expect(service.translate(key, options)).rejects.toThrow(
         "Erreur de traduction",
       );
-      expect(translateSpy).toHaveBeenCalledWith(key, options);
+      expect(mockI18nService.translate).toHaveBeenCalledWith(key, options);
     });
 
     it("should call translate without options", async () => {
       const key = "test.key";
       const translatedValue = "Translated Value";
-      const translateSpy = jest
-        .spyOn(mockI18nService, "translate")
-        .mockResolvedValue(translatedValue);
+
+      mockI18nService.translate.mockResolvedValue(translatedValue);
 
       const result = await service.translate(key);
 
       expect(result).toBe(translatedValue);
-      expect(translateSpy).toHaveBeenCalledWith(key, undefined);
+      expect(mockI18nService.translate).toHaveBeenCalledWith(key, undefined);
+    });
+
+    it("should handle translation with interpolation", async () => {
+      const key = "test.key";
+      const translatedValue = "Hello John";
+      const options = { lang: "en", args: { name: "John" } };
+
+      mockI18nService.translate.mockResolvedValue(translatedValue);
+
+      const result = await service.translate(key, options);
+
+      expect(result).toBe(translatedValue);
+      expect(mockI18nService.translate).toHaveBeenCalledWith(key, options);
+    });
+
+    it("should handle translation with default value", async () => {
+      const key = "test.key";
+      const translatedValue = "Default Value";
+      const options = { lang: "en", defaultValue: "Default Value" };
+
+      mockI18nService.translate.mockResolvedValue(translatedValue);
+
+      const result = await service.translate(key, options);
+
+      expect(result).toBe(translatedValue);
+      expect(mockI18nService.translate).toHaveBeenCalledWith(key, options);
+    });
+
+    it("should handle translation with namespace", async () => {
+      const key = "test.key";
+      const translatedValue = "Namespaced Value";
+      const options = { lang: "en", namespace: "custom" };
+
+      mockI18nService.translate.mockResolvedValue(translatedValue);
+
+      const result = await service.translate(key, options);
+
+      expect(result).toBe(translatedValue);
+      expect(mockI18nService.translate).toHaveBeenCalledWith(key, options);
     });
   });
 });

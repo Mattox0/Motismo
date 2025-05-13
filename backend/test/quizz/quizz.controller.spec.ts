@@ -12,7 +12,7 @@ import { Repository } from "typeorm";
 import { Role } from "@/user/role.enum";
 import { UserService } from "@/user/service/user.service";
 import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
-import { HttpException, HttpStatus } from "@nestjs/common";
+import { HttpException } from "@nestjs/common";
 import { IQuizzType } from "@/quizz/types/QuestionType";
 import { ParseFilesPipe } from "@/files/files.validator";
 
@@ -192,33 +192,40 @@ describe("QuizzController", () => {
   });
 
   describe("updateQuizz", () => {
-    it("should update a quizz", async () => {
-      const quizzId = "quizz-id";
+    it("should update a quizz when user is the author", async () => {
+      const quizzExisting = {
+        ...mockQuizz,
+        id: "quizz-id",
+        author: mockUser,
+      };
+
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Updated Quizz",
         description: "Updated Quizz description",
       };
 
-      // Définir l'auteur du quizz comme l'utilisateur actuel
-      mockQuizz.author = mockUser;
-
       jest.spyOn(mockQuizzService, "update").mockResolvedValue();
 
       await quizzController.update(
         mockUser,
-        mockQuizz,
+        quizzExisting,
         updatedQuizzDto,
         undefined,
       );
 
       expect(mockQuizzService.update).toHaveBeenCalledWith(
-        quizzId,
-        expect.objectContaining(updatedQuizzDto),
+        quizzExisting,
+        updatedQuizzDto,
       );
     });
 
     it("should upload a file when updating a quizz", async () => {
-      const quizzId = "quizz-id";
+      const quizzExisting = {
+        ...mockQuizz,
+        id: "quizz-id",
+        author: mockUser,
+      };
+
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Updated Quizz",
         description: "Updated Quizz description",
@@ -233,48 +240,47 @@ describe("QuizzController", () => {
         size: 1024,
       } as Express.Multer.File;
 
+      const fileUrl = "http://example.com/new-file.jpg";
+
       jest
         .spyOn(mockFileUploadService, "uploadFile")
-        .mockResolvedValue("http://example.com/new-file.jpg");
-
+        .mockResolvedValue("test.jpg");
+      jest.spyOn(mockFileUploadService, "getFileUrl").mockReturnValue(fileUrl);
       jest.spyOn(mockQuizzService, "update").mockResolvedValue();
 
-      await quizzController.update(mockUser, mockQuizz, updatedQuizzDto, file);
-
-      expect(mockQuizzService.update).toHaveBeenCalledWith(
-        quizzId,
-        expect.objectContaining({
-          ...updatedQuizzDto,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          image: expect.stringContaining("http://example.com/new-file.jpg"),
-        }),
+      await quizzController.update(
+        mockUser,
+        quizzExisting,
+        updatedQuizzDto,
+        file,
       );
+
+      expect(mockQuizzService.update).toHaveBeenCalledWith(quizzExisting, {
+        ...updatedQuizzDto,
+        image: fileUrl,
+      });
     });
 
     it("should throw an HttpException if user is not the author", async () => {
+      const quizzExisting = {
+        ...mockQuizz,
+        id: "quizz-id",
+        author: { id: "other-user-id" } as User,
+      };
+
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Updated Quizz",
         description: "Updated Quizz description",
       };
 
-      // Définir l'auteur du quizz comme un autre utilisateur
-      mockQuizz.author = { id: "other-user-id" } as User;
-
-      jest.spyOn(mockQuizzService, "update").mockResolvedValue();
-
-      try {
-        await quizzController.update(
+      await expect(
+        quizzController.update(
           mockUser,
-          mockQuizz,
+          quizzExisting,
           updatedQuizzDto,
           undefined,
-        );
-      } catch (e) {
-        const error = e as HttpException;
-
-        expect(error).toBeInstanceOf(HttpException);
-        expect(error.getStatus()).toBe(HttpStatus.UNAUTHORIZED);
-      }
+        ),
+      ).rejects.toThrow(HttpException);
     });
   });
 

@@ -17,6 +17,9 @@ const mockQuizzRepository = {
   create: jest.fn(),
   save: jest.fn(),
   createQueryBuilder: jest.fn(),
+  findOne: jest.fn(),
+  delete: jest.fn(),
+  update: jest.fn(),
 };
 
 const mockTranslationService = {
@@ -29,6 +32,7 @@ const mockUserService = {
 
 const mockFileUploadService = {
   uploadFile: jest.fn(),
+  deleteFile: jest.fn(),
 };
 
 describe("QuizzService", () => {
@@ -146,6 +150,22 @@ describe("QuizzService", () => {
         description: "Description 1 updated",
       };
 
+      const existingQuizz = {
+        id: quizzId,
+        title: "Quizz 1",
+        description: "Description 1",
+        quizzType: IQuizzType.QUESTIONS,
+        author: {
+          id: "1",
+          username: "Author 1",
+          email: "example@yoohoo.fr",
+          password: "password",
+          creationDate: new Date(),
+          role: Role.Customer,
+        },
+        creationDate: new Date(),
+      };
+
       const mockQueryBuilder = {
         update: jest.fn().mockReturnThis(),
         set: jest.fn().mockReturnThis(),
@@ -153,12 +173,13 @@ describe("QuizzService", () => {
         execute: jest.fn().mockResolvedValue({ affected: 1 }),
       };
 
+      mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
       jest
         .spyOn(quizzRepo, "createQueryBuilder")
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
         .mockImplementation(() => mockQueryBuilder as any);
 
-      await service.update(quizzId, updatedQuizzDto);
+      await service.update(existingQuizz, updatedQuizzDto);
 
       expect(mockQueryBuilder.update).toHaveBeenCalledWith(Quizz);
       expect(mockQueryBuilder.set).toHaveBeenCalledWith(updatedQuizzDto);
@@ -167,11 +188,80 @@ describe("QuizzService", () => {
       });
     });
 
-    it("should throw HttpException if quizz not found", async () => {
+    it("should delete old image when updating with new image", async () => {
+      const quizzId = "1";
+      const oldImage = "old-image.jpg";
+      const newImage = "new-image.jpg";
+
+      const existingQuizz = {
+        id: quizzId,
+        title: "Quizz 1",
+        description: "Description 1",
+        image: oldImage,
+        quizzType: IQuizzType.QUESTIONS,
+        author: {
+          id: "1",
+          username: "Author 1",
+          email: "example@yoohoo.fr",
+          password: "password",
+          creationDate: new Date(),
+          role: Role.Customer,
+        },
+        creationDate: new Date(),
+      };
+
+      const updatedQuizzDto: UpdatedQuizzDto = {
+        title: "Quizz 1 updated",
+        description: "Description 1 updated",
+        image: newImage,
+      };
+
+      const mockQueryBuilder = {
+        update: jest.fn().mockReturnThis(),
+        set: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockResolvedValue({ affected: 1 }),
+      };
+
+      mockQuizzRepository.findOne.mockResolvedValue(existingQuizz);
+      jest
+        .spyOn(quizzRepo, "createQueryBuilder")
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+        .mockImplementation(() => mockQueryBuilder as any);
+
+      mockFileUploadService.deleteFile.mockClear();
+
+      await service.update(existingQuizz, updatedQuizzDto);
+
+      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(oldImage);
+      expect(mockQueryBuilder.update).toHaveBeenCalledWith(Quizz);
+      expect(mockQueryBuilder.set).toHaveBeenCalledWith(updatedQuizzDto);
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id", {
+        id: quizzId,
+      });
+    });
+
+    it("should throw HttpException if update fails", async () => {
       const quizzId = "1";
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Quizz 1 updated",
         description: "Description 1 updated",
+      };
+
+      const existingQuizz = {
+        id: quizzId,
+        title: "Quizz 1",
+        description: "Description 1",
+        quizzType: IQuizzType.QUESTIONS,
+        author: {
+          id: "1",
+          username: "Author 1",
+          email: "example@yoohoo.fr",
+          password: "password",
+          creationDate: new Date(),
+          role: Role.Customer,
+        },
+        creationDate: new Date(),
       };
 
       const mockQueryBuilder = {
@@ -181,58 +271,87 @@ describe("QuizzService", () => {
         execute: jest.fn().mockResolvedValue({ affected: 0 }),
       };
 
+      mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
       jest
         .spyOn(quizzRepo, "createQueryBuilder")
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
         .mockImplementation(() => mockQueryBuilder as any);
 
-      await expect(service.update(quizzId, updatedQuizzDto)).rejects.toThrow(
-        HttpException,
-      );
+      await expect(
+        service.update(existingQuizz, updatedQuizzDto),
+      ).rejects.toThrow("error.QUIZZ_NOT_FOUND");
     });
   });
 
   describe("delete", () => {
     it("should delete a quizz successfully", async () => {
       const quizzId = "1";
-
-      const mockQueryBuilder = {
-        delete: jest.fn().mockReturnThis(),
-        from: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({ affected: 1 }),
+      const existingQuizz = {
+        id: quizzId,
+        title: "Quizz 1",
+        description: "Description 1",
+        image: "test-image.jpg",
+        quizzType: IQuizzType.QUESTIONS,
+        author: {
+          id: "1",
+          username: "Author 1",
+          email: "example@yoohoo.fr",
+          password: "password",
+          creationDate: new Date(),
+          role: Role.Customer,
+        },
+        creationDate: new Date(),
       };
 
-      jest
-        .spyOn(quizzRepo, "createQueryBuilder")
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-        .mockImplementation(() => mockQueryBuilder as any);
+      mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
+      mockQuizzRepository.delete = jest.fn().mockResolvedValue({ affected: 1 });
 
       await service.delete(quizzId);
 
-      expect(mockQueryBuilder.delete).toHaveBeenCalled();
-      expect(mockQueryBuilder.from).toHaveBeenCalledWith(Quizz);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id", {
-        id: quizzId,
-      });
+      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(
+        existingQuizz.image,
+      );
+      expect(mockQuizzRepository.delete).toHaveBeenCalledWith(quizzId);
     });
 
-    it("should throw HttpException if quizz not found", async () => {
+    it("should delete a quizz without image successfully", async () => {
       const quizzId = "1";
-
-      const mockQueryBuilder = {
-        delete: jest.fn().mockReturnThis(),
-        from: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({ affected: 0 }),
+      const existingQuizz = {
+        id: quizzId,
+        title: "Quizz 1",
+        description: "Description 1",
+        quizzType: IQuizzType.QUESTIONS,
+        author: {
+          id: "1",
+          username: "Author 1",
+          email: "example@yoohoo.fr",
+          password: "password",
+          creationDate: new Date(),
+          role: Role.Customer,
+        },
+        creationDate: new Date(),
       };
 
-      jest
-        .spyOn(quizzRepo, "createQueryBuilder")
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-        .mockImplementation(() => mockQueryBuilder as any);
+      mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
+      mockQuizzRepository.delete = jest.fn().mockResolvedValue({ affected: 1 });
+      mockFileUploadService.deleteFile.mockClear();
 
-      await expect(service.delete(quizzId)).rejects.toThrow(HttpException);
+      await service.delete(quizzId);
+
+      expect(mockFileUploadService.deleteFile).not.toHaveBeenCalled();
+      expect(mockQuizzRepository.delete).toHaveBeenCalledWith(quizzId);
+    });
+
+    it("should throw NotFoundException if quizz not found", async () => {
+      const quizzId = "1";
+
+      mockQuizzRepository.findOne = jest.fn().mockResolvedValue(null);
+      mockQuizzRepository.delete.mockClear();
+
+      await expect(service.delete(quizzId)).rejects.toThrow(
+        "error.QUIZZ_NOT_FOUND",
+      );
+      expect(mockQuizzRepository.delete).not.toHaveBeenCalled();
     });
   });
 });

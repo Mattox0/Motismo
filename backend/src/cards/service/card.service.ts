@@ -164,7 +164,7 @@ export class CardService {
     return this.getCard(quizz.id, card.id);
   }
 
-  async deleteCard(quizz: Quizz, card: Card): Promise<void> {
+  async delete(quizz: Quizz, card: Card): Promise<void> {
     if (card.rectoImage) {
       await this.fileUploadService.deleteFile(card.rectoImage);
     }

@@ -74,7 +74,7 @@ describe("CardController", () => {
       getCards: jest.fn().mockResolvedValue(mocks.mockCards),
       createCard: jest.fn().mockResolvedValue(undefined),
       updateCard: jest.fn().mockResolvedValue(undefined),
-      deleteCard: jest.fn().mockResolvedValue(undefined),
+      delete: jest.fn().mockResolvedValue(undefined),
     };
 
     mockTranslationService = {
@@ -502,11 +502,11 @@ describe("CardController", () => {
 
   describe("deleteCard", () => {
     it("should delete a card", async () => {
-      jest.spyOn(mockCardService, "deleteCard").mockResolvedValue(undefined);
+      jest.spyOn(mockCardService, "delete").mockResolvedValue(undefined);
 
       await cardController.deleteCard(mocks.mockQuizz, mocks.mockCard);
 
-      expect(mockCardService.deleteCard).toHaveBeenCalledWith(
+      expect(mockCardService.delete).toHaveBeenCalledWith(
         mocks.mockQuizz,
         mocks.mockCard,
       );
