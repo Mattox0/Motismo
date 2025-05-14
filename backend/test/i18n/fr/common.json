@@ -1,0 +1,9 @@
+{
+  "error": {
+    "USER_NOT_FOUND": "Utilisateur non trouvé",
+    "EXTENSION_NOT_ALLOWED": "Extension de fichier non autorisée"
+  },
+  "files": {
+    "FILE_UPLOAD": "Fichier téléchargé avec succès"
+  }
+} 

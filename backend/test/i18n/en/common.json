@@ -1,0 +1,9 @@
+{
+  "error": {
+    "USER_NOT_FOUND": "User not found",
+    "EXTENSION_NOT_ALLOWED": "File extension not allowed"
+  },
+  "files": {
+    "FILE_UPLOAD": "File uploaded successfully"
+  }
+} 

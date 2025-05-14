@@ -1,8 +1,19 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { TranslationModule } from "@/translation/translation.module";
 import { TranslationService } from "@/translation/translation.service";
-import { I18nModule } from "nestjs-i18n";
+import { I18nModule, I18nResolver } from "nestjs-i18n";
 import { join } from "path";
+import { Request } from "express";
+import { ExecutionContext } from "@nestjs/common";
+
+class AcceptLanguageResolver implements I18nResolver {
+  resolve(context: ExecutionContext): string {
+    const request = context.switchToHttp().getRequest<Request>();
+    const acceptLanguage = request.headers["accept-language"];
+
+    return acceptLanguage || "fr";
+  }
+}
 
 describe("TranslationModule", () => {
   let module: TestingModule;
@@ -14,8 +25,9 @@ describe("TranslationModule", () => {
           fallbackLanguage: "fr",
           loaderOptions: {
             path: join(__dirname, "..", "i18n"),
-            watch: true,
+            watch: false,
           },
+          resolvers: [AcceptLanguageResolver],
         }),
         TranslationModule,
       ],
