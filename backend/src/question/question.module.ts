@@ -9,8 +9,8 @@ import { QuestionService } from "./service/question.service";
 import { ChoiceQuestion } from "./entity/choiceQuestion.entity";
 import { WordCloudQuestion } from "./entity/wordCloudQuestion.entity";
 import { MatchingQuestion } from "./entity/matchingQuestion.entity";
-import { QuizzModule } from "@/quizz/quizz.module";
 import { UsersModule } from "@/user/user.module";
+import { Quizz } from "@/quizz/quizz.entity";
 
 @Module({
   imports: [
@@ -19,8 +19,8 @@ import { UsersModule } from "@/user/user.module";
       ChoiceQuestion,
       WordCloudQuestion,
       MatchingQuestion,
+      Quizz,
     ]),
-    forwardRef(() => QuizzModule),
     forwardRef(() => UsersModule),
   ],
   controllers: [QuestionController],

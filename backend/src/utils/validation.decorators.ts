@@ -5,6 +5,10 @@ import {
   IsNotEmpty as OriginalIsNotEmpty,
   IsEnum as OriginalIsEnum,
   MinLength as OriginalMinLength,
+  IsArray as OriginalIsArray,
+  IsBoolean as OriginalIsBoolean,
+  ValidateNested as OriginalValidateNested,
+  ValidationOptions,
 } from "class-validator";
 import { i18nValidationMessage } from "nestjs-i18n";
 import { I18nTranslations } from "@/generated/i18n.generated";
@@ -41,4 +45,22 @@ export const MinLength = (length: number) =>
     message: i18nValidationMessage<I18nTranslations>("validation.MIN_NUMBER", {
       length,
     }),
+  });
+
+export const IsArray = () =>
+  OriginalIsArray({
+    message: i18nValidationMessage<I18nTranslations>("validation.NOT_ARRAY"),
+  });
+
+export const IsBoolean = () =>
+  OriginalIsBoolean({
+    message: i18nValidationMessage<I18nTranslations>("validation.NOT_BOOLEAN"),
+  });
+
+export const ValidateNested = (options?: ValidationOptions) =>
+  OriginalValidateNested({
+    ...options,
+    message: i18nValidationMessage<I18nTranslations>(
+      "validation.NOT_VALIDATE_NESTED",
+    ),
   });

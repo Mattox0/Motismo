@@ -42,6 +42,8 @@ export type I18nTranslations = {
         "IS_NOT_ARRAY": string;
         "IS_NOT_UUID": string;
         "NOT_ENUM": string;
+        "NOT_ARRAY": string;
+        "NOT_VALIDATE_NESTED": string;
     };
 };
 /* prettier-ignore */

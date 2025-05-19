@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   TableInheritance,
 } from "typeorm";
-import { QuestionType } from "@/question/questionType";
+import { QuestionType } from "@/question/types/questionType";
 import { Quizz } from "@/quizz/quizz.entity";
 
 @Entity()

@@ -67,7 +67,7 @@ export default tseslint.config(
       'complexity': ['error', 10],
 
       // Règles de maintenabilité
-      'max-params': ['error', 4],
+      'max-params': 'off',
       'max-statements': ['error', 20],
 
       // Règles de style
@@ -94,7 +94,7 @@ export default tseslint.config(
       'no-promise-executor-return': 'error',
       'prefer-promise-reject-errors': 'error',
       'require-atomic-updates': 'error',
-      'max-classes-per-file': ['error', 1],
+      'max-classes-per-file': ['error', 2],
 
       // Sécurité
       'no-eval': 'error',

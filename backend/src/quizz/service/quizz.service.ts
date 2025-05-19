@@ -100,4 +100,22 @@ export class QuizzService {
 
     await this.quizzRepository.delete(id);
   }
+
+  async findOne(id: string): Promise<Quizz> {
+    const quizz = await this.quizzRepository.findOne({
+      where: { id },
+      relations: {
+        author: true,
+        questions: true,
+      },
+    });
+
+    if (!quizz) {
+      throw new NotFoundException(
+        await this.translationService.translate("error.QUIZZ_NOT_FOUND"),
+      );
+    }
+
+    return quizz;
+  }
 }
