@@ -11,6 +11,8 @@ import { WordCloudQuestion } from "./entity/wordCloudQuestion.entity";
 import { MatchingQuestion } from "./entity/matchingQuestion.entity";
 import { UsersModule } from "@/user/user.module";
 import { Quizz } from "@/quizz/quizz.entity";
+import { Choice } from "@/choice/choice.entity";
+import { ChoiceModule } from "@/choice/choice.module";
 
 @Module({
   imports: [
@@ -20,8 +22,10 @@ import { Quizz } from "@/quizz/quizz.entity";
       WordCloudQuestion,
       MatchingQuestion,
       Quizz,
+      Choice,
     ]),
     forwardRef(() => UsersModule),
+    forwardRef(() => ChoiceModule),
   ],
   controllers: [QuestionController],
   providers: [QuestionService, TranslationService, FileUploadService],

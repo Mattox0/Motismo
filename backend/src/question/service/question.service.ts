@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { type Repository } from "typeorm";
 
@@ -8,6 +12,11 @@ import { CreateChoiceQuestionDto } from "../dto/createChoiceQuestion.dto";
 import { Quizz } from "@/quizz/quizz.entity";
 import { QuestionType } from "../types/questionType";
 import { TranslationService } from "@/translation/translation.service";
+import { ChoiceService } from "@/choice/service/choice.service";
+import { IMaxOrderResult } from "@/cards/types/IMaxOrderResult";
+import { AllQuestion } from "../types/AllQuestion";
+import { MatchingQuestion } from "../entity/matchingQuestion.entity";
+import { WordCloudQuestion } from "../entity/wordCloudQuestion.entity";
 
 @Injectable()
 export class QuestionService {
@@ -15,14 +24,80 @@ export class QuestionService {
     @InjectRepository(ChoiceQuestion)
     private choiceQuestionRepository: Repository<ChoiceQuestion>,
     private translationService: TranslationService,
+    @InjectRepository(Question)
+    private questionRepository: Repository<Question>,
+    @InjectRepository(MatchingQuestion)
+    private matchingQuestionRepository: Repository<MatchingQuestion>,
+    @InjectRepository(WordCloudQuestion)
+    private wordCloudQuestionRepository: Repository<WordCloudQuestion>,
+    private choiceService: ChoiceService,
   ) {}
+
+  async getQuestions(quizz: Quizz): Promise<AllQuestion[]> {
+    const allQuestions = await this.questionRepository.find({
+      where: { quizz: { id: quizz.id } },
+      order: { order: "ASC" },
+    });
+
+    const results = await Promise.all(
+      allQuestions.map((q) => this.findQuestionWithDetails(q.id)),
+    );
+
+    return results.filter((q): q is AllQuestion => q !== null);
+  }
+
+  private async getMaxOrder(quizzId: string): Promise<number> {
+    const result = await this.questionRepository
+      .createQueryBuilder("question")
+      .select("MAX(question.order)", "maxOrder")
+      .where("question.quizz.id = :quizzId", { quizzId })
+      .getRawOne<IMaxOrderResult>();
+
+    return result?.maxOrder ?? -1;
+  }
+
+  private async reorderQuestions(
+    quizzId: string,
+    newOrder: number,
+    oldOrder?: number,
+  ): Promise<void> {
+    const queryBuilder = this.questionRepository
+      .createQueryBuilder("question")
+      .update(Question)
+      .set({ order: () => "question.order + 1" })
+      .where('"question"."quizzId" = :quizzId', { quizzId });
+
+    if (oldOrder !== undefined) {
+      if (newOrder > oldOrder) {
+        queryBuilder.andWhere(
+          "question.order > :oldOrder AND question.order <= :newOrder",
+          {
+            oldOrder,
+            newOrder,
+          },
+        );
+      } else {
+        queryBuilder.andWhere(
+          "question.order >= :newOrder AND question.order < :oldOrder",
+          {
+            oldOrder,
+            newOrder,
+          },
+        );
+      }
+    } else {
+      queryBuilder.andWhere("question.order >= :newOrder", { newOrder });
+    }
+
+    await queryBuilder.execute();
+  }
 
   async createChoiceQuestion(
     quizz: Quizz,
     createChoiceQuestionDto: CreateChoiceQuestionDto,
-  ): Promise<Question> {
+  ): Promise<void> {
     if (
-      createChoiceQuestionDto.questionType !== QuestionType.MULTIPLE_CHOICES &&
+      createChoiceQuestionDto.questionType === QuestionType.MULTIPLE_CHOICES &&
       !createChoiceQuestionDto.allowMultipleSelections
     ) {
       throw new BadRequestException(
@@ -30,13 +105,31 @@ export class QuestionService {
       );
     }
 
+    const maxOrder = await this.getMaxOrder(quizz.id);
+    const order = createChoiceQuestionDto.order ?? maxOrder + 1;
+
+    if (order < 0 || order > maxOrder + 1) {
+      throw new BadRequestException(
+        await this.translationService.translate("error.INVALID_ORDER_VALUE"),
+      );
+    }
+
+    if (order <= maxOrder) {
+      await this.reorderQuestions(quizz.id, order);
+    }
+
     const question = this.choiceQuestionRepository.create({
       ...createChoiceQuestionDto,
       quizz,
       questionType: createChoiceQuestionDto.questionType,
+      order,
     });
 
-    return this.choiceQuestionRepository.save(question);
+    const savedQuestion = await this.choiceQuestionRepository.save(question);
+
+    for (const option of createChoiceQuestionDto.options) {
+      await this.choiceService.createChoice(option, savedQuestion);
+    }
   }
 
   // async createMatchingQuestion(
@@ -80,4 +173,39 @@ export class QuestionService {
 
   //   return this.wordCloudQuestionRepository.save(question);
   // }
+
+  async findQuestionWithDetails(
+    questionId: string,
+  ): Promise<AllQuestion | null> {
+    const baseQuestion = await this.questionRepository.findOne({
+      where: { id: questionId },
+      relations: { quizz: true },
+    });
+
+    if (!baseQuestion) {
+      throw new NotFoundException(`Question with ID ${questionId} not found`);
+    }
+
+    switch (baseQuestion.questionType) {
+      case QuestionType.UNIQUE_CHOICES:
+      case QuestionType.MULTIPLE_CHOICES:
+      case QuestionType.BOOLEAN_CHOICES:
+        return this.choiceQuestionRepository.findOne({
+          where: { id: questionId },
+          relations: { quizz: true, choices: true },
+        });
+      case QuestionType.MATCHING:
+        return this.matchingQuestionRepository.findOne({
+          where: { id: questionId },
+          relations: { quizz: true },
+        });
+      case QuestionType.WORD_CLOUD:
+        return this.wordCloudQuestionRepository.findOne({
+          where: { id: questionId },
+          relations: { quizz: true },
+        });
+      default:
+        return baseQuestion;
+    }
+  }
 }

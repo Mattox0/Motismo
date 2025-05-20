@@ -13,5 +13,7 @@
   "INVALID_ORDER": "L'ordre de la carte est invalide",
   "EXTENSION_NOT_ALLOWED": "L'extension du fichier n'est pas autorisée",
   "INVALID_FILE": "Le fichier est invalide",
-  "INVALID_ORDER_VALUE": "La valeur de l'ordre est invalide"
+  "INVALID_ORDER_VALUE": "La valeur de l'ordre est invalide",
+  "FAILED_TO_CREATE_CHOICE": "La création du choix a échoué",
+  "INVALID_QUESTION_TYPE": "Le type de question est invalide"
 }

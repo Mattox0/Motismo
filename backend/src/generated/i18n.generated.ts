@@ -21,6 +21,8 @@ export type I18nTranslations = {
         "EXTENSION_NOT_ALLOWED": string;
         "INVALID_FILE": string;
         "INVALID_ORDER_VALUE": string;
+        "FAILED_TO_CREATE_CHOICE": string;
+        "INVALID_QUESTION_TYPE": string;
     };
     "user": {
         "HELLO": string;
