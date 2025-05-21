@@ -20,7 +20,13 @@ import { QuestionRequest } from "@/question/decorator/question.decorator";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ParseFilesPipe } from "@/files/files.validator";
 import { FileUploadService } from "@/files/files.service";
-import { ApiConsumes, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import {
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from "@nestjs/swagger";
+import { AllQuestion } from "../types/AllQuestion";
 @UseGuards(UserAuthGuard)
 @ApiTags("questions")
 @ApiUnauthorizedResponse({ description: "User not connected" })
@@ -65,25 +71,11 @@ export class QuestionController {
     );
   }
 
-  // @Post("matching")
-  // @UseGuards(QuizzGuard)
-  // createMatchingQuestion(
-  //   @QuizzRequest() quizz: Quizz,
-  //   @Body() createMatchingQuestionDto: CreateMatchingQuestionDto,
-  // ): Promise<Question> {
-  //   return this.questionService.createMatchingQuestion(
-  //     createMatchingQuestionDto,
-  //   );
-  // }
-
-  // @Post("word-cloud")
-  // @UseGuards(QuizzGuard)
-  // createWordCloudQuestion(
-  //   @QuizzRequest() quizz: Quizz,
-  //   @Body() createWordCloudQuestionDto: CreateWordCloudQuestionDto,
-  // ): Promise<Question> {
-  //   return this.questionService.createWordCloudQuestion(
-  //     createWordCloudQuestionDto,
-  //   );
-  // }
+  @Delete(":questionId")
+  @UseGuards(QuizzGuard, QuestionGuard)
+  @ApiOperation({ summary: "Delete a question" })
+  deleteQuestion(@QuestionRequest() question: AllQuestion): Promise<void> {
+    return this.questionService.deleteQuestion(question);
+    // TODO: A tester si les choices supprimées supprime pas la question
+  }
 }

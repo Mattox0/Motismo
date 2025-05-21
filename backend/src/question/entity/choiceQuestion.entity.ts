@@ -7,6 +7,6 @@ export class ChoiceQuestion extends Question {
   @Column({ type: "boolean", default: true })
   allowMultipleSelections: boolean;
 
-  @OneToMany(() => Choice, (choice) => choice.question)
+  @OneToMany(() => Choice, (choice) => choice.question, { onDelete: "CASCADE" })
   choices: Choice[];
 }

@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { type Repository } from "typeorm";
 
@@ -17,6 +13,7 @@ import { IMaxOrderResult } from "@/cards/types/IMaxOrderResult";
 import { AllQuestion } from "../types/AllQuestion";
 import { MatchingQuestion } from "../entity/matchingQuestion.entity";
 import { WordCloudQuestion } from "../entity/wordCloudQuestion.entity";
+import { FileUploadService } from "@/files/files.service";
 
 @Injectable()
 export class QuestionService {
@@ -31,19 +28,15 @@ export class QuestionService {
     @InjectRepository(WordCloudQuestion)
     private wordCloudQuestionRepository: Repository<WordCloudQuestion>,
     private choiceService: ChoiceService,
+    private fileUploadService: FileUploadService,
   ) {}
 
   async getQuestions(quizz: Quizz): Promise<AllQuestion[]> {
-    const allQuestions = await this.questionRepository.find({
+    return await this.questionRepository.find({
       where: { quizz: { id: quizz.id } },
       order: { order: "ASC" },
+      relations: ["choices", "quizz"],
     });
-
-    const results = await Promise.all(
-      allQuestions.map((q) => this.findQuestionWithDetails(q.id)),
-    );
-
-    return results.filter((q): q is AllQuestion => q !== null);
   }
 
   private async getMaxOrder(quizzId: string): Promise<number> {
@@ -132,6 +125,13 @@ export class QuestionService {
     }
   }
 
+  async deleteQuestion(question: AllQuestion): Promise<void> {
+    if (question.image) {
+      await this.fileUploadService.deleteFile(question.image);
+    }
+    await this.questionRepository.delete(question.id);
+  }
+
   // async createMatchingQuestion(
   //   createMatchingQuestionDto: CreateMatchingQuestionDto,
   // ): Promise<Question> {
@@ -173,39 +173,4 @@ export class QuestionService {
 
   //   return this.wordCloudQuestionRepository.save(question);
   // }
-
-  async findQuestionWithDetails(
-    questionId: string,
-  ): Promise<AllQuestion | null> {
-    const baseQuestion = await this.questionRepository.findOne({
-      where: { id: questionId },
-      relations: { quizz: true },
-    });
-
-    if (!baseQuestion) {
-      throw new NotFoundException(`Question with ID ${questionId} not found`);
-    }
-
-    switch (baseQuestion.questionType) {
-      case QuestionType.UNIQUE_CHOICES:
-      case QuestionType.MULTIPLE_CHOICES:
-      case QuestionType.BOOLEAN_CHOICES:
-        return this.choiceQuestionRepository.findOne({
-          where: { id: questionId },
-          relations: { quizz: true, choices: true },
-        });
-      case QuestionType.MATCHING:
-        return this.matchingQuestionRepository.findOne({
-          where: { id: questionId },
-          relations: { quizz: true },
-        });
-      case QuestionType.WORD_CLOUD:
-        return this.wordCloudQuestionRepository.findOne({
-          where: { id: questionId },
-          relations: { quizz: true },
-        });
-      default:
-        return baseQuestion;
-    }
-  }
 }

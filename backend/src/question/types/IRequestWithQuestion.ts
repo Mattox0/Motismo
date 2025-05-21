@@ -1,5 +1,5 @@
-import { Question } from "@/question/question.entity";
+import { AllQuestion } from "./AllQuestion";
 
 export interface IRequestWithQuestion extends Request {
-  question: Question;
+  question: AllQuestion;
 }
