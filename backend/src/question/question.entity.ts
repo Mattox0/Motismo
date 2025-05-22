@@ -24,7 +24,9 @@ export class Question {
   @Column({ type: "varchar", nullable: true })
   image?: string;
 
-  @ManyToOne(() => Quizz, (quizz) => quizz.questions)
+  @ManyToOne(() => Quizz, (quizz) => quizz.questions, {
+    onDelete: "CASCADE",
+  })
   quizz: Quizz;
 
   @Column({ type: "int", nullable: false })

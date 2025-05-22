@@ -21,6 +21,8 @@ export class Card {
   @Column({ type: "integer", nullable: false })
   order: number;
 
-  @ManyToOne(() => Quizz, (quizz) => quizz.cards)
+  @ManyToOne(() => Quizz, (quizz) => quizz.cards, {
+    onDelete: "CASCADE",
+  })
   quizz: Quizz;
 }

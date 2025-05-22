@@ -43,7 +43,18 @@ export class ChoiceService {
     });
   }
 
-  async getChoice(id: number): Promise<Choice> {
+  async updateChoices(
+    question: ChoiceQuestion,
+    choices: CreateChoiceDto[],
+  ): Promise<void> {
+    await this.choiceRepository.delete({ question: { id: question.id } });
+
+    for (const choice of choices) {
+      await this.createChoice(choice, question);
+    }
+  }
+
+  async getChoice(id: string): Promise<Choice> {
     const choice = await this.choiceRepository.findOne({
       where: { id },
     });

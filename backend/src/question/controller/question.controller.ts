@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Post,
+  Put,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -27,6 +28,8 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 import { AllQuestion } from "../types/AllQuestion";
+import { UpdateChoiceQuestionDto } from "../dto/updateQuestion.dto";
+import { ChoiceQuestion } from "../entity/choiceQuestion.entity";
 @UseGuards(UserAuthGuard)
 @ApiTags("questions")
 @ApiUnauthorizedResponse({ description: "User not connected" })
@@ -71,11 +74,34 @@ export class QuestionController {
     );
   }
 
+  @Put(":questionId/choice")
+  @UseInterceptors(FileInterceptor("image"))
+  @ApiConsumes("multipart/form-data")
+  @UseGuards(QuizzGuard, QuestionGuard)
+  async updateChoiceQuestion(
+    @QuizzRequest() quizz: Quizz,
+    @QuestionRequest() question: ChoiceQuestion,
+    @Body() updateChoiceQuestionDto: UpdateChoiceQuestionDto,
+    @UploadedFile(ParseFilesPipe) file?: Express.Multer.File,
+  ): Promise<void> {
+    if (file) {
+      const fileName = await this.fileUploadService.uploadFile(file);
+
+      updateChoiceQuestionDto.image =
+        this.fileUploadService.getFileUrl(fileName);
+    }
+
+    await this.questionService.updateChoiceQuestion(
+      quizz,
+      question,
+      updateChoiceQuestionDto,
+    );
+  }
+
   @Delete(":questionId")
   @UseGuards(QuizzGuard, QuestionGuard)
   @ApiOperation({ summary: "Delete a question" })
   deleteQuestion(@QuestionRequest() question: AllQuestion): Promise<void> {
     return this.questionService.deleteQuestion(question);
-    // TODO: A tester si les choices supprimées supprime pas la question
   }
 }

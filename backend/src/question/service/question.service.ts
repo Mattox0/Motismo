@@ -14,6 +14,7 @@ import { AllQuestion } from "../types/AllQuestion";
 import { MatchingQuestion } from "../entity/matchingQuestion.entity";
 import { WordCloudQuestion } from "../entity/wordCloudQuestion.entity";
 import { FileUploadService } from "@/files/files.service";
+import { UpdateChoiceQuestionDto } from "../dto/updateQuestion.dto";
 
 @Injectable()
 export class QuestionService {
@@ -125,11 +126,63 @@ export class QuestionService {
     }
   }
 
+  async updateChoiceQuestion(
+    quizz: Quizz,
+    question: ChoiceQuestion,
+    updateChoiceQuestionDto: UpdateChoiceQuestionDto,
+  ): Promise<void> {
+    const maxOrder = await this.getMaxOrder(quizz.id);
+
+    if (updateChoiceQuestionDto.order !== undefined) {
+      if (
+        updateChoiceQuestionDto.order < 0 ||
+        updateChoiceQuestionDto.order > maxOrder
+      ) {
+        throw new BadRequestException(
+          await this.translationService.translate("error.INVALID_ORDER_VALUE"),
+        );
+      }
+
+      await this.reorderQuestions(
+        quizz.id,
+        updateChoiceQuestionDto.order,
+        question.order,
+      );
+    }
+
+    await this.deleteUnusedImages(question, updateChoiceQuestionDto);
+
+    await this.choiceQuestionRepository.update(
+      question.id,
+      updateChoiceQuestionDto,
+    );
+
+    if (updateChoiceQuestionDto.options) {
+      await this.choiceService.updateChoices(
+        question,
+        updateChoiceQuestionDto.options,
+      );
+    }
+  }
+
   async deleteQuestion(question: AllQuestion): Promise<void> {
     if (question.image) {
       await this.fileUploadService.deleteFile(question.image);
     }
     await this.questionRepository.delete(question.id);
+  }
+
+  private async deleteUnusedImages(
+    question: AllQuestion,
+    updateChoiceQuestionDto: UpdateChoiceQuestionDto,
+  ): Promise<void> {
+    if (
+      updateChoiceQuestionDto.image &&
+      question.image &&
+      updateChoiceQuestionDto.image !== question.image
+    ) {
+      await this.fileUploadService.deleteFile(question.image);
+    }
   }
 
   // async createMatchingQuestion(

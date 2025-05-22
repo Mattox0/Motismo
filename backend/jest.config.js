@@ -6,7 +6,11 @@ module.exports = {
   transform: {
     "^.+\\.(t|j)s$": "ts-jest",
   },
-  collectCoverageFrom: ["src/**/*.{js,ts}", "!src/main.ts"],
+  collectCoverageFrom: [
+    "src/**/*.{js,ts}",
+    "!src/main.ts",
+    "!src/app.module.ts",
+  ],
   rootDir: ".",
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
