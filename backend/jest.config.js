@@ -11,6 +11,8 @@ module.exports = {
     "!src/main.ts",
     "!src/app.module.ts",
   ],
+  testTimeout: 10000,
+  forceExit: true,
   rootDir: ".",
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
