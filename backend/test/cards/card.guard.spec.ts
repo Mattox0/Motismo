@@ -8,7 +8,7 @@ import { Repository } from "typeorm";
 import { Quizz } from "@/quizz/quizz.entity";
 import { User } from "@/user/user.entity";
 import { Role } from "@/user/role.enum";
-import { IQuizzType } from "@/quizz/types/QuestionType";
+import { IQuizzType } from "@/quizz/types/IQuizzType";
 
 describe("CardGuard", () => {
   let guard: CardGuard;

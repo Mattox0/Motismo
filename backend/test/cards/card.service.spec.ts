@@ -8,7 +8,7 @@ import { Repository, SelectQueryBuilder } from "typeorm";
 import { Quizz } from "@/quizz/quizz.entity";
 import { User } from "@/user/user.entity";
 import { Role } from "@/user/role.enum";
-import { IQuizzType } from "@/quizz/types/QuestionType";
+import { IQuizzType } from "@/quizz/types/IQuizzType";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { CreateCardDto } from "@/cards/dto/createCard.dto";
 import { UpdateCardDto } from "@/cards/dto/updateCard.dto";

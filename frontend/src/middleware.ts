@@ -28,7 +28,6 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/quiz/:path*',
-
     '/((?!auth|api|_next/static|_next/image|favicon.ico).*)',
   ],
 };

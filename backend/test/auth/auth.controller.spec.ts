@@ -196,7 +196,7 @@ describe("AuthController", () => {
         .spyOn(mockAuthService, "login")
         .mockReturnValue({ accessToken: "test-token" });
 
-      process.env.VITE_API_BASE_URL = "http://test-url.com";
+      process.env.REACT_BASE_URL = "http://test-url.com";
 
       await authController.register(
         registerDto,

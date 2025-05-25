@@ -15,7 +15,7 @@ import { UserService } from "@/user/service/user.service";
 import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { ParseFilesPipe } from "@/files/files.validator";
-import { IQuizzType } from "@/quizz/types/QuestionType";
+import { IQuizzType } from "@/quizz/types/IQuizzType";
 import { QuizzGuard } from "@/quizz/guards/quizz.guard";
 import { CardGuard } from "@/cards/guards/card.guard";
 

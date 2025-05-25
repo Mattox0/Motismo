@@ -30,9 +30,11 @@ const LoginForm = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await login(data.email, data.password);
-      showToast.success(t('auth.loginSuccess'));
-      router.push('/');
+      const result = await login(data.email, data.password);
+      if (result) {
+        showToast.success(t('auth.loginSuccess'));
+        router.push('/');
+      }
     } catch (error) {
       showToast.error((error as ApiError)?.data?.message);
     }

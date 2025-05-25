@@ -184,7 +184,7 @@ describe("UserController", () => {
     it("should update user with uploaded file", async () => {
       const apiBaseUrl = "http://localhost:3000";
 
-      process.env.VITE_API_BASE_URL = apiBaseUrl;
+      process.env.REACT_BASE_URL = apiBaseUrl;
 
       const mockFile: Express.Multer.File = {
         fieldname: "file",
@@ -227,7 +227,7 @@ describe("UserController", () => {
       });
       expect(result).toEqual(updatedUser);
 
-      delete process.env.VITE_API_BASE_URL;
+      delete process.env.REACT_BASE_URL;
     });
 
     it("should throw NOT_FOUND if user not found after update", async () => {

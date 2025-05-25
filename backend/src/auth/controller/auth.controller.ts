@@ -58,6 +58,7 @@ export class AuthController {
         HttpStatus.BAD_REQUEST,
       );
     }
+
     if (!(await comparePassword(body.password, user.password))) {
       throw new HttpException(
         await this.translationService.translate("error.INVALID_CREDENTIALS"),
@@ -107,9 +108,7 @@ export class AuthController {
     if (file) {
       const fileName = await this.fileUploadService.uploadFile(file);
 
-      if (fileName && process.env.VITE_API_BASE_URL) {
-        userBody.image = `${process.env.VITE_API_BASE_URL}/files/${fileName}`;
-      }
+      userBody.image = this.fileUploadService.getFileUrl(fileName);
     }
 
     const user = await this.userService.create(userBody);

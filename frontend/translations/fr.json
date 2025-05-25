@@ -50,6 +50,21 @@
       "passwordRequired": "Le mot de passe est requis"
     }
   },
+  "profile": {
+    "ask_create_section": {
+      "text": "Vous voulez créer un quizz ou un jeu de cartes ? Vous êtes au bon endroit ! Créez votre quizz en quelques clics et partagez-le avec vos amis.",
+      "create_quizz": "Créer un quizz",
+      "create_cards": "Créer des cartes",
+      "tag": "Votre espace création"
+    }
+  },
+  "card": {
+    "questions": "{{ nbQuestions }} questions",
+    "button": {
+      "primary": "Modifier",
+      "secondary": "Lancer"
+    }
+  },
   "fonctionality": {
     "tag": "Fonctionnalités",
     "title": "Pourquoi choisir Motismo ?",

@@ -12,7 +12,7 @@ import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
 import { QuestionModule } from "@/question/question.module";
 import { MatchingQuestion } from "./question/entity/matchingQuestion.entity";
 import { WordCloudQuestion } from "./question/entity/wordCloudQuestion.entity";
-import { CardModule } from "./cards/card.module";
+import { CardsModule } from "./cards/card.module";
 import { ChoiceModule } from "./choice/choice.module";
 
 @Module({
@@ -63,7 +63,7 @@ import { ChoiceModule } from "./choice/choice.module";
     QuestionModule,
     AuthModule,
     FileUploadModule,
-    CardModule,
+    CardsModule,
     ChoiceModule,
   ],
   controllers: [],

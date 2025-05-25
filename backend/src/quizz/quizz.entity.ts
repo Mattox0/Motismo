@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { IQuizzType } from "./types/QuestionType";
+import { IQuizzType } from "./types/IQuizzType";
 import { Card } from "@/cards/card.entity";
 @Entity()
 export class Quizz {

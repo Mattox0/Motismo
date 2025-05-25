@@ -1,12 +1,8 @@
 import type { Metadata } from 'next';
-import { ToastContainer } from 'react-toastify';
 
 import '@root/assets/styles/global.scss';
-import 'react-toastify/dist/ReactToastify.css';
-import { I18nProvider } from '@/providers/I18nProvider';
-import { SessionProvider } from '@/providers/SessionProvider';
+import { ClientLayout } from '@/layout/ClientLayout';
 import { poppins } from '@/utils/fonts';
-import { defaultOptions } from '@/utils/toast';
 
 export const metadata: Metadata = {
   title: 'Motismo',
@@ -21,12 +17,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={poppins.variable}>
       <body className="font-poppins">
-        <SessionProvider>
-          <I18nProvider>
-            {children}
-            <ToastContainer {...defaultOptions} />
-          </I18nProvider>
-        </SessionProvider>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

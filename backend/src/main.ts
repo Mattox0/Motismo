@@ -9,7 +9,7 @@ import { ValidationPipe } from "@nestjs/common";
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: process.env.VITE_API_BASE_URL,
+      origin: process.env.REACT_BASE_URL,
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     },

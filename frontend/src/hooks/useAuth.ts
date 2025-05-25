@@ -17,7 +17,7 @@ export const useAuth = () => {
 
       if (result?.error) {
         showToast.error(t('auth.errors.invalidCredentials'));
-        throw new Error(result.error);
+        return;
       }
 
       return result;

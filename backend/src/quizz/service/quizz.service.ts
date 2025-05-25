@@ -13,6 +13,7 @@ import { CreateQuizzDto } from "@/quizz/dto/createQuizzDto";
 import { UserService } from "@/user/service/user.service";
 import { UpdatedQuizzDto } from "@/quizz/dto/updatedQuizzDto";
 import { FileUploadService } from "@/files/files.service";
+import { User } from "@/user/user.entity";
 
 @Injectable()
 export class QuizzService {
@@ -29,6 +30,13 @@ export class QuizzService {
       relations: {
         author: true,
       },
+    });
+  }
+
+  async getMyQuizz(user: User) {
+    return await this.quizzRepository.find({
+      where: { author: { id: user.id } },
+      relations: { cards: true, questions: true },
     });
   }
 

@@ -10,7 +10,6 @@ import { z } from 'zod';
 
 import Input from '@/components/forms/Input';
 import { useAuth } from '@/hooks/useAuth';
-import { ApiError } from '@/types/ApiError';
 import { createRegisterSchema } from '@/types/schemas/createRegisterSchema';
 import { showToast } from '@/utils/toast';
 
@@ -42,8 +41,7 @@ const RegisterForm = () => {
       showToast.success(t('auth.registerSuccess'));
       router.push('/dashboard');
     } catch (error) {
-      console.error('Registration error:', error);
-      showToast.error((error as ApiError)?.data?.message);
+      console.error(error);
     }
   };
 
@@ -91,7 +89,7 @@ const RegisterForm = () => {
       />
 
       <button type="submit" className="btn btn-colored" disabled={isSubmitting}>
-        {isSubmitting ? t('auth.registering') : t('auth.register')}
+        {t('auth.register')}
       </button>
     </form>
   );

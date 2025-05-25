@@ -1,4 +1,4 @@
-import { IQuizzType } from "../types/QuestionType";
+import { IQuizzType } from "../types/IQuizzType";
 import { IsEnum, IsNotEmpty, MinLength } from "@/utils/validation.decorators";
 import { IsEmpty, IsOptional, IsString } from "class-validator";
 

@@ -13,7 +13,7 @@ import { Role } from "@/user/role.enum";
 import { UserService } from "@/user/service/user.service";
 import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
 import { HttpException } from "@nestjs/common";
-import { IQuizzType } from "@/quizz/types/QuestionType";
+import { IQuizzType } from "@/quizz/types/IQuizzType";
 import { ParseFilesPipe } from "@/files/files.validator";
 
 jest.mock("bcrypt", () => ({

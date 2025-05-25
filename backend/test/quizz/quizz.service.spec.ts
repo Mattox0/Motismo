@@ -9,7 +9,7 @@ import { UpdatedQuizzDto } from "@/quizz/dto/updatedQuizzDto";
 import { UserService } from "@/user/service/user.service";
 import { HttpException } from "@nestjs/common";
 import { Role } from "@/user/role.enum";
-import { IQuizzType } from "@/quizz/types/QuestionType";
+import { IQuizzType } from "@/quizz/types/IQuizzType";
 import { FileUploadService } from "@/files/files.service";
 
 const mockQuizzRepository = {

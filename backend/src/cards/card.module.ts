@@ -15,4 +15,4 @@ import { FileUploadModule } from "@/files/files.module";
   providers: [CardService, TranslationService, ParseFilesPipe],
   exports: [CardService],
 })
-export class CardModule {}
+export class CardsModule {}

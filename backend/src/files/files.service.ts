@@ -54,6 +54,6 @@ export class FileUploadService {
   }
 
   getFileUrl(key: string): string {
-    return `${process.env.VITE_API_BASE_URL ?? ""}/files/${key}`;
+    return `${process.env.API_BASE_URL ?? ""}/files/${key}`;
   }
 }

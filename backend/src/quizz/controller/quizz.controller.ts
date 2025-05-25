@@ -48,14 +48,14 @@ export class QuizzController {
   ) {}
 
   @Get("")
-  @ApiOperation({ summary: "Returns all quizzies" })
+  @ApiOperation({ summary: "Returns all user quizzies" })
   @ApiOkResponse({
     description: "Quizzies found successfully",
     type: Quizz,
     isArray: true,
   })
-  getAll(): Promise<Quizz[]> {
-    return this.quizzService.getAll();
+  getAll(@CurrentUser() myUser: User): Promise<Quizz[]> {
+    return this.quizzService.getMyQuizz(myUser);
   }
 
   @Get("/:quizzId")

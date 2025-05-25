@@ -51,6 +51,17 @@ select {
   color: inherit;
 }
 
+.tag {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-transform: uppercase;
+
+  &.secondary {
+    color: var(--secondary-color);
+  }
+}
+
 .container {
   width: 100%;
   max-width: 1400px;
