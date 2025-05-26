@@ -34,11 +34,11 @@ export const Card: FC<CardProps> = ({
       </div>
       <div className="card-content">
         <h3>{title}</h3>
-        <div>
+        <div className="card-content__date">
           <EventNoteOutlinedIcon />
-          <p>{formatDate(creationDate)}</p>
+          <p className="card-content__date-text">{formatDate(creationDate)}</p>
         </div>
-        <div>
+        <div className="card-content__buttons">
           <Button variant="primary" onClick={onEditClick}>
             {t('card.button.primary')}
           </Button>
