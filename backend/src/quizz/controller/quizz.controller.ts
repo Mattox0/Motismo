@@ -71,13 +71,13 @@ export class QuizzController {
   @UseInterceptors(FileInterceptor("image"))
   @ApiConsumes("multipart/form-data")
   @ApiOperation({ summary: "Create a new quizz" })
-  @ApiOkResponse({ description: "Quizz created successfully" })
+  @ApiOkResponse({ description: "Quizz created successfully", type: Quizz })
   @ApiBadRequestResponse({ description: "Invalid data" })
   async create(
     @CurrentUser() user: User,
     @Body() body: CreateQuizzDto,
     @UploadedFile(ParseFilesPipe) file?: Express.Multer.File,
-  ): Promise<void> {
+  ): Promise<Quizz> {
     const quizzData = Object.assign({}, body);
 
     if (file) {
@@ -86,7 +86,7 @@ export class QuizzController {
       quizzData.image = this.fileUploadService.getFileUrl(fileName);
     }
 
-    await this.quizzService.create(quizzData, user.id);
+    return this.quizzService.create(quizzData, user.id);
   }
 
   @Put("/:quizzId")

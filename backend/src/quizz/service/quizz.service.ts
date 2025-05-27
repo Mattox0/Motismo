@@ -40,7 +40,7 @@ export class QuizzService {
     });
   }
 
-  async create(createQuizzDto: CreateQuizzDto, userId: string): Promise<void> {
+  async create(createQuizzDto: CreateQuizzDto, userId: string): Promise<Quizz> {
     const user = await this.userService.findOneUser(userId);
 
     if (!user) {
@@ -55,7 +55,7 @@ export class QuizzService {
       author: user,
     });
 
-    await this.quizzRepository.save(quizz);
+    return this.quizzRepository.save(quizz);
   }
 
   private async deleteUnusedImages(

@@ -8,7 +8,7 @@ import { Button } from './forms/Button';
 
 export interface CardProps {
   image?: string;
-  nbQuestions: number;
+  badge: string;
   title: string;
   creationDate: Date;
   onEditClick: () => void;
@@ -17,7 +17,7 @@ export interface CardProps {
 
 export const Card: FC<CardProps> = ({
   image,
-  nbQuestions,
+  badge,
   title,
   onEditClick,
   onPresentationClick,
@@ -28,9 +28,7 @@ export const Card: FC<CardProps> = ({
     <div className="card">
       <div className="card-header">
         <img className="card-header__image" src={image ?? ''} alt={title} />
-        <span className="card-header__badge">
-          {t('card.questions', { nbQuestions: nbQuestions })}
-        </span>
+        <span className="card-header__badge">{badge}</span>
       </div>
       <div className="card-content">
         <h3>{title}</h3>

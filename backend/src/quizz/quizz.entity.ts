@@ -18,9 +18,6 @@ export class Quizz {
   @Column({ type: "varchar", nullable: false })
   title: string;
 
-  @Column({ type: "varchar", nullable: false })
-  description: string;
-
   @Column({ type: "varchar", nullable: true })
   image?: string;
 

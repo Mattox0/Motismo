@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
+
 import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
 import { AskCreateSection } from '@/components/sections/AskCreateSection';
@@ -10,7 +12,8 @@ import { IQuizzType } from '@/types/IQuizzType';
 import { Quizz } from '../../../../backend/src/quizz/quizz.entity';
 
 export default function Profile() {
-  const { data: quizz } = useGetQuizQuery();
+  const { t } = useTranslation();
+  const { data: quizz, isLoading } = useGetQuizQuery();
 
   const questionsQuizz =
     quizz?.filter(quizzItem => quizzItem.quizzType === IQuizzType.QUESTIONS) ?? [];
@@ -22,12 +25,14 @@ export default function Profile() {
       <div className="profile-container">
         <span className="tag secondary profile-container__tag">Vos quizz</span>
         <div className="profile-container__quizz">
-          {questionsQuizz.length > 0 ? (
+          {isLoading ? (
+            <span className="loader" />
+          ) : questionsQuizz.length > 0 ? (
             questionsQuizz.map((item: Quizz) => (
               <Card
                 key={crypto.randomUUID()}
                 image={item.image}
-                nbQuestions={item.questions?.length ?? 0}
+                badge={t('card.questions', { nbQuestions: item.questions?.length ?? 0 })}
                 title={item.title}
                 creationDate={item.creationDate}
                 onEditClick={() => {}}
@@ -43,12 +48,14 @@ export default function Profile() {
         </div>
         <span className="tag secondary profile-container__tag">Vos cartes</span>
         <div className="profile-container__quizz">
-          {cardsQuizz.length > 0 ? (
+          {isLoading ? (
+            <span className="loader" />
+          ) : cardsQuizz.length > 0 ? (
             cardsQuizz.map((item: Quizz) => (
               <Card
                 key={crypto.randomUUID()}
                 image={item.image}
-                nbQuestions={item.questions?.length ?? 0}
+                badge={t('card.cards', { nbCards: item.questions?.length ?? 0 })}
                 title={item.title}
                 creationDate={item.creationDate}
                 onEditClick={() => {}}

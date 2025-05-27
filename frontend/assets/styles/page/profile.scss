@@ -3,6 +3,14 @@
   padding: 1rem 3rem;
   position: relative;
 
+  @media (max-width: 768px) {
+    padding: 1rem 2rem;
+  }
+
+  @media (max-width: 450px) {
+    padding: 1rem;
+  }
+
   &__tag {
     font-size: 1.5rem;
     margin-bottom: 2rem;
@@ -10,8 +18,15 @@
 
   &__quizz {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 1rem;
     margin: 1rem 0 2rem 0;
+    align-items: stretch;
+  
+    @media (max-width: 768px) {
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
   }
 }

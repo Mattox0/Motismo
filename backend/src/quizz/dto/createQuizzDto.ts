@@ -9,10 +9,6 @@ export class CreateQuizzDto {
   title: string;
 
   @IsOptional()
-  @IsString()
-  description: string;
-
-  @IsOptional()
   @IsEnum(IQuizzType)
   quizzType: IQuizzType;
 

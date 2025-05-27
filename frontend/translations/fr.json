@@ -59,6 +59,7 @@
     }
   },
   "card": {
+    "cards": "{{ nbCards }} cartes",
     "questions": "{{ nbQuestions }} questions",
     "button": {
       "primary": "Modifier",
@@ -119,5 +120,35 @@
     "confirm": "Confirmer",
     "loading": "Chargement...",
     "error": "Une erreur est survenue"
+  },
+  "create_quiz": {
+    "title": {
+      "quiz": "Créer un quiz",
+      "cards": "Créer votre jeu de cartes"
+    },
+    "form": {
+      "title": "Titre",
+      "title_questions": "Entrez le titre de votre quiz",
+      "title_cards": "Entrez le titre de votre jeu de cartes",
+      "image": "Image",
+      "image_placeholder": "Cliquez pour sélectionner une image",
+      "image_preview": "Aperçu de l'image",
+      "cancel": "Annuler",
+      "submit": "Créer"
+    },
+    "validation": {
+      "title_required": "Le titre est requis",
+      "title_min_length": "Le titre doit contenir au moins 3 caractères",
+      "title_max_length": "Le titre ne doit pas dépasser 50 caractères",
+      "image_required": "L'image est requise",
+      "image_size": "L'image ne doit pas dépasser 5 Mo",
+      "image_type": "L'image doit être au format JPG, PNG ou GIF",
+      "image_file": "Veuillez sélectionner une image"
+    },
+    "success": {
+      "questions": "Quizz créé avec succès",
+      "cards": "Jeu de carte créé avec succès"
+    },
+    "error": "Une erreur est survenue lors de la création du quiz"
   }
 }

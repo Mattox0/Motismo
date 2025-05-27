@@ -9,7 +9,15 @@ export const quizApi = baseApi.injectEndpoints({
       query: () => '/quizz',
       providesTags: [QueryTags.QUIZ],
     }),
+    createQuizz: builder.mutation<Quizz, FormData>({
+      query: (formData: FormData) => ({
+        url: '/quizz',
+        method: 'POST',
+        body: formData,
+      }),
+      invalidatesTags: [QueryTags.QUIZ],
+    }),
   }),
 });
 
-export const { useGetQuizQuery } = quizApi;
+export const { useGetQuizQuery, useCreateQuizzMutation } = quizApi;

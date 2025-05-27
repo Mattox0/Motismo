@@ -6,9 +6,13 @@
 @use './page/profile.scss';
 @use './components/navbar.scss';
 @use './components/card.scss';
+@use './components/empty-state.scss';
 @use './components/hero.scss';
 @use './components/how_it_works.scss';
 @use './components/call_to_action.scss';
 @use './components/fonctionality.scss';
 @use './components/ask_create_section.scss';
+@use './components/loader.scss';
+@use './components/modal.scss';
+@use './components/create-quiz-form.scss';
 @use 'tailwindcss';
