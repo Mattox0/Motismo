@@ -38,6 +38,8 @@ export class QuizzGuard implements CanActivate {
       },
       relations: {
         author: true,
+        questions: true,
+        cards: true,
       },
     });
 

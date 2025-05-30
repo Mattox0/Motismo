@@ -77,3 +77,13 @@ select {
   padding-inline: 2rem;
   padding-block: 4rem;
 }
+
+.global-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  &.screened {
+    height: 100vh;
+  }
+}

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 import { Card } from '@/components/Card';
@@ -13,6 +14,7 @@ import { Quizz } from '../../../../backend/src/quizz/quizz.entity';
 
 export default function Profile() {
   const { t } = useTranslation();
+  const router = useRouter();
   const { data: quizz, isLoading } = useGetQuizQuery();
 
   const questionsQuizz =
@@ -35,7 +37,7 @@ export default function Profile() {
                 badge={t('card.questions', { nbQuestions: item.questions?.length ?? 0 })}
                 title={item.title}
                 creationDate={item.creationDate}
-                onEditClick={() => {}}
+                onEditClick={() => router.push(`/quiz/${item.id}`)}
                 onPresentationClick={() => {}}
               />
             ))
@@ -58,7 +60,7 @@ export default function Profile() {
                 badge={t('card.cards', { nbCards: item.questions?.length ?? 0 })}
                 title={item.title}
                 creationDate={item.creationDate}
-                onEditClick={() => {}}
+                onEditClick={() => router.push(`/cards/${item.id}`)}
                 onPresentationClick={() => {}}
               />
             ))

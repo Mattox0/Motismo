@@ -72,7 +72,10 @@ export class AuthController {
       httpOnly: true,
     });
 
-    return response.send({ accessToken });
+    return response.send({
+      accessToken,
+      id: user.id,
+    });
   }
 
   @Post("/register")
@@ -126,7 +129,10 @@ export class AuthController {
       httpOnly: true,
     });
 
-    return response.send({ accessToken });
+    return response.send({
+      accessToken,
+      id: user.id,
+    });
   }
 
   @Post("/logout")

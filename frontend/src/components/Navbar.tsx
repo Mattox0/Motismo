@@ -20,6 +20,11 @@ export const Navbar: React.FC = () => {
     router.push('/auth');
   };
 
+  const handleLogout = () => {
+    logout();
+    router.push('/');
+  };
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -55,7 +60,7 @@ export const Navbar: React.FC = () => {
       <div className="navbar-brand">
         <div className={`auth-buttons ${isMenuOpen ? 'open' : ''}`}>
           {session ? (
-            <button className="btn btn-secondary" onClick={logout}>
+            <button className="btn btn-secondary" onClick={handleLogout}>
               {t('navigation.logout')}
             </button>
           ) : (

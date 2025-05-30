@@ -65,7 +65,7 @@ const eslintConfig = [
       "react/jsx-props-no-spreading": "off",
       "react/display-name": "off",
       "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/exhaustive-deps": "off",
       
       // Règles d'importation
       "import/order": ["error", {

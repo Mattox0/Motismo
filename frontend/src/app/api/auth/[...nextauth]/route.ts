@@ -85,15 +85,24 @@ import GoogleProvider from 'next-auth/providers/google';
 declare module 'next-auth' {
   interface Session {
     accessToken?: string;
+    user: {
+      id: string;
+      email?: string | null;
+      name?: string | null;
+    };
   }
 
   interface User {
+    id: string;
+    email: string;
+    name?: string;
     accessToken?: string;
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
+    id: string;
     accessToken?: string;
   }
 }
@@ -133,10 +142,10 @@ const handler = NextAuth({
 
           if (data.accessToken) {
             return {
-              id: data.id || 'unknown',
+              id: data.id,
               email: credentials.email,
-              accessToken: data.accessToken,
               name: data.username || credentials.email,
+              accessToken: data.accessToken,
             };
           }
 
@@ -151,6 +160,7 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         token.accessToken = user.accessToken;
       }
       return token;
@@ -158,6 +168,9 @@ const handler = NextAuth({
     async session({ session, token }) {
       if (token) {
         session.accessToken = token.accessToken;
+        if (session.user) {
+          session.user.id = token.id;
+        }
       }
       return session;
     },

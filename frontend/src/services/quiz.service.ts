@@ -17,7 +17,10 @@ export const quizApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [QueryTags.QUIZ],
     }),
+    getOneQuiz: builder.query<Quizz, string>({
+      query: (id: string) => `/quizz/${id}`,
+    }),
   }),
 });
 
-export const { useGetQuizQuery, useCreateQuizzMutation } = quizApi;
+export const { useGetQuizQuery, useCreateQuizzMutation, useGetOneQuizQuery } = quizApi;
