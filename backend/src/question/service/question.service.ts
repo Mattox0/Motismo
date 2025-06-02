@@ -47,11 +47,15 @@ export class QuestionService {
     quizzId: string,
     newOrder: number,
     oldOrder?: number,
+    isDecrement: boolean = false,
   ): Promise<void> {
     const queryBuilder = this.questionRepository
       .createQueryBuilder("question")
       .update(Question)
-      .set({ order: () => "question.order + 1" })
+      .set({
+        order: () =>
+          isDecrement ? "question.order - 1" : "question.order + 1",
+      })
       .where('"question"."quizzId" = :quizzId', { quizzId });
 
     if (oldOrder !== undefined) {
@@ -150,6 +154,14 @@ export class QuestionService {
     if (question.image) {
       await this.fileUploadService.deleteFile(question.image);
     }
+
+    await this.reorderQuestions(
+      question.quizz.id,
+      question.order,
+      undefined,
+      true,
+    );
+
     await this.questionRepository.delete(question.id);
   }
 

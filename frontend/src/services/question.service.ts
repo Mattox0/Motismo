@@ -30,8 +30,19 @@ export const questionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [QueryTags.QUIZ],
     }),
+    deleteQuestion: builder.mutation<void, { quizzId: string; questionId: string }>({
+      query: ({ quizzId, questionId }) => ({
+        url: `quizz/${quizzId}/questions/${questionId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [QueryTags.QUIZ],
+    }),
   }),
 });
 
-export const { useGetQuestionsQuery, useAddQuestionMutation, useUpdateQuestionMutation } =
-  questionApi;
+export const {
+  useGetQuestionsQuery,
+  useAddQuestionMutation,
+  useUpdateQuestionMutation,
+  useDeleteQuestionMutation,
+} = questionApi;

@@ -50,6 +50,17 @@
       opacity: 0.9;
     }
   }
+
+  &.btn-error {
+    color: white;
+    background: var(--error-color);
+    border: 2px solid var(--error-color);
+
+    &:hover {
+      color: var(--error-color);
+      background-color: white;
+    }
+  }
 }
 
 .btn-icon {

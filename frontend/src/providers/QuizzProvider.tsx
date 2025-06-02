@@ -2,7 +2,15 @@
 
 import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { Question } from '@/types/model/Question';
 import { Quizz } from '@/types/model/Quizz';
@@ -15,6 +23,7 @@ interface QuizzContextType {
   isLoading: boolean;
   error: FetchBaseQueryError | SerializedError | undefined;
   currentQuestion: Question | null;
+  setCurrentQuestion: Dispatch<SetStateAction<Question | null>>;
   selectCurrentQuestion: (_id: string) => void;
   refetch: () => void;
   isAuthor: boolean;
@@ -50,6 +59,7 @@ export const QuizzProvider: React.FC<{ children: React.ReactNode; quizId: string
       quizz,
       selectCurrentQuestion,
       currentQuestion,
+      setCurrentQuestion,
       isLoading,
       error,
       refetch,

@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant: 'primary' | 'secondary' | 'colored';
+  variant: 'primary' | 'secondary' | 'colored' | 'error';
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   className?: string;

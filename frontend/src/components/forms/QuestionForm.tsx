@@ -12,6 +12,8 @@ import { useQuizz } from '@/providers/QuizzProvider';
 import { createQuestionSchema } from '@/types/schemas/createQuestionForm';
 import { showToast } from '@/utils/toast';
 
+import { Button } from './Button';
+
 export type QuestionFormData = {
   title: string;
   image?: File;
@@ -24,9 +26,10 @@ export type QuestionFormData = {
 interface QuestionFormProps {
   onSubmit: (_data: QuestionFormData) => Promise<void>;
   initialData?: Partial<QuestionFormData>;
+  onDelete: () => void;
 }
 
-const QuestionForm = ({ onSubmit, initialData }: QuestionFormProps) => {
+const QuestionForm = ({ onSubmit, initialData, onDelete }: QuestionFormProps) => {
   const { t } = useTranslation();
   const { currentQuestion } = useQuizz();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -194,10 +197,14 @@ const QuestionForm = ({ onSubmit, initialData }: QuestionFormProps) => {
           </button>
         </div>
       </div>
-
-      <button type="submit" className="btn btn-colored" disabled={isSubmitting}>
-        {isSubmitting ? t('common.saving') : t('question.save')}
-      </button>
+      <div className="question-form__buttons">
+        <Button type="submit" variant="colored" disabled={isSubmitting}>
+          {isSubmitting ? t('common.saving') : t('question.save')}
+        </Button>
+        <Button type="button" variant="error" onClick={onDelete}>
+          {t('common.delete')}
+        </Button>
+      </div>
     </form>
   );
 };

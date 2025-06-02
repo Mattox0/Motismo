@@ -96,6 +96,27 @@
         text-overflow: ellipsis;
         user-select: none;
       }
+
+      &__trash {
+        opacity: 0;
+        color: var(--error-color);
+        transition: opacity 0.2s ease;
+        cursor: pointer;
+        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          color: var(--error-color-dark);
+        }
+      }
+
+      &:hover {
+        .question-item__trash {
+          opacity: 1;
+        }
+      }
     }
   }
 
@@ -245,8 +266,9 @@
       margin-top: 0.25rem;
     }
 
-    .btn-colored {
-      align-self: flex-start;
+    &__buttons {
+      display: flex;
+      gap: .5rem;
     }
   }
 }

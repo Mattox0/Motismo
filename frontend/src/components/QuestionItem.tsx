@@ -1,3 +1,4 @@
+import DeleteIcon from '@mui/icons-material/Delete';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,11 +8,18 @@ import { Question } from '@/types/model/Question';
 interface QuestionItemProps {
   question: Question;
   active: boolean;
+  onDelete?: (_questionId: string) => void;
 }
 
-export const QuestionItem: FC<QuestionItemProps> = ({ question, active }) => {
+export const QuestionItem: FC<QuestionItemProps> = ({ question, active, onDelete }) => {
   const { t } = useTranslation();
   const { selectCurrentQuestion } = useQuizz();
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete?.(question.id);
+  };
+
   return (
     <div
       className={`question-item ${active ? 'active' : ''}`}
@@ -23,6 +31,9 @@ export const QuestionItem: FC<QuestionItemProps> = ({ question, active }) => {
       <p className="question-item__title">
         {question.title ? question.title : t('question.altTitle')}
       </p>
+      <div className="question-item__trash" onClick={handleDelete}>
+        <DeleteIcon />
+      </div>
     </div>
   );
 };

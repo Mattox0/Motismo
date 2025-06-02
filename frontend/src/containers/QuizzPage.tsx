@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import QuestionForm, { QuestionFormData } from '@/components/forms/QuestionForm';
 import { useQuizz } from '@/providers/QuizzProvider';
-import { useUpdateQuestionMutation } from '@/services/question.service';
+import { useDeleteQuestionMutation, useUpdateQuestionMutation } from '@/services/question.service';
 import { showToast } from '@/utils/toast';
 
 import { CustomErrorPage } from './CustomErrorPage';
@@ -18,8 +18,9 @@ interface QuizzPageProps {
 
 export const QuizzPage: FC<QuizzPageProps> = ({ quizzId }) => {
   const { t } = useTranslation();
-  const { isLoading, isAuthor, currentQuestion } = useQuizz();
+  const { isLoading, isAuthor, currentQuestion, setCurrentQuestion } = useQuizz();
   const [updateQuestion] = useUpdateQuestionMutation();
+  const [deleteQuestion] = useDeleteQuestionMutation();
   const router = useRouter();
 
   const submit = async (data: QuestionFormData) => {
@@ -42,12 +43,22 @@ export const QuizzPage: FC<QuizzPageProps> = ({ quizzId }) => {
         questionId: currentQuestion?.id,
         question: form,
       });
-      console.log('Update question response:', response);
+      if (response.error) {
+        throw new Error();
+      }
       showToast.success(t('question.updateSuccess'));
     } catch (error) {
       console.error('Error updating question:', error);
       showToast.error(t('question.updateError'));
     }
+  };
+
+  const onDelete = async () => {
+    if (!currentQuestion) {
+      return;
+    }
+    setCurrentQuestion(null);
+    await deleteQuestion({ quizzId: quizzId, questionId: currentQuestion?.id });
   };
 
   if (isLoading) {
@@ -72,7 +83,7 @@ export const QuizzPage: FC<QuizzPageProps> = ({ quizzId }) => {
   return (
     <div className="quizz-page">
       <QuestionSide quizzId={quizzId} />
-      <QuestionForm onSubmit={submit} />
+      <QuestionForm onSubmit={submit} onDelete={onDelete} />
     </div>
   );
 };

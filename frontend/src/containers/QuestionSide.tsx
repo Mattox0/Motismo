@@ -6,7 +6,7 @@ import { Button } from '@/components/forms/Button';
 import { QuestionItem } from '@/components/QuestionItem';
 import { initializeQuestion } from '@/core/initializeQuestion';
 import { useQuizz } from '@/providers/QuizzProvider';
-import { useAddQuestionMutation } from '@/services/question.service';
+import { useAddQuestionMutation, useDeleteQuestionMutation } from '@/services/question.service';
 
 interface QuestionSideProps {
   quizzId: string;
@@ -16,10 +16,15 @@ export const QuestionSide: FC<QuestionSideProps> = ({ quizzId }) => {
   const { t } = useTranslation();
   const { quizz, currentQuestion } = useQuizz();
   const [addQuestion] = useAddQuestionMutation();
+  const [deleteQuestion] = useDeleteQuestionMutation();
 
   const handleAddQuestion = async () => {
     const formData = initializeQuestion();
     await addQuestion({ quizzId, question: formData });
+  };
+
+  const handleDeleteQuestion = async (questionId: string) => {
+    await deleteQuestion({ quizzId, questionId });
   };
 
   return (
@@ -29,6 +34,7 @@ export const QuestionSide: FC<QuestionSideProps> = ({ quizzId }) => {
           key={crypto.randomUUID()}
           question={item}
           active={currentQuestion?.id === item.id}
+          onDelete={handleDeleteQuestion}
         />
       ))}
       <div className="question-side__buttons">
