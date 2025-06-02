@@ -9,11 +9,18 @@ import { QuizzService } from "./service/quizz.service";
 import { UsersModule } from "@/user/user.module";
 import { QuestionModule } from "@/question/question.module";
 import { ParseFilesPipe } from "@/files/files.validator";
+import { QuizzGuard } from "./guards/quizz.guard";
+import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
+import { ChoiceModule } from "@/choice/choice.module";
+import { CardsModule } from "@/cards/card.module";
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Quizz]),
+    TypeOrmModule.forFeature([Quizz, ChoiceQuestion]),
     forwardRef(() => UsersModule),
     forwardRef(() => QuestionModule),
+    forwardRef(() => ChoiceModule),
+    forwardRef(() => CardsModule),
   ],
   controllers: [QuizzController],
   providers: [
@@ -21,7 +28,8 @@ import { ParseFilesPipe } from "@/files/files.validator";
     TranslationService,
     FileUploadService,
     ParseFilesPipe,
+    QuizzGuard,
   ],
-  exports: [QuizzService],
+  exports: [QuizzService, QuizzGuard],
 })
 export class QuizzModule {}

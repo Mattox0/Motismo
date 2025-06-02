@@ -12,20 +12,23 @@ import { TranslationService } from "@/translation/translation.service";
 import { uuidRegex } from "@/utils/regex.variable";
 import { Quizz } from "@/quizz/quizz.entity";
 import { IRequestWithParamQuizz } from "@/quizz/types/IRequestWithParamQuizz";
+import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
 
 @Injectable()
 export class QuizzGuard implements CanActivate {
   constructor(
     @InjectRepository(Quizz)
-    private quizzRepository: Repository<Quizz>,
+    private readonly quizzRepository: Repository<Quizz>,
+    @InjectRepository(ChoiceQuestion)
+    private readonly choiceQuestionRepository: Repository<ChoiceQuestion>,
     private readonly translationsService: TranslationService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<IRequestWithParamQuizz>();
-    const quizzId = request.params.quizzId;
+    const { quizzId } = request.params;
 
-    if (!uuidRegex.test(quizzId)) {
+    if (!quizzId || !uuidRegex.test(quizzId)) {
       throw new HttpException(
         await this.translationsService.translate("error.ID_INVALID"),
         HttpStatus.BAD_REQUEST,
@@ -49,6 +52,15 @@ export class QuizzGuard implements CanActivate {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    // Charger les questions avec leurs choix
+    const questions = await this.choiceQuestionRepository.find({
+      where: { quizz: { id: quizzId } },
+      relations: ["choices"],
+    });
+
+    // Mettre à jour les questions du quiz avec leurs choix
+    quizz.questions = questions;
 
     request.quizz = quizz;
 

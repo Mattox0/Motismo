@@ -3,10 +3,11 @@ import {
   IsString,
   IsOptional,
   IsNumber,
+  IsEnum,
 } from "@/utils/validation.decorators";
+import { QuestionType } from "../types/questionType";
 
 export class CreateQuestionDto {
-  @IsNotEmpty()
   @IsString()
   title: string;
 
@@ -17,4 +18,8 @@ export class CreateQuestionDto {
   @IsOptional()
   @IsNumber()
   order: number;
+
+  @IsNotEmpty()
+  @IsEnum(QuestionType)
+  questionType: QuestionType;
 }

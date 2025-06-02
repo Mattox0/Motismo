@@ -19,6 +19,7 @@ export const quizApi = baseApi.injectEndpoints({
     }),
     getOneQuiz: builder.query<Quizz, string>({
       query: (id: string) => `/quizz/${id}`,
+      providesTags: [QueryTags.QUIZ],
     }),
   }),
 });

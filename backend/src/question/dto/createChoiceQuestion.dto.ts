@@ -1,17 +1,14 @@
 import {
   IsArray,
   IsBoolean,
-  IsEnum,
   IsNotEmpty,
   IsString,
   ValidateNested,
 } from "@/utils/validation.decorators";
-import { Type } from "class-transformer";
-import { QuestionType } from "@/question/types/questionType";
+import { Transform, Type } from "class-transformer";
 import { CreateQuestionDto } from "@/question/dto/createQuestion.dto";
 
 class ChoiceOption {
-  @IsNotEmpty()
   @IsString()
   text: string;
 
@@ -20,18 +17,48 @@ class ChoiceOption {
   isCorrect: boolean;
 }
 
+interface IRawChoice {
+  text: unknown;
+  isCorrect: unknown;
+}
+
 export class CreateChoiceQuestionDto extends CreateQuestionDto {
-  @IsNotEmpty()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ChoiceOption)
-  options: ChoiceOption[];
+  @Transform(({ value }) => {
+    if (typeof value === "string") {
+      try {
+        const parsed = JSON.parse(value) as IRawChoice[];
 
-  @IsNotEmpty()
-  @IsBoolean()
-  allowMultipleSelections: boolean;
+        if (!Array.isArray(parsed)) {
+          return [];
+        }
 
-  @IsNotEmpty()
-  @IsEnum(QuestionType)
-  questionType: QuestionType;
+        return parsed.map((option) => {
+          const choice = new ChoiceOption();
+
+          choice.text = typeof option.text === "string" ? option.text : "";
+          choice.isCorrect = Boolean(option.isCorrect);
+
+          return choice;
+        });
+      } catch {
+        return [];
+      }
+    }
+    if (Array.isArray(value)) {
+      return (value as IRawChoice[]).map((option) => {
+        const choice = new ChoiceOption();
+
+        choice.text = typeof option.text === "string" ? option.text : "";
+        choice.isCorrect = Boolean(option.isCorrect);
+
+        return choice;
+      });
+    }
+
+    return [];
+  })
+  choices: ChoiceOption[];
 }

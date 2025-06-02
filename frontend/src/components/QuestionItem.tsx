@@ -1,18 +1,28 @@
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { AllQuestion } from '../../../backend/src/question/types/AllQuestion';
+import { useQuizz } from '@/providers/QuizzProvider';
+import { Question } from '@/types/model/Question';
 
 interface QuestionItemProps {
-  question: AllQuestion;
+  question: Question;
+  active: boolean;
 }
 
-export const QuestionItem: FC<QuestionItemProps> = ({ question }) => {
+export const QuestionItem: FC<QuestionItemProps> = ({ question, active }) => {
+  const { t } = useTranslation();
+  const { selectCurrentQuestion } = useQuizz();
   return (
-    <div className="question-item">
+    <div
+      className={`question-item ${active ? 'active' : ''}`}
+      onClick={() => selectCurrentQuestion(question.id)}
+    >
       <div className="question-item__icon">
-        <span>{question.order}</span>
+        <span>{question.order + 1}</span>
       </div>
-      <p className="question-item__title">{question.title}</p>
+      <p className="question-item__title">
+        {question.title ? question.title : t('question.altTitle')}
+      </p>
     </div>
   );
 };

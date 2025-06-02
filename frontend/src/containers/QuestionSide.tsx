@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/forms/Button';
 import { QuestionItem } from '@/components/QuestionItem';
-import { useGetQuestionsQuery } from '@/services/question.service';
+import { initializeQuestion } from '@/core/initializeQuestion';
+import { useQuizz } from '@/providers/QuizzProvider';
+import { useAddQuestionMutation } from '@/services/question.service';
 
 interface QuestionSideProps {
   quizzId: string;
@@ -12,15 +14,23 @@ interface QuestionSideProps {
 
 export const QuestionSide: FC<QuestionSideProps> = ({ quizzId }) => {
   const { t } = useTranslation();
-  const { data: allQuestions } = useGetQuestionsQuery(quizzId);
+  const { quizz, currentQuestion } = useQuizz();
+  const [addQuestion] = useAddQuestionMutation();
 
-  const handleAddQuestion = () => {
-    console.log('add question');
+  const handleAddQuestion = async () => {
+    const formData = initializeQuestion();
+    await addQuestion({ quizzId, question: formData });
   };
 
   return (
     <div className="question-side">
-      {allQuestions?.map(item => <QuestionItem question={item} />)}
+      {quizz?.questions?.map(item => (
+        <QuestionItem
+          key={crypto.randomUUID()}
+          question={item}
+          active={currentQuestion?.id === item.id}
+        />
+      ))}
       <div className="question-side__buttons">
         <Button variant="primary" onClick={handleAddQuestion} startIcon={<AddIcon />}>
           {t('edit_quiz.add.question')}

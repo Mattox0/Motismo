@@ -7,6 +7,6 @@ import { TranslationService } from "@/translation/translation.service";
 @Module({
   imports: [TypeOrmModule.forFeature([Choice])],
   providers: [ChoiceService, TranslationService],
-  exports: [ChoiceService],
+  exports: [ChoiceService, TypeOrmModule],
 })
 export class ChoiceModule {}

@@ -6,13 +6,10 @@ import { Question } from "@/question/question.entity";
 import { ChoiceQuestion } from "../entity/choiceQuestion.entity";
 import { CreateChoiceQuestionDto } from "../dto/createChoiceQuestion.dto";
 import { Quizz } from "@/quizz/quizz.entity";
-import { QuestionType } from "../types/questionType";
 import { TranslationService } from "@/translation/translation.service";
 import { ChoiceService } from "@/choice/service/choice.service";
 import { IMaxOrderResult } from "@/cards/types/IMaxOrderResult";
 import { AllQuestion } from "../types/AllQuestion";
-import { MatchingQuestion } from "../entity/matchingQuestion.entity";
-import { WordCloudQuestion } from "../entity/wordCloudQuestion.entity";
 import { FileUploadService } from "@/files/files.service";
 import { UpdateChoiceQuestionDto } from "../dto/updateQuestion.dto";
 
@@ -24,10 +21,6 @@ export class QuestionService {
     private translationService: TranslationService,
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
-    @InjectRepository(MatchingQuestion)
-    private matchingQuestionRepository: Repository<MatchingQuestion>,
-    @InjectRepository(WordCloudQuestion)
-    private wordCloudQuestionRepository: Repository<WordCloudQuestion>,
     private choiceService: ChoiceService,
     private fileUploadService: FileUploadService,
   ) {}
@@ -90,15 +83,7 @@ export class QuestionService {
     quizz: Quizz,
     createChoiceQuestionDto: CreateChoiceQuestionDto,
   ): Promise<void> {
-    if (
-      createChoiceQuestionDto.questionType === QuestionType.MULTIPLE_CHOICES &&
-      !createChoiceQuestionDto.allowMultipleSelections
-    ) {
-      throw new BadRequestException(
-        await this.translationService.translate("error.INVALID_QUESTION_TYPE"),
-      );
-    }
-
+    console.log(createChoiceQuestionDto);
     const maxOrder = await this.getMaxOrder(quizz.id);
     const order = createChoiceQuestionDto.order ?? maxOrder + 1;
 
@@ -121,7 +106,7 @@ export class QuestionService {
 
     const savedQuestion = await this.choiceQuestionRepository.save(question);
 
-    for (const option of createChoiceQuestionDto.options) {
+    for (const option of createChoiceQuestionDto.choices) {
       await this.choiceService.createChoice(option, savedQuestion);
     }
   }
@@ -152,16 +137,12 @@ export class QuestionService {
 
     await this.deleteUnusedImages(question, updateChoiceQuestionDto);
 
-    await this.choiceQuestionRepository.update(
-      question.id,
-      updateChoiceQuestionDto,
-    );
+    const { choices, ...updateData } = updateChoiceQuestionDto;
 
-    if (updateChoiceQuestionDto.options) {
-      await this.choiceService.updateChoices(
-        question,
-        updateChoiceQuestionDto.options,
-      );
+    await this.choiceQuestionRepository.update(question.id, updateData);
+
+    if (choices) {
+      await this.choiceService.updateChoices(question, choices);
     }
   }
 
