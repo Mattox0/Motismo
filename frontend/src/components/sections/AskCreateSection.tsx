@@ -49,7 +49,7 @@ export const AskCreateSection: FC = () => {
       router.push(
         response.quizzType === IQuizzType.QUESTIONS
           ? `/quizz/${response.id}`
-          : `/cards/${response.id}`
+          : `/card/${response.id}`
       );
       handleCloseModal();
     } catch (error) {

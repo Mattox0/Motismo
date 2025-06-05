@@ -60,7 +60,7 @@ export default function Profile() {
                 badge={t('card.cards', { nbCards: item.questions?.length ?? 0 })}
                 title={item.title}
                 creationDate={item.creationDate}
-                onEditClick={() => router.push(`/cards/${item.id}`)}
+                onEditClick={() => router.push(`/card/${item.id}`)}
                 onPresentationClick={() => {}}
               />
             ))

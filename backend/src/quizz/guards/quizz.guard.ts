@@ -53,14 +53,12 @@ export class QuizzGuard implements CanActivate {
       );
     }
 
-    // Charger les questions avec leurs choix
     const questions = await this.choiceQuestionRepository.find({
       where: { quizz: { id: quizzId } },
       relations: ["choices"],
       order: { order: "ASC" },
     });
 
-    // Mettre à jour les questions du quiz avec leurs choix
     quizz.questions = questions;
 
     request.quizz = quizz;
