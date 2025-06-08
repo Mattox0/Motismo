@@ -36,11 +36,11 @@ import { UpdateCardDto } from "../dto/updateCard.dto";
 import { CardRequest } from "../decorator/card.decorator";
 import { CardGuard } from "../guards/card.guard";
 
-@ApiTags("cards")
+@ApiTags("card")
 @ApiParam({ name: "quizzId" })
 @ApiBadRequestResponse({ description: "Invalid quizz ID format" })
 @ApiNotFoundResponse({ description: "Quizz not found" })
-@Controller("quizz/:quizzId/cards")
+@Controller("quizz/:quizzId/card")
 export class CardController {
   constructor(
     private readonly cardService: CardService,

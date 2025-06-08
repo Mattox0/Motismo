@@ -4,6 +4,7 @@
 @use './core/title.scss';
 @use './page/auth.scss';
 @use './page/error.scss';
+@use './page/card-page.scss';
 @use './page/quizz.scss';
 @use './page/profile.scss';
 @use './components/navbar.scss';
@@ -17,4 +18,5 @@
 @use './components/loader.scss';
 @use './components/modal.scss';
 @use './components/create-quiz-form.scss';
+@use './components/card-form.scss';
 @use 'tailwindcss';

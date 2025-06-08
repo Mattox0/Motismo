@@ -1,7 +1,9 @@
 export interface Card {
   id: string;
-  title: string;
-  image?: string;
+  rectoText: string;
+  rectoImage?: string;
+  versoText?: string;
+  versoImage?: string;
   creationDate: Date;
   order: number;
 }

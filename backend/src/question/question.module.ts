@@ -13,6 +13,7 @@ import { UsersModule } from "@/user/user.module";
 import { Quizz } from "@/quizz/quizz.entity";
 import { Choice } from "@/choice/choice.entity";
 import { ChoiceModule } from "@/choice/choice.module";
+import { Card } from "@/cards/card.entity";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ChoiceModule } from "@/choice/choice.module";
       MatchingQuestion,
       Quizz,
       Choice,
+      Card,
     ]),
     forwardRef(() => UsersModule),
     forwardRef(() => ChoiceModule),

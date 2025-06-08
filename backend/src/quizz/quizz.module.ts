@@ -13,10 +13,11 @@ import { QuizzGuard } from "./guards/quizz.guard";
 import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
 import { ChoiceModule } from "@/choice/choice.module";
 import { CardsModule } from "@/cards/card.module";
+import { Card } from "@/cards/card.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Quizz, ChoiceQuestion]),
+    TypeOrmModule.forFeature([Quizz, ChoiceQuestion, Card]),
     forwardRef(() => UsersModule),
     forwardRef(() => QuestionModule),
     forwardRef(() => ChoiceModule),

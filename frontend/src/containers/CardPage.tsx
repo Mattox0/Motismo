@@ -1,27 +1,43 @@
 'use client';
 
-import { Box, Typography, Button } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { CardForm, CardFormData } from '@/components/forms/CardForm';
+import { initializeCard } from '@/core/initializeCard';
 import { useCard } from '@/providers/CardProvider';
+import { useCreateCardMutation, useUpdateCardMutation } from '@/services/card.service';
 
 interface ICardPageProps {
   quizzId: string;
 }
 
-export const CardPage: FC<ICardPageProps> = ({ quizzId: _quizzId }) => {
+export const CardPage: FC<ICardPageProps> = ({ quizzId: quizzId }) => {
   const { quizz } = useCard();
-  const [cards, setCards] = useState<number[]>([0]); // Commence avec un formulaire
+  const [createCard] = useCreateCardMutation();
+  const [updateCard] = useUpdateCardMutation();
 
   const handleAddCard = () => {
-    setCards(prev => [...prev, prev.length]);
+    const formData = initializeCard();
+    createCard({ quizzId: quizzId, formData });
   };
 
-  const handleCardSubmit = async (data: CardFormData) => {
+  const handleCardSubmit = async (data: CardFormData, id: string) => {
     try {
-      // TODO: Appel API pour sauvegarder une carte
-      console.log('Sauvegarde de la carte:', data);
+      const formData = new FormData();
+      formData.append('rectoText', data.term);
+      formData.append('versoText', data.definition);
+      if (data.rectoImage) {
+        formData.append('rectoImage', data.rectoImage);
+      }
+      if (data.versoImage) {
+        formData.append('versoImage', data.versoImage);
+      }
+
+      await updateCard({
+        quizzId,
+        cardId: id,
+        formData,
+      });
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
       throw error;
@@ -29,34 +45,23 @@ export const CardPage: FC<ICardPageProps> = ({ quizzId: _quizzId }) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', p: 4 }}>
-      <Box sx={{ mb: 4, textAlign: 'center' }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {quizz?.title}
-        </Typography>
-        <Typography variant="subtitle1" color="text.secondary">
-          Créez vos cartes
-        </Typography>
-      </Box>
+    <div className="card-page">
+      <div className="card-page__header">
+        <h1 className="card-page__title">{quizz?.title}</h1>
+      </div>
 
-      {cards.map(index => (
-        <CardForm key={index} index={index} onSubmit={handleCardSubmit} />
+      {quizz?.cards?.map(card => (
+        <CardForm
+          key={crypto.randomUUID()}
+          index={card.order}
+          onSubmit={handleCardSubmit}
+          initialData={card}
+        />
       ))}
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-        <Button
-          variant="outlined"
-          onClick={handleAddCard}
-          sx={{
-            borderRadius: '8px',
-            textTransform: 'none',
-            px: 4,
-            py: 1.5,
-          }}
-        >
-          Ajouter une carte
-        </Button>
-      </Box>
-    </Box>
+      <div className="card-page__add-button">
+        <button onClick={handleAddCard}>Ajouter une carte</button>
+      </div>
+    </div>
   );
 };

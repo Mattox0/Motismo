@@ -2,24 +2,34 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import ImageIcon from '@mui/icons-material/Image';
-import { Button, TextField, Box, Typography, Paper, IconButton } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { Card } from '@/types/model/Card';
 import { cardSchema } from '@/types/schemas/createCardSchema';
 
 export type CardFormData = z.infer<typeof cardSchema>;
 
 interface CardFormProps {
-  onSubmit: (_data: CardFormData) => Promise<void>;
+  onSubmit: (_data: CardFormData, _id: string) => Promise<void>;
   index: number;
+  initialData: Card;
 }
 
-export const CardForm: FC<CardFormProps> = ({ onSubmit, index }) => {
+type ContentType = 'text' | 'image';
+
+export const CardForm: FC<CardFormProps> = ({ onSubmit, index, initialData }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [rectoPreview, setRectoPreview] = useState<string>('');
-  const [versoPreview, setVersoPreview] = useState<string>('');
+  const [rectoPreview, setRectoPreview] = useState<string>(initialData.rectoImage || '');
+  const [versoPreview, setVersoPreview] = useState<string>(initialData.versoImage || '');
+  const [rectoType, setRectoType] = useState<ContentType>(
+    initialData.rectoImage ? 'image' : 'text'
+  );
+  const [versoType, setVersoType] = useState<ContentType>(
+    initialData.versoImage ? 'image' : 'text'
+  );
+  const formRef = useRef<HTMLFormElement>(null);
 
   const {
     register,
@@ -30,8 +40,10 @@ export const CardForm: FC<CardFormProps> = ({ onSubmit, index }) => {
   } = useForm<CardFormData>({
     resolver: zodResolver(cardSchema),
     defaultValues: {
-      term: '',
-      definition: '',
+      term: initialData.rectoText || '',
+      definition: initialData.versoText || '',
+      rectoImage: undefined,
+      versoImage: undefined,
     },
   });
 
@@ -47,19 +59,42 @@ export const CardForm: FC<CardFormProps> = ({ onSubmit, index }) => {
         if (type === 'recto') {
           setRectoPreview(result);
           setValue('rectoImage', file);
+          setValue('term', '');
         } else {
           setVersoPreview(result);
           setValue('versoImage', file);
+          setValue('definition', '');
         }
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const handleTypeChange = (type: ContentType, side: 'recto' | 'verso') => {
+    if (side === 'recto') {
+      setRectoType(type);
+      if (type === 'text') {
+        setRectoPreview('');
+        setValue('rectoImage', undefined);
+      } else {
+        setValue('term', '');
+      }
+    } else {
+      setVersoType(type);
+      if (type === 'text') {
+        setVersoPreview('');
+        setValue('versoImage', undefined);
+      } else {
+        setValue('definition', '');
+      }
+    }
+  };
+
   const handleFormSubmit = async (data: CardFormData) => {
     try {
+      console.log('oui');
       setIsSubmitting(true);
-      await onSubmit(data);
+      await onSubmit(data, initialData.id);
       reset();
       setRectoPreview('');
       setVersoPreview('');
@@ -70,156 +105,129 @@ export const CardForm: FC<CardFormProps> = ({ onSubmit, index }) => {
     }
   };
 
+  const handleButtonClick = () => {
+    formRef.current?.requestSubmit();
+  };
+
   return (
-    <Paper
-      elevation={3}
-      sx={{
-        p: 4,
-        borderRadius: '16px',
-        background: 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
-        mb: 4,
-      }}
-    >
-      <Typography variant="h6" gutterBottom>
-        Carte {index + 1}
-      </Typography>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <TextField
-            label="Terme"
-            {...register('term')}
-            error={!!errors.term}
-            helperText={errors.term?.message}
-            fullWidth
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '8px',
-              },
-            }}
-          />
+    <div className="card-form">
+      <h2 className="card-form__title">Carte {index + 1}</h2>
+      <form ref={formRef} onSubmit={handleSubmit(handleFormSubmit)} className="card-form__form">
+        <div className="card-form__side">
+          <div className="card-form__type-selector">
+            <button
+              type="button"
+              className={`card-form__type-button ${rectoType === 'text' ? 'active' : ''}`}
+              onClick={() => handleTypeChange('text', 'recto')}
+            >
+              Texte
+            </button>
+            <button
+              type="button"
+              className={`card-form__type-button ${rectoType === 'image' ? 'active' : ''}`}
+              onClick={() => handleTypeChange('image', 'recto')}
+            >
+              Image
+            </button>
+          </div>
 
-          <TextField
-            label="Définition"
-            {...register('definition')}
-            error={!!errors.definition}
-            helperText={errors.definition?.message}
-            multiline
-            rows={4}
-            fullWidth
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '8px',
-              },
-            }}
-          />
-
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" gutterBottom>
-                Image Recto
-              </Typography>
-              <Box
-                sx={{
-                  border: '2px dashed',
-                  borderColor: errors.rectoImage ? 'error.main' : 'divider',
-                  borderRadius: '8px',
-                  p: 2,
-                  textAlign: 'center',
-                  position: 'relative',
-                  height: 200,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  overflow: 'hidden',
-                }}
+          {rectoType === 'text' ? (
+            <div className="card-form__field">
+              <label htmlFor="term" className="card-form__label">
+                Terme
+              </label>
+              <textarea id="term" placeholder="Entrez le terme" {...register('term')} />
+              {errors.term && <div className="card-form__error">{errors.term.message}</div>}
+            </div>
+          ) : (
+            <div className="card-form__image-container">
+              <h3 className="card-form__image-title">Image du terme</h3>
+              <div
+                className={`card-form__image-upload ${errors.rectoImage ? 'card-form__image-upload--error' : ''}`}
               >
                 {rectoPreview ? (
-                  <img
-                    src={rectoPreview}
-                    alt="Recto preview"
-                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                  />
+                  <img src={rectoPreview} alt="Terme preview" />
                 ) : (
-                  <IconButton component="label" sx={{ width: '100%', height: '100%' }}>
+                  <label>
                     <input
                       type="file"
-                      hidden
                       accept="image/jpeg,image/png,image/gif"
                       onChange={e => handleImageUpload(e, 'recto')}
                     />
-                    <ImageIcon sx={{ fontSize: 40, color: 'text.secondary' }} />
-                  </IconButton>
+                    <ImageIcon style={{ fontSize: 40, color: '#666' }} />
+                  </label>
                 )}
-              </Box>
+              </div>
               {errors.rectoImage && (
-                <Typography color="error" variant="caption" sx={{ mt: 1, display: 'block' }}>
-                  {errors.rectoImage.message}
-                </Typography>
+                <div className="card-form__error">{errors.rectoImage.message}</div>
               )}
-            </Box>
+            </div>
+          )}
+        </div>
 
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" gutterBottom>
-                Image Verso
-              </Typography>
-              <Box
-                sx={{
-                  border: '2px dashed',
-                  borderColor: errors.versoImage ? 'error.main' : 'divider',
-                  borderRadius: '8px',
-                  p: 2,
-                  textAlign: 'center',
-                  position: 'relative',
-                  height: 200,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  overflow: 'hidden',
-                }}
+        <div className="card-form__side">
+          <div className="card-form__type-selector">
+            <button
+              type="button"
+              className={`card-form__type-button ${versoType === 'text' ? 'active' : ''}`}
+              onClick={() => handleTypeChange('text', 'verso')}
+            >
+              Texte
+            </button>
+            <button
+              type="button"
+              className={`card-form__type-button ${versoType === 'image' ? 'active' : ''}`}
+              onClick={() => handleTypeChange('image', 'verso')}
+            >
+              Image
+            </button>
+          </div>
+
+          {versoType === 'text' ? (
+            <div className="card-form__field">
+              <label htmlFor="definition" className="card-form__label">
+                Définition
+              </label>
+              <textarea
+                id="definition"
+                placeholder="Entrez la définition"
+                {...register('definition')}
+              />
+              {errors.definition && (
+                <div className="card-form__error">{errors.definition.message}</div>
+              )}
+            </div>
+          ) : (
+            <div className="card-form__image-container">
+              <h3 className="card-form__image-title">Image de la définition</h3>
+              <div
+                className={`card-form__image-upload ${errors.versoImage ? 'card-form__image-upload--error' : ''}`}
               >
                 {versoPreview ? (
-                  <img
-                    src={versoPreview}
-                    alt="Verso preview"
-                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                  />
+                  <img src={versoPreview} alt="Définition preview" />
                 ) : (
-                  <IconButton component="label" sx={{ width: '100%', height: '100%' }}>
+                  <label>
                     <input
                       type="file"
-                      hidden
                       accept="image/jpeg,image/png,image/gif"
                       onChange={e => handleImageUpload(e, 'verso')}
                     />
-                    <ImageIcon sx={{ fontSize: 40, color: 'text.secondary' }} />
-                  </IconButton>
+                    <ImageIcon style={{ fontSize: 40, color: '#666' }} />
+                  </label>
                 )}
-              </Box>
+              </div>
               {errors.versoImage && (
-                <Typography color="error" variant="caption" sx={{ mt: 1, display: 'block' }}>
-                  {errors.versoImage.message}
-                </Typography>
+                <div className="card-form__error">{errors.versoImage.message}</div>
               )}
-            </Box>
-          </Box>
-
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={isSubmitting}
-              sx={{
-                borderRadius: '8px',
-                textTransform: 'none',
-                px: 4,
-                py: 1.5,
-              }}
-            >
-              {isSubmitting ? 'Enregistrement...' : 'Enregistrer la carte'}
-            </Button>
-          </Box>
-        </Box>
+            </div>
+          )}
+        </div>
       </form>
-    </Paper>
+      <div className="card-form__submit">
+        <button type="button" onClick={handleButtonClick} disabled={isSubmitting}>
+          {isSubmitting ? 'Enregistrement...' : 'Enregistrer la carte'}
+        </button>
+      </div>
+    </div>
   );
 };

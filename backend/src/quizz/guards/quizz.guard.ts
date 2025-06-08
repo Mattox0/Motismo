@@ -13,6 +13,7 @@ import { uuidRegex } from "@/utils/regex.variable";
 import { Quizz } from "@/quizz/quizz.entity";
 import { IRequestWithParamQuizz } from "@/quizz/types/IRequestWithParamQuizz";
 import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
+import { Card } from "@/cards/card.entity";
 
 @Injectable()
 export class QuizzGuard implements CanActivate {
@@ -21,6 +22,8 @@ export class QuizzGuard implements CanActivate {
     private readonly quizzRepository: Repository<Quizz>,
     @InjectRepository(ChoiceQuestion)
     private readonly choiceQuestionRepository: Repository<ChoiceQuestion>,
+    @InjectRepository(Card)
+    private readonly cardRepository: Repository<Card>,
     private readonly translationsService: TranslationService,
   ) {}
 
@@ -59,7 +62,13 @@ export class QuizzGuard implements CanActivate {
       order: { order: "ASC" },
     });
 
+    const cards = await this.cardRepository.find({
+      where: { quizz: { id: quizzId } },
+      order: { order: "ASC" },
+    });
+
     quizz.questions = questions;
+    quizz.cards = cards;
 
     request.quizz = quizz;
 
