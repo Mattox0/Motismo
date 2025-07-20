@@ -1,10 +1,10 @@
 import { baseApi } from '@/services/base.service';
-import { Card } from '@/types/model/Card';
+import { ICard } from '@/types/model/ICard';
 import { QueryTags } from '@/types/QueryTags';
 
 export const cardApi = baseApi.injectEndpoints({
   endpoints: builder => ({
-    createCard: builder.mutation<Card, { quizzId: string; formData: FormData }>({
+    createCard: builder.mutation<ICard, { quizzId: string; formData: FormData }>({
       query: ({ quizzId, formData }) => ({
         url: `/quizz/${quizzId}/card`,
         method: 'POST',
@@ -12,7 +12,7 @@ export const cardApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [QueryTags.QUIZ],
     }),
-    updateCard: builder.mutation<Card, { quizzId: string; cardId: string; formData: FormData }>({
+    updateCard: builder.mutation<ICard, { quizzId: string; cardId: string; formData: FormData }>({
       query: ({ quizzId, cardId, formData }) => ({
         url: `/quizz/${quizzId}/card/${cardId}`,
         method: 'PUT',

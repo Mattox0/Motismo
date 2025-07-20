@@ -1,4 +1,4 @@
-export interface Choice {
+export interface IChoice {
   isCorrect: boolean;
   text: string;
 }

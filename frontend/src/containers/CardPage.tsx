@@ -1,6 +1,8 @@
 'use client';
 
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { CardForm, CardFormData } from '@/components/forms/CardForm';
 import { initializeCard } from '@/core/initializeCard';
@@ -12,7 +14,8 @@ interface ICardPageProps {
 }
 
 export const CardPage: FC<ICardPageProps> = ({ quizzId: quizzId }) => {
-  const { quizz } = useCard();
+  const { quizz, isLoading } = useCard();
+  const { t } = useTranslation();
   const [createCard] = useCreateCardMutation();
   const [updateCard] = useUpdateCardMutation();
 
@@ -24,25 +27,43 @@ export const CardPage: FC<ICardPageProps> = ({ quizzId: quizzId }) => {
   const handleCardSubmit = async (data: CardFormData, id: string) => {
     try {
       const formData = new FormData();
-      formData.append('rectoText', data.term);
-      formData.append('versoText', data.definition);
       if (data.rectoImage) {
         formData.append('rectoImage', data.rectoImage);
-      }
-      if (data.versoImage) {
-        formData.append('versoImage', data.versoImage);
+        formData.append('rectoText', '');
+      } else if (data.term) {
+        formData.append('rectoText', data.term);
       }
 
-      await updateCard({
+      if (data.versoImage) {
+        formData.append('versoImage', data.versoImage);
+        formData.append('versoText', '');
+      } else if (data.definition) {
+        formData.append('versoText', data.definition);
+      }
+
+      const response = await updateCard({
         quizzId,
         cardId: id,
         formData,
       });
+      if (response?.error) {
+        throw new Error();
+      } else {
+        toast.success(t('create_card.updateSuccess'));
+      }
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
       throw error;
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="parent-loader">
+        <span className="loader"></span>
+      </div>
+    );
+  }
 
   return (
     <div className="card-page">

@@ -4,11 +4,11 @@ import React, { useEffect, useState } from 'react';
 
 import i18n from '@/i18n';
 
-interface I18nProviderProps {
+interface II18nProviderProps {
   children: React.ReactNode;
 }
 
-export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
+export const I18nProvider: React.FC<II18nProviderProps> = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useQuizz } from '@/providers/QuizzProvider';
-import { Question } from '@/types/model/Question';
+import { Question } from '@/types/model/IQuestion';
 
 interface QuestionItemProps {
   question: Question;

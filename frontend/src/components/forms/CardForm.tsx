@@ -6,20 +6,20 @@ import { FC, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Card } from '@/types/model/Card';
+import { ICard } from '@/types/model/ICard';
 import { cardSchema } from '@/types/schemas/createCardSchema';
 
 export type CardFormData = z.infer<typeof cardSchema>;
 
-interface CardFormProps {
+interface ICardFormProps {
   onSubmit: (_data: CardFormData, _id: string) => Promise<void>;
   index: number;
-  initialData: Card;
+  initialData: ICard;
 }
 
 type ContentType = 'text' | 'image';
 
-export const CardForm: FC<CardFormProps> = ({ onSubmit, index, initialData }) => {
+export const CardForm: FC<ICardFormProps> = ({ onSubmit, index, initialData }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [rectoPreview, setRectoPreview] = useState<string>(initialData.rectoImage || '');
   const [versoPreview, setVersoPreview] = useState<string>(initialData.versoImage || '');
@@ -92,8 +92,20 @@ export const CardForm: FC<CardFormProps> = ({ onSubmit, index, initialData }) =>
 
   const handleFormSubmit = async (data: CardFormData) => {
     try {
-      console.log('oui');
       setIsSubmitting(true);
+      if (rectoType === 'text' && !data.term) {
+        throw new Error('Le terme est requis');
+      }
+      if (rectoType === 'image' && !data.rectoImage) {
+        throw new Error('Une image est requise pour le terme');
+      }
+      if (versoType === 'text' && !data.definition) {
+        throw new Error('La définition est requise');
+      }
+      if (versoType === 'image' && !data.versoImage) {
+        throw new Error('Une image est requise pour la définition');
+      }
+
       await onSubmit(data, initialData.id);
       reset();
       setRectoPreview('');

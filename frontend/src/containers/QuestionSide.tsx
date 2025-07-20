@@ -8,11 +8,11 @@ import { initializeQuestion } from '@/core/initializeQuestion';
 import { useQuizz } from '@/providers/QuizzProvider';
 import { useAddQuestionMutation, useDeleteQuestionMutation } from '@/services/question.service';
 
-interface QuestionSideProps {
+interface IQuestionSideProps {
   quizzId: string;
 }
 
-export const QuestionSide: FC<QuestionSideProps> = ({ quizzId }) => {
+export const QuestionSide: FC<IQuestionSideProps> = ({ quizzId }) => {
   const { t } = useTranslation();
   const { quizz, currentQuestion } = useQuizz();
   const [addQuestion] = useAddQuestionMutation();

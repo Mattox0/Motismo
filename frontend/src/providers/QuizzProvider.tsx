@@ -12,30 +12,30 @@ import React, {
   useState,
 } from 'react';
 
-import { Question } from '@/types/model/Question';
-import { Quizz } from '@/types/model/Quizz';
+import { IQuestion } from '@/types/model/IQuestion';
+import { IQuizz } from '@/types/model/IQuizz';
 
 import { useAuth } from '../hooks/useAuth';
 import { useGetOneQuizQuery } from '../services/quiz.service';
 
-interface QuizzContextType {
-  quizz: Quizz | undefined;
+interface IQuizzContextType {
+  quizz: IQuizz | undefined;
   isLoading: boolean;
   error: FetchBaseQueryError | SerializedError | undefined;
-  currentQuestion: Question | null;
-  setCurrentQuestion: Dispatch<SetStateAction<Question | null>>;
+  currentQuestion: IQuestion | null;
+  setCurrentQuestion: Dispatch<SetStateAction<IQuestion | null>>;
   selectCurrentQuestion: (_id: string) => void;
   refetch: () => void;
   isAuthor: boolean;
 }
 
-const QuizzContext = createContext<QuizzContextType | undefined>(undefined);
+const QuizzContext = createContext<IQuizzContextType | undefined>(undefined);
 
 export const QuizzProvider: React.FC<{ children: React.ReactNode; quizId: string }> = ({
   children,
   quizId,
 }) => {
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<IQuestion | null>(null);
   const { data: quizz, isLoading, error, refetch } = useGetOneQuizQuery(quizId);
   const { session } = useAuth();
 

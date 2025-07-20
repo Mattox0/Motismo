@@ -4,19 +4,19 @@ import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import React, { createContext, useContext, useMemo } from 'react';
 
-import { Quizz } from '@/types/model/Quizz';
+import { IQuizz } from '@/types/model/IQuizz';
 
 import { useAuth } from '../hooks/useAuth';
 import { useGetOneQuizQuery } from '../services/quiz.service';
 
-interface CardContextType {
-  quizz: Quizz | undefined;
+interface ICardContextType {
+  quizz: IQuizz | undefined;
   isLoading: boolean;
   error: FetchBaseQueryError | SerializedError | undefined;
   isAuthor: boolean;
 }
 
-const CardContext = createContext<CardContextType | undefined>(undefined);
+const CardContext = createContext<ICardContextType | undefined>(undefined);
 
 export const CardProvider: React.FC<{ children: React.ReactNode; quizId: string }> = ({
   children,

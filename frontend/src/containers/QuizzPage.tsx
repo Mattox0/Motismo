@@ -12,11 +12,11 @@ import { showToast } from '@/utils/toast';
 import { CustomErrorPage } from './CustomErrorPage';
 import { QuestionSide } from './QuestionSide';
 
-interface QuizzPageProps {
+interface IQuizzPageProps {
   quizzId: string;
 }
 
-export const QuizzPage: FC<QuizzPageProps> = ({ quizzId }) => {
+export const QuizzPage: FC<IQuizzPageProps> = ({ quizzId }) => {
   const { t } = useTranslation();
   const { isLoading, isAuthor, currentQuestion, setCurrentQuestion } = useQuizz();
   const [updateQuestion] = useUpdateQuestionMutation();

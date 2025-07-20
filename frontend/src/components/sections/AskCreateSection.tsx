@@ -9,7 +9,7 @@ import { Button } from '@/components/forms/Button';
 import { CreateQuizForm } from '@/components/forms/CreateQuizForm';
 import { Modal } from '@/components/Modal';
 import { useCreateQuizzMutation } from '@/services/quiz.service';
-import { IQuizzType } from '@/types/IQuizzType';
+import { IQuizzType } from '@/types/model/IQuizzType';
 import { CreateQuizFormData } from '@/types/schemas/createQuizSchema';
 import { showToast } from '@/utils/toast';
 
@@ -48,7 +48,7 @@ export const AskCreateSection: FC = () => {
       );
       router.push(
         response.quizzType === IQuizzType.QUESTIONS
-          ? `/quizz/${response.id}`
+          ? `/quiz/${response.id}`
           : `/card/${response.id}`
       );
       handleCloseModal();

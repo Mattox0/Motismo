@@ -183,5 +183,8 @@
     "createError": "Erreur lors de la création de la question",
     "altTitle": "Pas de titre",
     "choices": "Réponses"
+  },
+  "create_card": {
+    "updateSuccess": "Votre carte a été mise à jour"
   }
 }

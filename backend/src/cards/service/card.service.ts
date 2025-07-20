@@ -149,6 +149,13 @@ export class CardService {
       await this.reorderCards(quizz.id, updateCardDto.order, card.order);
     }
 
+    if (updateCardDto.rectoImage) {
+      updateCardDto.rectoText = "";
+    }
+    if (updateCardDto.versoImage) {
+      updateCardDto.versoText = "";
+    }
+
     await this.deleteUnusedImages(card, updateCardDto);
 
     await this.cardRepository

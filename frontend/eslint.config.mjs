@@ -58,6 +58,17 @@ const eslintConfig = [
       }],
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-non-null-assertion": "warn",
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          "selector": "interface",
+          "format": ["PascalCase"],
+          "custom": {
+            "regex": "^I[A-Z]",
+            "match": true
+          }
+        }
+      ],
       
       // Règles React
       "react/react-in-jsx-scope": "off", // Non nécessaire dans Next.js
