@@ -1,12 +1,12 @@
 import { FC, ReactNode } from 'react';
 
-interface FonctionalityItemProps {
+interface IFonctionalityItemProps {
   title: string;
   description: string;
   icon: ReactNode;
 }
 
-export const FonctionalityItem: FC<FonctionalityItemProps> = ({ title, description, icon }) => {
+export const FonctionalityItem: FC<IFonctionalityItemProps> = ({ title, description, icon }) => {
   return (
     <div className="fonctionality-item">
       <div className="fonctionality-item-icon-wrapper">{icon}</div>

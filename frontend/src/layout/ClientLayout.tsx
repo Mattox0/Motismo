@@ -9,11 +9,11 @@ import { SessionProvider } from '@/providers/SessionProvider';
 import { setupStore } from '@/store';
 import { defaultOptions } from '@/utils/toast';
 
-interface ClientLayoutProps {
+interface IClientLayoutProps {
   children: React.ReactNode;
 }
 
-export function ClientLayout({ children }: ClientLayoutProps) {
+export function ClientLayout({ children }: IClientLayoutProps) {
   const store = setupStore();
 
   return (

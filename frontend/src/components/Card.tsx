@@ -6,7 +6,7 @@ import { formatDate } from '@/utils/formatDate';
 
 import { Button } from './forms/Button';
 
-export interface CardProps {
+export interface ICardProps {
   image?: string;
   badge: string;
   title: string;
@@ -15,7 +15,7 @@ export interface CardProps {
   onPresentationClick: () => void;
 }
 
-export const Card: FC<CardProps> = ({
+export const Card: FC<ICardProps> = ({
   image,
   badge,
   title,

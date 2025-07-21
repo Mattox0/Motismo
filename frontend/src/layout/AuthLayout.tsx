@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
 
-interface AuthLayoutProps {
+interface IAuthLayoutProps {
   children: ReactNode;
 }
 
-const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
+const AuthLayout: React.FC<IAuthLayoutProps> = ({ children }) => {
   return (
     <div className="auth-page">
       <div className="auth-container">{children}</div>

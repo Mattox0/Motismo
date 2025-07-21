@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface DividerProps {
+interface IDividerProps {
   text: string;
 }
 
-const Divider: React.FC<DividerProps> = ({ text }) => {
+const Divider: React.FC<IDividerProps> = ({ text }) => {
   return (
     <div className="auth-divider">
       <span className="divider-text">{text}</span>

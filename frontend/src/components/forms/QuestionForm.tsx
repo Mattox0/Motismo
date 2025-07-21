@@ -23,13 +23,13 @@ export type QuestionFormData = {
   }>;
 };
 
-interface QuestionFormProps {
+interface IQuestionFormProps {
   onSubmit: (_data: QuestionFormData) => Promise<void>;
   initialData?: Partial<QuestionFormData>;
   onDelete: () => void;
 }
 
-const QuestionForm = ({ onSubmit, initialData, onDelete }: QuestionFormProps) => {
+const QuestionForm = ({ onSubmit, initialData, onDelete }: IQuestionFormProps) => {
   const { t } = useTranslation();
   const { currentQuestion } = useQuizz();
   const fileInputRef = useRef<HTMLInputElement>(null);

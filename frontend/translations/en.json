@@ -91,7 +91,7 @@
       }
     }
   },
-  
+
   "validation": {
     "nameRequired": "Username is required",
     "invalidEmail": "Invalid email",

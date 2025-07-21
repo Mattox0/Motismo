@@ -132,7 +132,11 @@
       "quizz": "Vous n'avez pas accès à ce quizz"
     },
     "return": {
-      "home": "Retour à l'acceuil"
+      "home": "Retour à l'acceuil",
+      "dashboard": "Retour au dashboard"
+    },
+    "no": {
+      "cards": "Vous n'avez pas de cartes"
     }
   },
   "create_quiz": {

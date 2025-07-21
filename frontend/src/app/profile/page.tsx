@@ -8,9 +8,9 @@ import { EmptyState } from '@/components/EmptyState';
 import { AskCreateSection } from '@/components/sections/AskCreateSection';
 import { GlobalLayout } from '@/layout/GlobalLayout';
 import { useGetQuizQuery } from '@/services/quiz.service';
-import { IQuizzType } from '@/types/IQuizzType';
-
-import { Quizz } from '../../../../backend/src/quizz/quizz.entity';
+import { IQuizz } from '@/types/model/IQuizz';
+import { IQuizzType } from '@/types/model/IQuizzType';
+import { showToast } from '@/utils/toast';
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -30,7 +30,7 @@ export default function Profile() {
           {isLoading ? (
             <span className="loader" />
           ) : questionsQuizz.length > 0 ? (
-            questionsQuizz.map((item: Quizz) => (
+            questionsQuizz.map((item: IQuizz) => (
               <Card
                 key={crypto.randomUUID()}
                 image={item.image}
@@ -53,15 +53,19 @@ export default function Profile() {
           {isLoading ? (
             <span className="loader" />
           ) : cardsQuizz.length > 0 ? (
-            cardsQuizz.map((item: Quizz) => (
+            cardsQuizz.map((item: IQuizz) => (
               <Card
                 key={crypto.randomUUID()}
                 image={item.image}
-                badge={t('card.cards', { nbCards: item.questions?.length ?? 0 })}
+                badge={t('card.cards', { nbCards: item.cards?.length ?? 0 })}
                 title={item.title}
                 creationDate={item.creationDate}
                 onEditClick={() => router.push(`/card/${item.id}`)}
-                onPresentationClick={() => {}}
+                onPresentationClick={() =>
+                  item.cards?.length
+                    ? router.push(`/card/game/${item.id}`)
+                    : showToast.error(t('error.no.cards'))
+                }
               />
             ))
           ) : (

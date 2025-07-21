@@ -3,18 +3,18 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
-export interface Step {
+export interface IStep {
   number: number;
   title: string;
   description: string;
 }
 
-interface StepProps {
-  step: Step;
+interface IStepProps {
+  step: IStep;
   index: number;
 }
 
-const Step = ({ step, index }: StepProps) => {
+const Step = ({ step, index }: IStepProps) => {
   const stepRef = useRef(null);
   const isInView = useInView(stepRef, {
     once: false,

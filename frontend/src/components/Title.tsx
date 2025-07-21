@@ -1,6 +1,6 @@
 import { createElement, FC, ReactNode } from 'react';
 
-interface TitleProps {
+interface ITitleProps {
   children: ReactNode;
   variant: 'h1' | 'h2' | 'h3' | 'h4';
   className?: string;
@@ -13,7 +13,7 @@ const TITLE_ELEMENTS = {
   h4: 'h4',
 } as const;
 
-export const Title: FC<TitleProps> = ({ children, variant, className = '' }) => {
+export const Title: FC<ITitleProps> = ({ children, variant, className = '' }) => {
   return createElement(
     TITLE_ELEMENTS[variant],
     {

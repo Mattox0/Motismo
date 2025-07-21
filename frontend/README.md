@@ -23,6 +23,7 @@ Ce projet est l'interface utilisateur de Motismo, développée avec Next.js et R
 
 1. Clonez le repository
 2. Installez les dépendances :
+
 ```bash
 npm install
 # ou
@@ -51,4 +52,3 @@ frontend/
 ## 🌐 Internationalisation
 
 Le projet utilise i18next pour la gestion des traductions. Les fichiers de traduction sont stockés dans le dossier `translations/`.
-

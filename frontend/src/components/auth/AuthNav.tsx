@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 
 import { AuthTab } from '@/types/AuthTab';
 
-interface AuthNavProps {
+interface IAuthNavProps {
   activeTab: 'login' | 'register';
   onTabChange: (_tab: AuthTab) => void;
 }
 
-const AuthNav: React.FC<AuthNavProps> = ({ activeTab, onTabChange }) => {
+const AuthNav: React.FC<IAuthNavProps> = ({ activeTab, onTabChange }) => {
   const { t } = useTranslation();
 
   return (

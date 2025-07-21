@@ -3,18 +3,18 @@ import { FC, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { IQuizzType } from '@/types/IQuizzType';
+import { IQuizzType } from '@/types/model/IQuizzType';
 import { CreateQuizFormData, createQuizSchema } from '@/types/schemas/createQuizSchema';
 
 import { Button } from './Button';
 
-interface CreateQuizFormProps {
+interface ICreateQuizFormProps {
   type: IQuizzType;
   onSubmit: (_data: CreateQuizFormData) => void;
   onCancel: () => void;
 }
 
-export const CreateQuizForm: FC<CreateQuizFormProps> = ({ type, onSubmit, onCancel }) => {
+export const CreateQuizForm: FC<ICreateQuizFormProps> = ({ type, onSubmit, onCancel }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const {

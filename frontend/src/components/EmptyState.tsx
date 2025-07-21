@@ -1,11 +1,11 @@
 import Image from 'next/image';
 
-interface EmptyStateProps {
+interface IEmptyStateProps {
   title: string;
   description: string;
 }
 
-export const EmptyState = ({ title, description }: EmptyStateProps) => {
+export const EmptyState = ({ title, description }: IEmptyStateProps) => {
   return (
     <div className="empty-state">
       <Image

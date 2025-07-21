@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react';
 
-interface CallToActionProps {
+interface ICallToActionProps {
   icon: ReactNode;
   title: string;
   description: string;
@@ -10,7 +10,7 @@ interface CallToActionProps {
   onSubmit?: () => void;
 }
 
-export const CallToAction: FC<CallToActionProps> = ({
+export const CallToAction: FC<ICallToActionProps> = ({
   icon,
   title,
   description,

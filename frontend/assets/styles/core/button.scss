@@ -7,6 +7,16 @@
   transition: all 0.3s ease;
   width: 100%;
 
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--border-color) !important;
+    color: var(--text-grey) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: none;
+  }
+
   &.btn-primary {
     background-color: var(--primary-color);
     border: 2px solid var(--primary-color);

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* because next-auth convention */
 // import NextAuth, { Session, NextAuthOptions } from 'next-auth';
 // import CredentialsProvider from 'next-auth/providers/credentials';
 

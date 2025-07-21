@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 import { Button } from '@/components/forms/Button';
 
-interface CustomErrorProps {
+interface ICustomErrorProps {
   image?: string;
   title?: string;
   description?: string;
@@ -12,7 +12,7 @@ interface CustomErrorProps {
   buttonText?: string;
 }
 
-export const CustomErrorPage: FC<CustomErrorProps> = ({
+export const CustomErrorPage: FC<ICustomErrorProps> = ({
   image,
   title,
   description,

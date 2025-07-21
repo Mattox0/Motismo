@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-interface ButtonProps {
+interface IButtonProps {
   children: React.ReactNode;
   variant: 'primary' | 'secondary' | 'colored' | 'error';
   startIcon?: React.ReactNode;
@@ -11,7 +11,7 @@ interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
 }
 
-export const Button: FC<ButtonProps> = ({
+export const Button: FC<IButtonProps> = ({
   children,
   variant,
   startIcon,

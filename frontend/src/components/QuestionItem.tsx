@@ -3,15 +3,15 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useQuizz } from '@/providers/QuizzProvider';
-import { Question } from '@/types/model/IQuestion';
+import { IQuestion } from '@/types/model/IQuestion';
 
-interface QuestionItemProps {
-  question: Question;
+interface IQuestionItemProps {
+  question: IQuestion;
   active: boolean;
   onDelete?: (_questionId: string) => void;
 }
 
-export const QuestionItem: FC<QuestionItemProps> = ({ question, active, onDelete }) => {
+export const QuestionItem: FC<IQuestionItemProps> = ({ question, active, onDelete }) => {
   const { t } = useTranslation();
   const { selectCurrentQuestion } = useQuizz();
 
