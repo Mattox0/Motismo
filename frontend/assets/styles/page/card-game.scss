@@ -37,7 +37,7 @@
     align-items: center;
     width: 100%;
     max-width: min(90vw, 600px);
-    min-height: 0; // Important pour permettre au flex de réduire
+    min-height: 0;
     margin-bottom: clamp(1rem, 3vh, 2rem);
   }
 
@@ -74,7 +74,7 @@
     height: 100%;
     max-width: min(85vw, 420px);
     max-height: min(70vh, 540px);
-    aspect-ratio: 420/540; // Maintient le ratio de la carte
+    aspect-ratio: 420/540;
     position: relative;
     transition: transform 0.5s;
     transform-style: preserve-3d;
@@ -128,7 +128,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: clamp(1rem, 4vw, 2rem);
+    height: 100%;
   }
 
   &__image {
@@ -145,10 +145,19 @@
     width: 100%;
     word-break: break-word;
     line-height: 1.4;
+    padding: clamp(1rem, 4vw, 2rem);
   }
 }
 
-// Media queries pour des ajustements spécifiques
+.card-game__card-container.fade > * {
+  animation: fadeOut 0.3s;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 @media (max-width: 768px) {
   .card-game {
     padding: 0.5rem;
@@ -173,7 +182,6 @@
   }
 }
 
-// Pour les écrans très petits en hauteur (landscape mobile)
 @media (max-height: 600px) {
   .card-game {
     &__header {
