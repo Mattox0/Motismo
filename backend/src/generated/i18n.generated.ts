@@ -23,6 +23,7 @@ export type I18nTranslations = {
         "INVALID_ORDER_VALUE": string;
         "FAILED_TO_CREATE_CHOICE": string;
         "INVALID_QUESTION_TYPE": string;
+        "ROOM_UNEXISTS": string;
     };
     "user": {
         "HELLO": string;

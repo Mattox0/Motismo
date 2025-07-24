@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   TableInheritance,
 } from "typeorm";
 import { QuestionType } from "@/question/types/questionType";
 import { Quizz } from "@/quizz/quizz.entity";
+import { Game } from "@/game/game.entity";
 
 @Entity()
 @TableInheritance({ column: { type: "varchar", name: "type" } })
@@ -28,6 +30,9 @@ export class Question {
     onDelete: "CASCADE",
   })
   quizz: Quizz;
+
+  @OneToOne(() => Game, (game) => game.currentQuestion)
+  game: Game;
 
   @Column({ type: "int", nullable: false })
   order: number;

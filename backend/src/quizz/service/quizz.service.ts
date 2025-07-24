@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { type Repository } from "typeorm";
 
@@ -44,10 +39,7 @@ export class QuizzService {
     const user = await this.userService.findOneUser(userId);
 
     if (!user) {
-      throw new HttpException(
-        await this.translationService.translate("error.USER_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(await this.translationService.translate("error.USER_NOT_FOUND"), HttpStatus.NOT_FOUND);
     }
 
     const quizz = this.quizzRepository.create({
@@ -58,15 +50,8 @@ export class QuizzService {
     return this.quizzRepository.save(quizz);
   }
 
-  private async deleteUnusedImages(
-    quizz: Quizz,
-    updateQuizzDto: UpdatedQuizzDto,
-  ): Promise<void> {
-    if (
-      updateQuizzDto.image &&
-      quizz.image &&
-      updateQuizzDto.image !== quizz.image
-    ) {
+  private async deleteUnusedImages(quizz: Quizz, updateQuizzDto: UpdatedQuizzDto): Promise<void> {
+    if (updateQuizzDto.image && quizz.image && updateQuizzDto.image !== quizz.image) {
       await this.fileUploadService.deleteFile(quizz.image);
     }
   }
@@ -82,10 +67,7 @@ export class QuizzService {
       .execute();
 
     if (query.affected === 0) {
-      throw new HttpException(
-        await this.translationService.translate("error.QUIZZ_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(await this.translationService.translate("error.QUIZZ_NOT_FOUND"), HttpStatus.NOT_FOUND);
     }
 
     return;
@@ -97,9 +79,7 @@ export class QuizzService {
     });
 
     if (!quizz) {
-      throw new NotFoundException(
-        await this.translationService.translate("error.QUIZZ_NOT_FOUND"),
-      );
+      throw new NotFoundException(await this.translationService.translate("error.QUIZZ_NOT_FOUND"));
     }
 
     if (quizz.image) {
@@ -119,9 +99,7 @@ export class QuizzService {
     });
 
     if (!quizz) {
-      throw new NotFoundException(
-        await this.translationService.translate("error.QUIZZ_NOT_FOUND"),
-      );
+      throw new NotFoundException(await this.translationService.translate("error.QUIZZ_NOT_FOUND"));
     }
 
     return quizz;

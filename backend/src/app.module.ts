@@ -14,6 +14,8 @@ import { MatchingQuestion } from "./question/entity/matchingQuestion.entity";
 import { WordCloudQuestion } from "./question/entity/wordCloudQuestion.entity";
 import { CardsModule } from "./cards/card.module";
 import { ChoiceModule } from "./choice/choice.module";
+import { GameModule } from "./game/game.module";
+import { GameUserModule } from "./gameUser/gameUser.module";
 
 @Module({
   imports: [
@@ -49,14 +51,8 @@ import { ChoiceModule } from "./choice/choice.module";
         path: path.join(__dirname, "/i18n/"),
         watch: true,
       },
-      typesOutputPath: path.join(
-        __dirname,
-        "../src/generated/i18n.generated.ts",
-      ),
-      resolvers: [
-        { use: QueryResolver, options: ["lang", "locale"] },
-        AcceptLanguageResolver,
-      ],
+      typesOutputPath: path.join(__dirname, "../src/generated/i18n.generated.ts"),
+      resolvers: [{ use: QueryResolver, options: ["lang", "locale"] }, AcceptLanguageResolver],
     }),
     QuizzModule,
     UsersModule,
@@ -65,6 +61,8 @@ import { ChoiceModule } from "./choice/choice.module";
     FileUploadModule,
     CardsModule,
     ChoiceModule,
+    GameModule,
+    GameUserModule,
   ],
   controllers: [],
   providers: [TranslationService],

@@ -6,10 +6,12 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { IQuizzType } from "./types/IQuizzType";
 import { Card } from "@/cards/card.entity";
+import { Game } from "@/game/game.entity";
 @Entity()
 export class Quizz {
   @PrimaryGeneratedColumn("uuid")
@@ -36,6 +38,9 @@ export class Quizz {
     cascade: ["remove"],
   })
   cards?: Card[];
+
+  @OneToOne(() => Game, (game) => game.quizz)
+  game: Game;
 
   @CreateDateColumn()
   creationDate: Date;

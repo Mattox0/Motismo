@@ -53,28 +53,21 @@ export class QuestionService {
       .createQueryBuilder("question")
       .update(Question)
       .set({
-        order: () =>
-          isDecrement ? "question.order - 1" : "question.order + 1",
+        order: () => (isDecrement ? "question.order - 1" : "question.order + 1"),
       })
       .where('"question"."quizzId" = :quizzId', { quizzId });
 
     if (oldOrder !== undefined) {
       if (newOrder > oldOrder) {
-        queryBuilder.andWhere(
-          "question.order > :oldOrder AND question.order <= :newOrder",
-          {
-            oldOrder,
-            newOrder,
-          },
-        );
+        queryBuilder.andWhere("question.order > :oldOrder AND question.order <= :newOrder", {
+          oldOrder,
+          newOrder,
+        });
       } else {
-        queryBuilder.andWhere(
-          "question.order >= :newOrder AND question.order < :oldOrder",
-          {
-            oldOrder,
-            newOrder,
-          },
-        );
+        queryBuilder.andWhere("question.order >= :newOrder AND question.order < :oldOrder", {
+          oldOrder,
+          newOrder,
+        });
       }
     } else {
       queryBuilder.andWhere("question.order >= :newOrder", { newOrder });
@@ -83,18 +76,12 @@ export class QuestionService {
     await queryBuilder.execute();
   }
 
-  async createChoiceQuestion(
-    quizz: Quizz,
-    createChoiceQuestionDto: CreateChoiceQuestionDto,
-  ): Promise<void> {
-    console.log(createChoiceQuestionDto);
+  async createChoiceQuestion(quizz: Quizz, createChoiceQuestionDto: CreateChoiceQuestionDto): Promise<void> {
     const maxOrder = await this.getMaxOrder(quizz.id);
     const order = createChoiceQuestionDto.order ?? maxOrder + 1;
 
     if (order < 0 || order > maxOrder + 1) {
-      throw new BadRequestException(
-        await this.translationService.translate("error.INVALID_ORDER_VALUE"),
-      );
+      throw new BadRequestException(await this.translationService.translate("error.INVALID_ORDER_VALUE"));
     }
 
     if (order <= maxOrder) {
@@ -123,20 +110,11 @@ export class QuestionService {
     const maxOrder = await this.getMaxOrder(quizz.id);
 
     if (updateChoiceQuestionDto.order !== undefined) {
-      if (
-        updateChoiceQuestionDto.order < 0 ||
-        updateChoiceQuestionDto.order > maxOrder
-      ) {
-        throw new BadRequestException(
-          await this.translationService.translate("error.INVALID_ORDER_VALUE"),
-        );
+      if (updateChoiceQuestionDto.order < 0 || updateChoiceQuestionDto.order > maxOrder) {
+        throw new BadRequestException(await this.translationService.translate("error.INVALID_ORDER_VALUE"));
       }
 
-      await this.reorderQuestions(
-        quizz.id,
-        updateChoiceQuestionDto.order,
-        question.order,
-      );
+      await this.reorderQuestions(quizz.id, updateChoiceQuestionDto.order, question.order);
     }
 
     await this.deleteUnusedImages(question, updateChoiceQuestionDto);
@@ -155,12 +133,7 @@ export class QuestionService {
       await this.fileUploadService.deleteFile(question.image);
     }
 
-    await this.reorderQuestions(
-      question.quizz.id,
-      question.order,
-      undefined,
-      true,
-    );
+    await this.reorderQuestions(question.quizz.id, question.order, undefined, true);
 
     await this.questionRepository.delete(question.id);
   }
@@ -169,11 +142,7 @@ export class QuestionService {
     question: AllQuestion,
     updateChoiceQuestionDto: UpdateChoiceQuestionDto,
   ): Promise<void> {
-    if (
-      updateChoiceQuestionDto.image &&
-      question.image &&
-      updateChoiceQuestionDto.image !== question.image
-    ) {
+    if (updateChoiceQuestionDto.image && question.image && updateChoiceQuestionDto.image !== question.image) {
       await this.fileUploadService.deleteFile(question.image);
     }
   }

@@ -36,10 +36,7 @@ export class UserService {
       .execute();
 
     if (query.affected === 0) {
-      throw new HttpException(
-        await this.translationService.translate("error.USER_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(await this.translationService.translate("error.USER_NOT_FOUND"), HttpStatus.NOT_FOUND);
     }
 
     return;
@@ -54,10 +51,7 @@ export class UserService {
       .execute();
 
     if (query.affected === 0) {
-      throw new HttpException(
-        await this.translationService.translate("error.USER_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(await this.translationService.translate("error.USER_NOT_FOUND"), HttpStatus.NOT_FOUND);
     }
 
     return;
@@ -90,10 +84,7 @@ export class UserService {
     return this.findOneUser(requestUser.id);
   }
 
-  async checkUnknownUser(
-    user: RegisterDto | UserUpdatedDto,
-    userId?: string,
-  ): Promise<boolean> {
+  async checkUnknownUser(user: RegisterDto | UserUpdatedDto, userId?: string): Promise<boolean> {
     const unknownUser = await this.usersRepository
       .createQueryBuilder("user")
       .where("user.username = :username", { username: user.username })

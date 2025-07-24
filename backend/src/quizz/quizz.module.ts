@@ -24,13 +24,7 @@ import { Card } from "@/cards/card.entity";
     forwardRef(() => CardsModule),
   ],
   controllers: [QuizzController],
-  providers: [
-    QuizzService,
-    TranslationService,
-    FileUploadService,
-    ParseFilesPipe,
-    QuizzGuard,
-  ],
+  providers: [QuizzService, TranslationService, FileUploadService, ParseFilesPipe, QuizzGuard],
   exports: [QuizzService, QuizzGuard],
 })
 export class QuizzModule {}

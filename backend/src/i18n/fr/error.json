@@ -15,5 +15,10 @@
   "INVALID_FILE": "Le fichier est invalide",
   "INVALID_ORDER_VALUE": "La valeur de l'ordre est invalide",
   "FAILED_TO_CREATE_CHOICE": "La création du choix a échoué",
-  "INVALID_QUESTION_TYPE": "Le type de question est invalide"
+  "INVALID_QUESTION_TYPE": "Le type de question est invalide",
+  "ROOM_UNEXISTS": "Le quizz n'existe pas",
+  "GAME_NOT_FOUND": "La game n'existe pas",
+  "NOT_AUTHOR": "Vous n'êtes pas l'auteur de ce quizz",
+  "QUIZZ_TYPE": "Vous ne pouvez pas créer un quizz d'un jeu de cartes",
+  "ANY_QUESTION": "Vous n'avez aucune questions"
 }

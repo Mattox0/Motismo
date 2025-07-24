@@ -115,6 +115,14 @@ export default tseslint.config(
       'prefer-arrow-callback': 'error',
       'prefer-spread': 'error',
       'require-await': 'error',
+
+      // Ajout ou modification de la règle Prettier pour augmenter la taille minimale de ligne
+      'prettier/prettier': [
+        'error',
+        {
+          printWidth: 120
+        }
+      ],
     },
   },
 );

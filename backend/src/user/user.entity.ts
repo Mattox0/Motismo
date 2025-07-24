@@ -1,13 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { Role } from "@/user/role.enum";
 import { Quizz } from "@/quizz/quizz.entity";
+import { Game } from "@/game/game.entity";
 
 @Entity()
 export class User {
@@ -34,4 +29,7 @@ export class User {
 
   @OneToMany(() => Quizz, (quizz) => quizz.author)
   quizz?: Quizz[];
+
+  @OneToMany(() => Game, (game) => game.author)
+  games?: Game[];
 }
