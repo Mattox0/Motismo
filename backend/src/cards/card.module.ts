@@ -11,10 +11,7 @@ import { FileUploadModule } from "@/files/files.module";
 import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Card, Quizz, ChoiceQuestion]),
-    FileUploadModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Card, Quizz, ChoiceQuestion]), FileUploadModule],
   controllers: [CardController],
   providers: [CardService, TranslationService, ParseFilesPipe],
   exports: [CardService],

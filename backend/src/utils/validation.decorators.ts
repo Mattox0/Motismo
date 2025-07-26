@@ -60,7 +60,5 @@ export const IsBoolean = () =>
 export const ValidateNested = (options?: ValidationOptions) =>
   OriginalValidateNested({
     ...options,
-    message: i18nValidationMessage<I18nTranslations>(
-      "validation.NOT_VALIDATE_NESTED",
-    ),
+    message: i18nValidationMessage<I18nTranslations>("validation.NOT_VALIDATE_NESTED"),
   });

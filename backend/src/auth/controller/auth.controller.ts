@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  HttpException,
-  HttpStatus,
-  Post,
-  Res,
-  UploadedFile,
-  UseInterceptors,
-} from "@nestjs/common";
+import { Body, Controller, HttpException, HttpStatus, Post, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiConflictResponse,
@@ -46,10 +37,7 @@ export class AuthController {
   @ApiOperation({ summary: "Login user" })
   @ApiNotFoundResponse({ description: "User not found" })
   @ApiOkResponse({ type: LoginResponse })
-  async login(
-    @Body() body: LoginDto,
-    @Res() response: Response,
-  ): Promise<object> {
+  async login(@Body() body: LoginDto, @Res() response: Response): Promise<object> {
     const user = await this.userService.findOneEmail(body.email);
 
     if (!user) {
@@ -88,8 +76,7 @@ export class AuthController {
     description: "A user with the given email or username already exists",
   })
   @ApiCreatedResponse({
-    description:
-      "The user was successfully registered and an access token has been returned",
+    description: "The user was successfully registered and an access token has been returned",
     type: LoginResponse,
   })
   async register(
@@ -98,10 +85,7 @@ export class AuthController {
     @UploadedFile(ParseFilesPipe) file?: Express.Multer.File,
   ): Promise<object> {
     if (await this.userService.checkUnknownUser(body)) {
-      throw new HttpException(
-        await this.translationService.translate("error.USER_EXIST"),
-        HttpStatus.CONFLICT,
-      );
+      throw new HttpException(await this.translationService.translate("error.USER_EXIST"), HttpStatus.CONFLICT);
     }
 
     const userBody = Object.assign({}, body);

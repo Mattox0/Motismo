@@ -7,7 +7,7 @@ export default async function CardGame({ params }: { params: { id: string } }) {
   return (
     <GlobalLayout screened>
       <CardProvider quizId={id}>
-        <CardGamePage cardId={id} />
+        <CardGamePage />
       </CardProvider>
     </GlobalLayout>
   );

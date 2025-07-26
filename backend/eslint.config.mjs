@@ -1,6 +1,5 @@
 // @ts-check
 import eslint from '@eslint/js';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -11,7 +10,6 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   ...tseslint.configs.strictTypeChecked,
-  eslintPluginPrettierRecommended,
   {
     languageOptions: {
       globals: {
@@ -116,7 +114,7 @@ export default tseslint.config(
       'prefer-spread': 'error',
       'require-await': 'error',
 
-      // Ajout ou modification de la règle Prettier pour augmenter la taille minimale de ligne
+      // Formatage Prettier
       'prettier/prettier': [
         'error',
         {

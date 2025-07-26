@@ -14,7 +14,7 @@ import { User } from "@/user/user.entity";
 @ApiTags("game")
 @ApiUnauthorizedResponse({ description: "User not connected" })
 @Controller("quizz/:quizzId/game")
-export class QuizzController {
+export class GameController {
   constructor(
     private gameService: GameService,
     private readonly translationService: TranslationService,

@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ExecutionContext,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, ExecutionContext, Injectable, NotFoundException } from "@nestjs/common";
 
 import { JwtAuthGuard } from "@/auth/guards/jwt-auth.guard";
 import { TranslationService } from "@/translation/translation.service";
@@ -28,17 +23,13 @@ export class UserAuthGuard extends JwtAuthGuard {
     const request = context.switchToHttp().getRequest<IRequestWithUser>();
 
     if (!request.user) {
-      throw new BadRequestException(
-        await this.translationsService.translate("error.USER_NOT_FOUND"),
-      );
+      throw new BadRequestException(await this.translationsService.translate("error.USER_NOT_FOUND"));
     }
 
     const user = await this.userService.findOneUser(request.user.id);
 
     if (!user) {
-      throw new NotFoundException(
-        await this.translationsService.translate("error.USER_NOT_FOUND"),
-      );
+      throw new NotFoundException(await this.translationsService.translate("error.USER_NOT_FOUND"));
     }
 
     return true;

@@ -29,10 +29,18 @@ export class GameUserService {
     });
   }
 
-  async create(createdUser: ICreateGameUserPayload): Promise<void> {
+  async getOneUser(id: string): Promise<GameUser | null> {
+    return await this.gameUserRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  async create(createdUser: ICreateGameUserPayload): Promise<GameUser> {
     const gameUser = this.gameUserRepository.create(createdUser);
 
-    await this.gameUserRepository.save(gameUser);
+    return await this.gameUserRepository.save(gameUser);
   }
 
   async updateSocketId(socket: IAuthenticatedSocket, game: Game): Promise<void> {

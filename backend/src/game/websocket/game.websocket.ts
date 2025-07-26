@@ -28,6 +28,8 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
       userId: socket.handshake.query?.userId as string,
       socketId: socket.id,
       name: socket.handshake.query?.name as string,
+      avatar: socket.handshake.query?.avatar as string,
+      externalId: socket.handshake.query?.externalId as string,
     };
     socket.data.code = socket.handshake.query.code as string;
     console.log(`New connecting... socket id:`, socket.id);
@@ -40,8 +42,16 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
   @SubscribeMessage(IWebsocketType.JOIN)
   join(@ConnectedSocket() socket: IAuthenticatedSocket) {
     return this.handleAction(socket, async () => {
-      await this.gameService.join(socket);
+
+      const user = await this.gameService.join(socket);
+
       await socket.join(socket.data.code);
+
+      if (user) {
+        console.log(user);
+        this.server.to(user.socketId).emit(IWebsocketType.JOIN, user);
+        console.log("EMIT")
+      }
       await this.emitUpdate(socket);
     });
   }

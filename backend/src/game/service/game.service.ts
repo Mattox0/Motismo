@@ -8,9 +8,9 @@ import { IAuthenticatedSocket } from "../types/IAuthenticatedSocket";
 import { GameUserService } from "@/gameUser/service/gameUser.service";
 import { ICreateGameUserPayload } from "@/gameUser/types/IGameUserPayload";
 import { Quizz } from "@/quizz/quizz.entity";
-import crypto from "crypto";
 import { User } from "@/user/user.entity";
 import { Question } from "@/question/question.entity";
+import { UserService } from "@/user/service/user.service";
 
 @Injectable()
 export class GameService {
@@ -19,6 +19,7 @@ export class GameService {
     private gameRepository: Repository<Game>,
     private readonly translationService: TranslationService,
     private readonly gameUserService: GameUserService,
+    private readonly userService: UserService,
   ) {}
 
   async create(quizz: Quizz, user: User): Promise<Game> {
@@ -64,23 +65,28 @@ export class GameService {
     return game;
   }
 
-  async join(socket: IAuthenticatedSocket): Promise<void> {
+  async join(socket: IAuthenticatedSocket): Promise<GameUser | null> {
     const game = await this.getGame(socket);
 
-    const user: GameUser | undefined = game.users.find((user: GameUser) => user.id === socket.data.user.userId);
+    let user: GameUser | undefined = game.users.find((user: GameUser) => user.id === socket.data.user.userId);
 
     if (user) {
       await this.gameUserService.updateSocketId(socket, game);
     } else {
+      const externalUser = await this.userService.findOneUser(socket.data.user.userId);
       const createdUser: ICreateGameUserPayload = {
         game,
         socketId: socket.data.user.socketId,
         name: socket.data.user.name,
-        isAuthor: socket.data.user.userId === game.author.id,
+        isAuthor: socket.data.user.externalId === game.author.id,
+        avatar: socket.data.user.avatar,
+        ...(externalUser && { user: externalUser }),
       };
 
-      await this.gameUserService.create(createdUser);
+      user = await this.gameUserService.create(createdUser);
     }
+
+    return this.gameUserService.getOneUser(user.id);
   }
 
   async start(socket: IAuthenticatedSocket): Promise<void> {
@@ -106,8 +112,4 @@ export class GameService {
 }
 
 export const generateCode = (len = 6): string =>
-  crypto
-    .randomBytes(Math.ceil((len * 3) / 4))
-    .toString("base64")
-    .replace(/[^a-zA-Z0-9]/g, "")
-    .slice(0, len);
+  Array.from({ length: len }, () => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join("");

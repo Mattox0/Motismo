@@ -1,10 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from "@nestjs/common";
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -32,10 +26,7 @@ export class QuizzGuard implements CanActivate {
     const { quizzId } = request.params;
 
     if (!quizzId || !uuidRegex.test(quizzId)) {
-      throw new HttpException(
-        await this.translationsService.translate("error.ID_INVALID"),
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(await this.translationsService.translate("error.ID_INVALID"), HttpStatus.BAD_REQUEST);
     }
 
     const quizz = await this.quizzRepository.findOne({
@@ -50,10 +41,7 @@ export class QuizzGuard implements CanActivate {
     });
 
     if (!quizz) {
-      throw new HttpException(
-        await this.translationsService.translate("error.QUIZZ_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(await this.translationsService.translate("error.QUIZZ_NOT_FOUND"), HttpStatus.NOT_FOUND);
     }
 
     const questions = await this.choiceQuestionRepository.find({

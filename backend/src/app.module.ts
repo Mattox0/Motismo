@@ -16,6 +16,7 @@ import { CardsModule } from "./cards/card.module";
 import { ChoiceModule } from "./choice/choice.module";
 import { GameModule } from "./game/game.module";
 import { GameUserModule } from "./gameUser/gameUser.module";
+import { RoomWebsocketGateway } from "./game/websocket/game.websocket";
 
 @Module({
   imports: [
@@ -65,6 +66,6 @@ import { GameUserModule } from "./gameUser/gameUser.module";
     GameUserModule,
   ],
   controllers: [],
-  providers: [TranslationService],
+  providers: [TranslationService, RoomWebsocketGateway],
 })
 export class AppModule {}

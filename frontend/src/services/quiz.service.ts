@@ -1,15 +1,15 @@
-import { Quizz } from '@/../../backend/src/quizz/quizz.entity';
-
 import { baseApi } from '@/services/base.service';
+import { IGame } from '@/types/model/IGame';
+import { IQuizz } from '@/types/model/IQuizz';
 import { QueryTags } from '@/types/QueryTags';
 
 export const quizApi = baseApi.injectEndpoints({
   endpoints: builder => ({
-    getQuiz: builder.query<Quizz[], void>({
+    getQuiz: builder.query<IQuizz[], void>({
       query: () => '/quizz',
       providesTags: [QueryTags.QUIZ],
     }),
-    createQuizz: builder.mutation<Quizz, FormData>({
+    createQuizz: builder.mutation<IQuizz, FormData>({
       query: (formData: FormData) => ({
         url: '/quizz',
         method: 'POST',
@@ -17,11 +17,27 @@ export const quizApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [QueryTags.QUIZ],
     }),
-    getOneQuiz: builder.query<Quizz, string>({
+    getOneQuiz: builder.query<IQuizz, string>({
       query: (id: string) => `/quizz/${id}`,
       providesTags: [QueryTags.QUIZ],
+    }),
+    getQuizByCode: builder.query<IQuizz, string>({
+      query: (code: string) => `/quizz/code/${code}`,
+      providesTags: [QueryTags.QUIZ],
+    }),
+    createGame: builder.mutation<IGame, string>({
+      query: (id: string) => ({
+        url: `/quizz/${id}/game`,
+        method: 'POST',
+      }),
     }),
   }),
 });
 
-export const { useGetQuizQuery, useCreateQuizzMutation, useGetOneQuizQuery } = quizApi;
+export const {
+  useGetQuizQuery,
+  useCreateQuizzMutation,
+  useGetOneQuizQuery,
+  useGetQuizByCodeQuery,
+  useCreateGameMutation,
+} = quizApi;

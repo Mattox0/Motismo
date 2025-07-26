@@ -35,6 +35,13 @@ export class QuizzService {
     });
   }
 
+  async getByCode(code: string) {
+    return await this.quizzRepository.findOne({
+      where: { games: { code: code } },
+      relations: { cards: true, questions: true, games: true, author: true },
+    });
+  }
+
   async create(createQuizzDto: CreateQuizzDto, userId: string): Promise<Quizz> {
     const user = await this.userService.findOneUser(userId);
 

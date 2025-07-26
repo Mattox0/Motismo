@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } f
 import { Role } from "@/user/role.enum";
 import { Quizz } from "@/quizz/quizz.entity";
 import { Game } from "@/game/game.entity";
+import { GameUser } from "@/gameUser/gameUser.entity";
 
 @Entity()
 export class User {
@@ -32,4 +33,7 @@ export class User {
 
   @OneToMany(() => Game, (game) => game.author)
   games?: Game[];
+
+  @OneToMany(() => GameUser, (gameUser) => gameUser.user)
+  gameUsers?: GameUser[];
 }

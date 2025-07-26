@@ -7,7 +7,7 @@ import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
 import { AskCreateSection } from '@/components/sections/AskCreateSection';
 import { GlobalLayout } from '@/layout/GlobalLayout';
-import { useGetQuizQuery } from '@/services/quiz.service';
+import { useCreateGameMutation, useGetQuizQuery } from '@/services/quiz.service';
 import { IQuizz } from '@/types/model/IQuizz';
 import { IQuizzType } from '@/types/model/IQuizzType';
 import { showToast } from '@/utils/toast';
@@ -16,10 +16,20 @@ export default function Profile() {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: quizz, isLoading } = useGetQuizQuery();
+  const [createGame] = useCreateGameMutation();
 
   const questionsQuizz =
     quizz?.filter(quizzItem => quizzItem.quizzType === IQuizzType.QUESTIONS) ?? [];
   const cardsQuizz = quizz?.filter(quizzItem => quizzItem.quizzType === IQuizzType.CARDS) ?? [];
+
+  const handleCreateGame = async (id: string) => {
+    try {
+      const game = await createGame(id).unwrap();
+      router.push(`/game/${game.code}`);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <GlobalLayout>
@@ -38,7 +48,7 @@ export default function Profile() {
                 title={item.title}
                 creationDate={item.creationDate}
                 onEditClick={() => router.push(`/quiz/${item.id}`)}
-                onPresentationClick={() => {}}
+                onPresentationClick={() => handleCreateGame(item.id)}
               />
             ))
           ) : (

@@ -5,6 +5,8 @@ export interface ISocketData {
     userId: string;
     socketId: string;
     name: string;
+    avatar: string;
+    externalId: string;
   };
   code: string;
 }

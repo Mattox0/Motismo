@@ -3,7 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   TableInheritance,
 } from "typeorm";
@@ -31,7 +31,9 @@ export class Question {
   })
   quizz: Quizz;
 
-  @OneToOne(() => Game, (game) => game.currentQuestion)
+  @OneToMany(() => Game, (game) => game.currentQuestion, {
+    cascade: ["remove"],
+  })
   game: Game;
 
   @Column({ type: "int", nullable: false })

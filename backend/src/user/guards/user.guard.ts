@@ -1,10 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from "@nestjs/common";
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -26,10 +20,7 @@ export class UserGuard implements CanActivate {
     const userId = request.params.userId;
 
     if (!uuidRegex.test(userId)) {
-      throw new HttpException(
-        await this.translationsService.translate("error.ID_INVALID"),
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(await this.translationsService.translate("error.ID_INVALID"), HttpStatus.BAD_REQUEST);
     }
 
     const user = await this.userRepository.findOne({
@@ -39,10 +30,7 @@ export class UserGuard implements CanActivate {
     });
 
     if (!user) {
-      throw new HttpException(
-        await this.translationsService.translate("error.RATING_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(await this.translationsService.translate("error.RATING_NOT_FOUND"), HttpStatus.NOT_FOUND);
     }
 
     request.user = user;

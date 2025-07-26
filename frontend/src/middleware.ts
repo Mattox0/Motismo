@@ -10,7 +10,10 @@ function middleware() {
 export default withAuth(middleware, {
   callbacks: {
     authorized: ({ token, req }) => {
-      const isPublicPath = req.nextUrl.pathname.startsWith('/auth') || req.nextUrl.pathname === '/';
+      const isPublicPath =
+        req.nextUrl.pathname.startsWith('/auth') ||
+        req.nextUrl.pathname === '/' ||
+        req.nextUrl.pathname.startsWith('/game');
 
       if (isPublicPath) {
         return true;

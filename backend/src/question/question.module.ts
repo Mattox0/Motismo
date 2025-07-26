@@ -17,15 +17,7 @@ import { Card } from "@/cards/card.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Question,
-      ChoiceQuestion,
-      WordCloudQuestion,
-      MatchingQuestion,
-      Quizz,
-      Choice,
-      Card,
-    ]),
+    TypeOrmModule.forFeature([Question, ChoiceQuestion, WordCloudQuestion, MatchingQuestion, Quizz, Choice, Card]),
     forwardRef(() => UsersModule),
     forwardRef(() => ChoiceModule),
   ],

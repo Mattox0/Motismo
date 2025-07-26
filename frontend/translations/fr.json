@@ -137,7 +137,8 @@
     },
     "no": {
       "cards": "Vous n'avez pas de cartes"
-    }
+    },
+    "hex_invalid": "Code hexadecimal invalide (format #RRGGBB)"
   },
   "create_quiz": {
     "title": {

@@ -24,6 +24,10 @@ export type I18nTranslations = {
         "FAILED_TO_CREATE_CHOICE": string;
         "INVALID_QUESTION_TYPE": string;
         "ROOM_UNEXISTS": string;
+        "GAME_NOT_FOUND": string;
+        "NOT_AUTHOR": string;
+        "QUIZZ_TYPE": string;
+        "ANY_QUESTION": string;
     };
     "user": {
         "HELLO": string;

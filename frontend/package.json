@@ -10,6 +10,8 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
   },
   "dependencies": {
+    "@dicebear/collection": "^9.2.3",
+    "@dicebear/core": "^9.2.3",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^5.0.1",
@@ -18,7 +20,7 @@
     "framer-motion": "^12.7.4",
     "i18next": "^24.2.3",
     "i18next-browser-languagedetector": "^8.0.4",
-    "next": "15.3.2",
+    "next": "^15.4.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -26,6 +28,7 @@
     "react-i18next": "^15.4.1",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
+    "socket.io-client": "^4.8.1",
     "zod": "^3.24.2"
   },
   "devDependencies": {

@@ -94,19 +94,13 @@ export class UserController {
     @UploadedFile(ParseFilesPipe) file?: Express.Multer.File,
   ): Promise<User> {
     if (me.role !== Role.Admin && me.id !== user.id) {
-      throw new HttpException(
-        await this.translationService.translate("error.USER_NOT_ADMIN"),
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException(await this.translationService.translate("error.USER_NOT_ADMIN"), HttpStatus.UNAUTHORIZED);
     }
     if (me.role !== Role.Admin) {
       delete body.role;
     }
     if (await this.userService.checkUnknownUser(body, user.id)) {
-      throw new HttpException(
-        await this.translationService.translate("error.USER_EXIST"),
-        HttpStatus.CONFLICT,
-      );
+      throw new HttpException(await this.translationService.translate("error.USER_EXIST"), HttpStatus.CONFLICT);
     }
     const updatedBody = Object.assign({}, body);
 
@@ -122,10 +116,7 @@ export class UserController {
     const userUpdated = await this.userService.findOneUser(user.id);
 
     if (!userUpdated) {
-      throw new HttpException(
-        await this.translationService.translate("error.USER_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(await this.translationService.translate("error.USER_NOT_FOUND"), HttpStatus.NOT_FOUND);
     }
 
     return userUpdated;
@@ -140,15 +131,9 @@ export class UserController {
     description: "User not connected or user not admin",
   })
   @ApiNotFoundResponse({ description: "User not found" })
-  async delete(
-    @CurrentUser() me: User,
-    @UserRequest() user: User,
-  ): Promise<void> {
+  async delete(@CurrentUser() me: User, @UserRequest() user: User): Promise<void> {
     if (me.role !== Role.Admin && me.id !== user.id) {
-      throw new HttpException(
-        await this.translationService.translate("error.USER_NOT_ADMIN"),
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException(await this.translationService.translate("error.USER_NOT_ADMIN"), HttpStatus.UNAUTHORIZED);
     }
     await this.userService.delete(user.id);
   }

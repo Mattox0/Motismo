@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Inject,
+  Param,
   Post,
   Put,
   UploadedFile,
@@ -35,7 +36,6 @@ import { QuizzGuard } from "@/quizz/guards/quizz.guard";
 import { UpdatedQuizzDto } from "@/quizz/dto/updatedQuizzDto";
 import { ParseFilesPipe } from "@/files/files.validator";
 
-@UseGuards(UserAuthGuard)
 @ApiTags("quizz")
 @ApiUnauthorizedResponse({ description: "User not connected" })
 @Controller("quizz")
@@ -48,6 +48,7 @@ export class QuizzController {
   ) {}
 
   @Get("")
+  @UseGuards(UserAuthGuard)
   @ApiOperation({ summary: "Returns all user quizzies" })
   @ApiOkResponse({
     description: "Quizzies found successfully",
@@ -56,6 +57,20 @@ export class QuizzController {
   })
   getAll(@CurrentUser() myUser: User): Promise<Quizz[]> {
     return this.quizzService.getMyQuizz(myUser);
+  }
+
+  @Get("/code/:code")
+  @ApiOperation({ summary: "Returns a quizz by id" })
+  @ApiOkResponse({ description: "Quizz found successfully" })
+  @ApiBadRequestResponse({ description: "Invalid id" })
+  async getByCode(@Param("code") code: string): Promise<Quizz> {
+    const quizz = await this.quizzService.getByCode(code);
+
+    if (!quizz) {
+      throw new HttpException(await this.translationService.translate("error.QUIZZ_NOT_FOUND"), HttpStatus.NOT_FOUND);
+    }
+
+    return quizz;
   }
 
   @Get("/:quizzId")
@@ -68,6 +83,7 @@ export class QuizzController {
   }
 
   @Post("")
+  @UseGuards(UserAuthGuard)
   @UseInterceptors(FileInterceptor("image"))
   @ApiConsumes("multipart/form-data")
   @ApiOperation({ summary: "Create a new quizz" })
@@ -90,7 +106,7 @@ export class QuizzController {
   }
 
   @Put("/:quizzId")
-  @UseGuards(QuizzGuard)
+  @UseGuards(QuizzGuard, UserAuthGuard)
   @UseInterceptors(FileInterceptor("image"))
   @ApiConsumes("multipart/form-data")
   @ApiOperation({ summary: "Update a quizz by id" })
@@ -119,7 +135,7 @@ export class QuizzController {
   }
 
   @Delete("/:quizzId")
-  @UseGuards(QuizzGuard)
+  @UseGuards(QuizzGuard, UserAuthGuard)
   @ApiOperation({ summary: "Delete a quizz by id" })
   @ApiOkResponse({ description: "Quizz deleted successfully" })
   @ApiBadRequestResponse({ description: "Invalid id" })
