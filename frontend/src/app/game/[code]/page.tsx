@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 
@@ -21,6 +21,7 @@ export default function GamePageWrapper() {
   const params = useParams();
   const rawCode = params.code;
   const code = Array.isArray(rawCode) ? rawCode[0] : rawCode;
+  const router = useRouter();
   const { data: session } = useSession();
   const { data: quizz } = useGetQuizByCodeQuery(code ?? '', {
     skip: !code,
@@ -28,19 +29,20 @@ export default function GamePageWrapper() {
   const [player, setPlayer] = useState<IPlayerData | null>(null);
 
   useEffect(() => {
-    if (!code || !quizz || !session) return;
+    if (!code || !quizz) return;
     try {
-      if (quizz.author.id === session.user.id) {
+      if (quizz.author.id === session?.user.id) {
         setPlayer({
           name: session.user.name ?? '',
           externalId: session.user.id,
         });
-      }
-      const stored = localStorage.getItem(code as string);
-      if (stored) {
-        const parsed: IPlayerData = JSON.parse(stored);
-        if (parsed.name && parsed.avatar) {
-          setPlayer(parsed);
+      } else {
+        const stored = localStorage.getItem(code as string);
+        if (stored) {
+          const parsed: IPlayerData = JSON.parse(stored);
+          if (parsed.name && parsed.avatar) {
+            setPlayer(parsed);
+          }
         }
       }
     } catch {
@@ -48,16 +50,24 @@ export default function GamePageWrapper() {
     }
   }, [code, quizz, session]);
 
-  if (!code) return null;
+  if (!code) return router.push('/');
 
-  if (!player || (!player.id && !player.externalId)) {
+  if (!quizz) {
+    return (
+      <div className="parent-loader">
+        <span className="loader"></span>
+      </div>
+    );
+  }
+
+  if (!player) {
     return <PlayerAccess />;
   }
 
   return (
     <SocketProvider player={player}>
       <GameProvider>
-        <GamePage code={code} player={player} />
+        <GamePage code={code} quizz={quizz} />
       </GameProvider>
     </SocketProvider>
   );

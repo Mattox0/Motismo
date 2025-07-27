@@ -28,6 +28,12 @@ export type I18nTranslations = {
         "NOT_AUTHOR": string;
         "QUIZZ_TYPE": string;
         "ANY_QUESTION": string;
+        "QUIZ_NOT_FOUND": string;
+        "INVALID_QUIZZ_ID": string;
+        "ALREADY_ANSWERED": string;
+        "NOT_QUESTION_PHASE": string;
+        "NO_CURRENT_QUESTION": string;
+        "INVALID_PHASE_TRANSITION": string;
     };
     "user": {
         "HELLO": string;

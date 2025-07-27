@@ -2,26 +2,31 @@
 
 import { FC } from 'react';
 
-import { IPlayerData } from '@/app/game/[code]/page';
 import { useWebsocket } from '@/hooks/useWebsocket';
 import { useGame } from '@/providers/GameProvider';
+import { IQuizz } from '@/types/model/IQuizz';
+
+import { GamePlayer } from './GamePlayer';
+import { GamePresentation } from './GamePresentation';
 
 interface IGamePageProps {
-  player: IPlayerData;
   code: string;
+  quizz: IQuizz;
 }
 
-export const GamePage: FC<IGamePageProps> = ({ player, code }) => {
+export const GamePage: FC<IGamePageProps> = ({ code, quizz }) => {
   useWebsocket(code);
-  const { isStarted, myUser } = useGame();
+  const { myUser } = useGame();
+
+  if (!myUser) {
+    <div className="parent-loader">
+      <span className="loader"></span>
+    </div>;
+  }
 
   return myUser?.isAuthor ? (
-    <div>
-      <h1>Game Author</h1>
-    </div>
+    <GamePresentation quizz={quizz} code={code} />
   ) : (
-    <div>
-      <h1>Game Player</h1>
-    </div>
+    <GamePlayer quizz={quizz} code={code} />
   );
 };

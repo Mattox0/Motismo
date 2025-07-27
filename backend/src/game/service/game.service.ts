@@ -10,8 +10,9 @@ import { ICreateGameUserPayload } from "@/gameUser/types/IGameUserPayload";
 import { Quizz } from "@/quizz/quizz.entity";
 import { User } from "@/user/user.entity";
 import { Question } from "@/question/question.entity";
+import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
 import { UserService } from "@/user/service/user.service";
-
+import { IGameStatus } from "../types/IGameStatus";
 @Injectable()
 export class GameService {
   constructor(
@@ -49,14 +50,23 @@ export class GameService {
   }
 
   async getGame(socket: IAuthenticatedSocket): Promise<Game> {
-    const game = await this.gameRepository.findOne({
-      where: { code: socket.data.code },
-      relations: {
-        users: true,
-        currentQuestion: true,
-        author: true,
-      },
-    });
+    const game = await this.gameRepository
+      .createQueryBuilder("game")
+      .leftJoinAndSelect("game.users", "users")
+      .leftJoinAndSelect("users.user", "user")
+      .leftJoinAndSelect("users.responses", "responses")
+      .leftJoinAndSelect("responses.question", "responseQuestion")
+      .leftJoinAndSelect("game.currentQuestion", "currentQuestion")
+      .leftJoinAndSelect("currentQuestion.choices", "choices")
+      .leftJoinAndSelect("game.author", "author")
+      .leftJoinAndSelect("game.quizz", "quizz")
+      .leftJoinAndSelect("quizz.questions", "questions")
+      .leftJoinAndSelect("questions.choices", "questionChoices")
+      .leftJoinAndSelect("quizz.cards", "cards")
+      .where("game.code = :code", { code: socket.data.code })
+      .orderBy("questions.order", "ASC")
+      .addOrderBy("cards.order", "ASC")
+      .getOne();
 
     if (!game) {
       throw new Error(await this.translationService.translate("error.GAME_NOT_FOUND"));
@@ -73,16 +83,19 @@ export class GameService {
     if (user) {
       await this.gameUserService.updateSocketId(socket, game);
     } else {
-      const externalUser = await this.userService.findOneUser(socket.data.user.userId);
-      const createdUser: ICreateGameUserPayload = {
+      let createdUser: ICreateGameUserPayload = {
         game,
         socketId: socket.data.user.socketId,
         name: socket.data.user.name,
         isAuthor: socket.data.user.externalId === game.author.id,
         avatar: socket.data.user.avatar,
-        ...(externalUser && { user: externalUser }),
       };
-
+      if (socket.data?.user?.externalId) {
+        const externalUser = await this.userService.findOneUser(socket.data.user.externalId);
+        if (externalUser) {
+          createdUser = { ...createdUser, user: externalUser };
+        }
+      }
       user = await this.gameUserService.create(createdUser);
     }
 
@@ -92,22 +105,37 @@ export class GameService {
   async start(socket: IAuthenticatedSocket): Promise<void> {
     const game = await this.getGame(socket);
 
-    if (socket.data.user.userId !== game.author.id) {
+    if (socket.data.user.externalId !== game.author.id) {
       throw new Error(await this.translationService.translate("error.NOT_AUTHOR"));
     }
 
-    await this.gameRepository
-      .createQueryBuilder()
-      .update(Game)
-      .set({ started: true })
-      .where("code = :code", { code: socket.data.code })
-      .execute();
+    await this.gameRepository.update({ code: socket.data.code }, { status: IGameStatus.DISPLAY_QUESTION });
   }
 
-  async isStarted(socket: IAuthenticatedSocket): Promise<boolean> {
+  async getCurrentQuestion(socket: IAuthenticatedSocket): Promise<Question | null> {
+    const game = await this.getGame(socket);
+    
+    if (!game.currentQuestion) {
+      return null;
+    }
+
+    if (game.currentQuestion instanceof ChoiceQuestion) {
+      return {
+        ...game.currentQuestion,
+        choices: game.currentQuestion.choices.map((choice) => ({
+          id: choice.id,
+          text: choice.text,
+        })),
+      } as ChoiceQuestion;
+    }
+
+    return game.currentQuestion;
+  }
+
+  async getStatus(socket: IAuthenticatedSocket): Promise<IGameStatus> {
     const game = await this.getGame(socket);
 
-    return game.started;
+    return game.status;
   }
 }
 

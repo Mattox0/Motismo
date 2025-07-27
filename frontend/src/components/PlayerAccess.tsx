@@ -78,6 +78,7 @@ export const PlayerAccess: React.FC = () => {
             onChange={e => setName(e.target.value)}
             placeholder="Votre pseudo"
             className="w-full border rounded px-3 py-2"
+            maxLength={20}
           />
         </div>
 

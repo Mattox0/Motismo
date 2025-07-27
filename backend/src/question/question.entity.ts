@@ -10,6 +10,7 @@ import {
 import { QuestionType } from "@/question/types/questionType";
 import { Quizz } from "@/quizz/quizz.entity";
 import { Game } from "@/game/game.entity";
+import { GameResponse } from "@/gameResponses/gameResponse.entity";
 
 @Entity()
 @TableInheritance({ column: { type: "varchar", name: "type" } })
@@ -34,7 +35,12 @@ export class Question {
   @OneToMany(() => Game, (game) => game.currentQuestion, {
     cascade: ["remove"],
   })
-  game: Game;
+  games: Game[];
+
+  @OneToMany(() => GameResponse, (gameResponse) => gameResponse.question, {
+    cascade: ["remove"],
+  })
+  responses: GameResponse[];
 
   @Column({ type: "int", nullable: false })
   order: number;

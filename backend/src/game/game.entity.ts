@@ -3,6 +3,7 @@ import { Quizz } from "@/quizz/quizz.entity";
 import { User } from "@/user/user.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { GameUser } from "../gameUser/gameUser.entity";
+import { IGameStatus } from "./types/IGameStatus";
 
 @Entity()
 export class Game {
@@ -12,13 +13,13 @@ export class Game {
   @Column({ type: "varchar", unique: true, nullable: false })
   code: string;
 
-  @Column({ type: "boolean", default: false })
-  started: boolean;
+  @Column({ type: "enum", enum: IGameStatus, default: IGameStatus.NOT_STARTED })
+  status: IGameStatus;
 
   @ManyToOne(() => Quizz, (quizz) => quizz.games)
   quizz?: Quizz;
 
-  @ManyToOne(() => Question, (question) => question.game)
+  @ManyToOne(() => Question, (question) => question.games)
   currentQuestion?: Question;
 
   @ManyToOne(() => User, (user) => user.games)

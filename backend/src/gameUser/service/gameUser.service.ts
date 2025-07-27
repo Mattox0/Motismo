@@ -51,4 +51,15 @@ export class GameUserService {
       .where("id = :id and game.id = :game", { id: socket.data.user.userId, game: game.id })
       .execute();
   }
+
+  async getUserBySocketId(socketId: string): Promise<GameUser | null> {
+    return await this.gameUserRepository.findOne({
+      where: {
+        socketId: socketId,
+      },
+      relations: {
+        game: true,
+      },
+    });
+  }
 }

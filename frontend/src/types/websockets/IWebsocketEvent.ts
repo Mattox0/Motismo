@@ -1,4 +1,10 @@
 export enum IWebsocketEvent {
   JOIN = 'JOIN',
   CONNECT = 'connect',
+  START = 'START',
+  STATUS = 'STATUS',
+  MEMBERS = 'MEMBERS',
+  ERROR = 'ERROR',
+  QUESTION_DATA = 'QUESTION_DATA',
+  TIMER = 'TIMER',
 }

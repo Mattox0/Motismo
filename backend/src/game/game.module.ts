@@ -12,6 +12,7 @@ import { Choice } from "@/choice/choice.entity";
 import { Card } from "@/cards/card.entity";
 import { ChoiceModule } from "@/choice/choice.module";
 import { QuestionModule } from "@/question/question.module";
+import { GameResponseModule } from "@/gameResponses/gameResponse.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { QuestionModule } from "@/question/question.module";
     forwardRef(() => UsersModule),
     forwardRef(() => ChoiceModule),
     forwardRef(() => QuestionModule),
+    forwardRef(() => GameResponseModule),
   ],
   controllers: [GameController],
   providers: [GameService, TranslationService],

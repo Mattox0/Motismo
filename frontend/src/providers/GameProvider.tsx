@@ -1,12 +1,20 @@
 import React, { createContext, type ReactNode, useContext, useMemo, useState } from 'react';
 
 import { IGameUser } from '@/types/model/IGameUser';
+import { IQuestion } from '@/types/model/IQuestion';
+import { IGameStatus } from '@/types/websockets/IGameStatus';
 
 interface IGameContextType {
-  isStarted: boolean;
-  setIsStarted: (value: boolean) => void;
+  status: IGameStatus;
+  setStatus: (status: IGameStatus) => void;
   myUser: IGameUser | null;
   setMyUser: (user: IGameUser | null) => void;
+  users: IGameUser[];
+  setUsers: (users: IGameUser[]) => void;
+  currentQuestion: IQuestion | null;
+  setCurrentQuestion: (question: IQuestion | null) => void;
+  timeLeft?: number;
+  setTimeLeft: (timeLeft: number | undefined) => void;
 }
 
 const GameContext = createContext<IGameContextType | undefined>(undefined);
@@ -24,17 +32,26 @@ interface IGameProviderProperties {
 }
 
 export const GameProvider: React.FC<IGameProviderProperties> = ({ children }) => {
-  const [isStarted, setIsStarted] = useState(false);
+  const [status, setStatus] = useState(IGameStatus.NOT_STARTED);
   const [myUser, setMyUser] = useState<IGameUser | null>(null);
+  const [users, setUsers] = useState<IGameUser[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<IQuestion | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number | undefined>(undefined);
 
   const values = useMemo(
     () => ({
-      isStarted,
-      setIsStarted,
+      status,
+      setStatus,
       myUser,
       setMyUser,
+      users,
+      setUsers,
+      currentQuestion,
+      setCurrentQuestion,
+      timeLeft,
+      setTimeLeft,
     }),
-    [isStarted, myUser]
+    [status, myUser, users, currentQuestion, timeLeft]
   );
 
   return <GameContext.Provider value={values}>{children}</GameContext.Provider>;

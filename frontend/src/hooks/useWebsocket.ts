@@ -3,12 +3,14 @@ import { useEffect } from 'react';
 import { useGame } from '@/providers/GameProvider';
 import { useSocket } from '@/providers/SocketProvider';
 import { IGameUser } from '@/types/model/IGameUser';
+import { IQuestion } from '@/types/model/IQuestion';
+import { IGameStatus } from '@/types/websockets/IGameStatus';
 import { IWebsocketEvent } from '@/types/websockets/IWebsocketEvent';
 import { showToast } from '@/utils/toast';
 
 export const useWebsocket = (code: string) => {
   const socket = useSocket();
-  const { setMyUser } = useGame();
+  const { setMyUser, setUsers, setStatus, setCurrentQuestion, setTimeLeft } = useGame();
 
   useEffect(() => {
     if (!socket) return;
@@ -27,8 +29,40 @@ export const useWebsocket = (code: string) => {
 
     socket?.on(IWebsocketEvent.JOIN, (user: IGameUser) => {
       localStorage.setItem(code, JSON.stringify(user));
-      console.log(user);
       setMyUser(user);
     });
-  }, [socket]);
+
+    socket?.on(IWebsocketEvent.ERROR, (error: string) => {
+      showToast.error(error);
+    });
+
+    socket?.on(IWebsocketEvent.STATUS, (status: IGameStatus) => {
+      setStatus(status);
+    });
+
+    socket.on(IWebsocketEvent.MEMBERS, users => {
+      setUsers(users);
+    });
+
+    socket.on(IWebsocketEvent.QUESTION_DATA, (question: IQuestion) => {
+      setCurrentQuestion(question);
+    });
+
+    socket.on(
+      IWebsocketEvent.TIMER,
+      (data: { timeLeft: number; type: string; finished?: boolean }) => {
+        setTimeLeft(data.timeLeft);
+      }
+    );
+
+    return () => {
+      socket.off(IWebsocketEvent.CONNECT);
+      socket.off(IWebsocketEvent.ERROR);
+      socket.off(IWebsocketEvent.STATUS);
+      socket.off(IWebsocketEvent.JOIN);
+      socket.off(IWebsocketEvent.MEMBERS);
+      socket.off(IWebsocketEvent.QUESTION_DATA);
+      socket.off(IWebsocketEvent.TIMER);
+    };
+  }, [socket, setMyUser, setUsers, setStatus, setCurrentQuestion, setTimeLeft]);
 };
