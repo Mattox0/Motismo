@@ -1,7 +1,8 @@
 import { FC } from 'react';
 
+import { AnswerResults } from '@/components/game/AnswerResults';
 import { Lobby } from '@/components/game/Lobby';
-import { QuestionPresentation } from '@/components/game/QuestionPresentation';
+import { QuestionChoicePresentation } from '@/components/game/QuestionChoicePresentation';
 import { useGame } from '@/providers/GameProvider';
 import { useSocket } from '@/providers/SocketProvider';
 import { IQuizz } from '@/types/model/IQuizz';
@@ -14,7 +15,7 @@ interface IGamePresentationProps {
 }
 
 export const GamePresentation: FC<IGamePresentationProps> = ({ quizz, code }) => {
-  const { status, currentQuestion, timeLeft } = useGame();
+  const { status, currentQuestion, timeLeft, answerStatistics, timerFinished } = useGame();
   const socket = useSocket();
 
   const startGame = () => {
@@ -26,7 +27,20 @@ export const GamePresentation: FC<IGamePresentationProps> = ({ quizz, code }) =>
   }
 
   if (status === IGameStatus.DISPLAY_QUESTION && currentQuestion) {
-    return <QuestionPresentation question={currentQuestion} timeLeft={timeLeft} />;
+    // faire un switch sur le type de question
+    return (
+      <QuestionChoicePresentation
+        question={currentQuestion}
+        timeLeft={timeLeft}
+        totalQuestions={quizz.questions?.length}
+        currentQuestionNumber={currentQuestion.order}
+        isTimerFinished={timerFinished}
+      />
+    );
+  }
+
+  if (status === IGameStatus.DISPLAY_ANSWERS && answerStatistics) {
+    return <AnswerResults statistics={answerStatistics} />;
   }
 
   return <div>GamePresentation</div>;

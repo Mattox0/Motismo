@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -15,6 +15,11 @@ export const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const login = () => {
     router.push('/auth');
@@ -31,40 +36,42 @@ export const Navbar: React.FC = () => {
 
   return (
     <nav className="navbar">
-      <Image src={MotismoLogo} alt="Motismo Logo" width={75} height={75} />
+      <div className="navbar-logo">
+        <Image src={MotismoLogo} alt="Motismo Logo" width={75} height={75} />
+      </div>
 
       <div className={`navigation ${isMenuOpen ? 'open' : ''}`}>
         <Link
-          className={pathname === '/' ? 'active' : ''}
+          className={isHydrated && pathname === '/' ? 'active' : ''}
           href="/"
           onClick={() => setIsMenuOpen(false)}
         >
-          Home
+          Accueil
         </Link>
         <Link
-          className={pathname === '/about' ? 'active' : ''}
-          href="/about"
+          className={isHydrated && pathname === '/profile' ? 'active' : ''}
+          href="/profile"
           onClick={() => setIsMenuOpen(false)}
         >
-          About
-        </Link>
-        <Link
-          className={pathname === '/contact' ? 'active' : ''}
-          href="/contact"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Contact
+          Dashboard
         </Link>
       </div>
 
       <div className="navbar-brand">
         <div className={`auth-buttons ${isMenuOpen ? 'open' : ''}`}>
-          {session ? (
-            <button className="btn btn-secondary" onClick={handleLogout}>
-              {t('navigation.logout')}
-            </button>
+          {isHydrated ? (
+            session ? (
+              <button className="btn btn-secondary" onClick={handleLogout}>
+                {t('navigation.logout')}
+              </button>
+            ) : (
+              <button className="btn btn-secondary" onClick={login}>
+                {t('navigation.login')}
+              </button>
+            )
           ) : (
-            <button className="btn btn-secondary" onClick={login}>
+            // Placeholder pendant l'hydratation
+            <button className="btn btn-secondary" style={{ visibility: 'hidden' }}>
               {t('navigation.login')}
             </button>
           )}

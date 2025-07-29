@@ -13,10 +13,11 @@ import { Card } from "@/cards/card.entity";
 import { ChoiceModule } from "@/choice/choice.module";
 import { QuestionModule } from "@/question/question.module";
 import { GameResponseModule } from "@/gameResponses/gameResponse.module";
+import { GameResponse } from "@/gameResponses/gameResponse.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Game, User, Quizz, Choice, Card]),
+    TypeOrmModule.forFeature([Game, User, Quizz, Choice, Card, GameResponse]),
     forwardRef(() => GameUserModule),
     forwardRef(() => UsersModule),
     forwardRef(() => ChoiceModule),

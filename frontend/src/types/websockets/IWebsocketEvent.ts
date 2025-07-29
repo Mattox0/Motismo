@@ -7,4 +7,7 @@ export enum IWebsocketEvent {
   ERROR = 'ERROR',
   QUESTION_DATA = 'QUESTION_DATA',
   TIMER = 'TIMER',
+  ANSWER = 'ANSWER',
+  DISPLAY_ANSWER = 'DISPLAY_ANSWER',
+  RESULTS = 'RESULTS',
 }

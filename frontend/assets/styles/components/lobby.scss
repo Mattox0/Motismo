@@ -111,7 +111,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
   gap: 1.5rem;
-  justify-items: center;
+  justify-items: start;
 }
 
 .lobby-participant {
@@ -168,7 +168,7 @@
 .lobby-no-participants {
   color: var(--text-secondary);
   font-size: 1rem;
-  text-align: center;
+  text-align: left;
   grid-column: 1/-1;
 }
 

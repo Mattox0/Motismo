@@ -1,5 +1,6 @@
 import {
   ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
@@ -12,6 +13,7 @@ import { TranslationService } from "@/translation/translation.service";
 import { IWebsocketType } from "../types/IWebsocketType";
 import { IAuthenticatedSocket } from "../types/IAuthenticatedSocket";
 import { GameUserService } from "@/gameUser/service/gameUser.service";
+import { IAnswerPayload } from "../types/IAnswerPayload";
 
 function parseMaybeUndefined(val: any) {
   return val === undefined || val === null || val === 'undefined' || val === 'null' ? undefined : val;
@@ -19,6 +21,8 @@ function parseMaybeUndefined(val: any) {
 
 @WebSocketGateway({ cors: "*", namespace: "room" })
 export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  private gameTimers: Map<string, NodeJS.Timeout> = new Map();
+
   constructor(
     private readonly gameService: GameService,
     private readonly gameUserService: GameUserService,
@@ -41,6 +45,12 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
 
   handleDisconnect(socket: IAuthenticatedSocket) {
     console.log(`Disconnecting... socket id:`, socket.id);
+    
+    // Nettoyer le timer si c'est le dernier utilisateur de ce code
+    if (socket.data.code) {
+      // Note: on pourrait vérifier s'il reste d'autres utilisateurs connectés
+      // avant de supprimer le timer, mais pour simplifier on le garde pour l'instant
+    }
   }
 
   @SubscribeMessage(IWebsocketType.JOIN)
@@ -69,13 +79,41 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
   }
 
   @SubscribeMessage(IWebsocketType.ANSWER)
-  answer(@ConnectedSocket() socket: IAuthenticatedSocket, data: { answer: string }) {
+  answer(@ConnectedSocket() socket: IAuthenticatedSocket, @MessageBody() data: IAnswerPayload) {
     return this.handleAction(socket, async () => {
-      // TODO: Implémenter la logique de réponse
-      // await this.gameService.submitAnswer(socket, data.answer);
+      const result = await this.gameService.submitAnswer(socket, data);
       this.server.to(socket.data.user.socketId).emit(IWebsocketType.ANSWER, { success: true });
+      
+      if (result && result.allAnswered) {
+        const timer = this.gameTimers.get(socket.data.code);
+        if (timer) {
+          clearInterval(timer);
+          this.gameTimers.delete(socket.data.code);
+        }
+        
+        const answerCount = await this.gameService.getAnswerCount(socket);
+        this.server.to(socket.data.code).emit(IWebsocketType.TIMER, { 
+          timeLeft: 0,
+          type: 'question',
+          finished: true,
+          allAnswered: true,
+          answered: answerCount.answered,
+          total: answerCount.total
+        });
+      }
     });
   }
+
+  @SubscribeMessage(IWebsocketType.DISPLAY_ANSWER)
+  displayAnswer(@ConnectedSocket() socket: IAuthenticatedSocket) {
+    return this.handleAction(socket, async () => {
+      const statistics = await this.gameService.displayAnswers(socket);
+      this.server.to(socket.data.code).emit(IWebsocketType.RESULTS, statistics);
+      
+      await this.emitUpdate(socket);
+    });
+  }
+
 
   async emitUpdate(socket: IAuthenticatedSocket) {
     this.server
@@ -105,25 +143,38 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
   }
 
   private async startQuestionTimer(socket: IAuthenticatedSocket) {
-    const QUESTION_DURATION = 30000; // 30 secondes
+    const QUESTION_DURATION = 30000;
     let timeLeft = QUESTION_DURATION;
     
-    const timer = setInterval(() => {
+    const existingTimer = this.gameTimers.get(socket.data.code);
+    if (existingTimer) {
+      clearInterval(existingTimer);
+    }
+    
+    const timer = setInterval(async () => {
       timeLeft -= 1000;
+      const answerCount = await this.gameService.getAnswerCount(socket);
+      
       this.server.to(socket.data.code).emit(IWebsocketType.TIMER, { 
         timeLeft,
-        type: 'question' 
+        type: 'question',
+        answered: answerCount.answered,
+        total: answerCount.total
       });
       
       if (timeLeft <= 0) {
         clearInterval(timer);
-        // Les 30s sont écoulées, l'auteur peut passer à la phase suivante
+        this.gameTimers.delete(socket.data.code);
         this.server.to(socket.data.code).emit(IWebsocketType.TIMER, { 
           timeLeft: 0,
           type: 'question',
-          finished: true 
+          finished: true,
+          answered: answerCount.answered,
+          total: answerCount.total
         });
       }
     }, 1000);
+    
+    this.gameTimers.set(socket.data.code, timer);
   }
 }

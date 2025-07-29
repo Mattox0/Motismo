@@ -22,14 +22,9 @@
   "QUIZZ_TYPE": "Vous ne pouvez pas créer un quizz d'un jeu de cartes",
   "ANY_QUESTION": "Vous n'avez aucune questions",
   "QUIZ_NOT_FOUND": "Le quiz n'a pas été trouvé.",
-  "QUIZZ_NOT_FOUND": "Le quizz n'a pas été trouvé.",
   "INVALID_QUIZZ_ID": "L'identifiant du quizz est invalide.",
-  "ROOM_UNEXISTS": "Cette salle n'existe pas.",
-  "GAME_NOT_FOUND": "Le jeu n'a pas été trouvé.",
-  "NOT_AUTHOR": "Vous n'êtes pas l'auteur de ce jeu.",
   "ALREADY_ANSWERED": "Vous avez déjà répondu à cette question.",
   "NOT_QUESTION_PHASE": "Ce n'est pas le moment de répondre aux questions.",
   "NO_CURRENT_QUESTION": "Il n'y a pas de question actuelle.",
-  "USER_NOT_FOUND": "Utilisateur non trouvé.",
   "INVALID_PHASE_TRANSITION": "Transition de phase invalide."
 }

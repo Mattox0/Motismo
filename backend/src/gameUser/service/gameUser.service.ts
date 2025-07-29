@@ -62,4 +62,25 @@ export class GameUserService {
       },
     });
   }
+
+  async addPoints(userId: string, points: number): Promise<void> {
+    await this.gameUserRepository
+      .createQueryBuilder()
+      .update(GameUser)
+      .set({ points: () => `points + ${points}` })
+      .where("id = :id", { id: userId })
+      .execute();
+  }
+
+  async getGameUsersByGameId(gameId: string): Promise<GameUser[]> {
+    return await this.gameUserRepository.find({
+      where: {
+        game: { id: gameId },
+        isAuthor: false,
+      },
+      relations: {
+        game: true,
+      },
+    });
+  }
 }

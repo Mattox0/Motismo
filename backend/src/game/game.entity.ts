@@ -3,6 +3,7 @@ import { Quizz } from "@/quizz/quizz.entity";
 import { User } from "@/user/user.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { GameUser } from "../gameUser/gameUser.entity";
+import { GameResponse } from "@/gameResponses/gameResponse.entity";
 import { IGameStatus } from "./types/IGameStatus";
 
 @Entity()
@@ -27,4 +28,7 @@ export class Game {
 
   @OneToMany(() => GameUser, (gameUser) => gameUser.game)
   users: GameUser[];
+
+  @OneToMany(() => GameResponse, (gameResponse) => gameResponse.game)
+  responses: GameResponse[];
 }

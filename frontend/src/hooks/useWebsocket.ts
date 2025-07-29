@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import { useGame } from '@/providers/GameProvider';
 import { useSocket } from '@/providers/SocketProvider';
+import { IAnswerStatistics } from '@/types/model/IAnswerStatistics';
 import { IGameUser } from '@/types/model/IGameUser';
 import { IQuestion } from '@/types/model/IQuestion';
 import { IGameStatus } from '@/types/websockets/IGameStatus';
@@ -10,7 +11,16 @@ import { showToast } from '@/utils/toast';
 
 export const useWebsocket = (code: string) => {
   const socket = useSocket();
-  const { setMyUser, setUsers, setStatus, setCurrentQuestion, setTimeLeft } = useGame();
+  const {
+    setMyUser,
+    setUsers,
+    setStatus,
+    setCurrentQuestion,
+    setTimeLeft,
+    setAnswerStatistics,
+    setAnswerCount,
+    setTimerFinished,
+  } = useGame();
 
   useEffect(() => {
     if (!socket) return;
@@ -50,10 +60,23 @@ export const useWebsocket = (code: string) => {
 
     socket.on(
       IWebsocketEvent.TIMER,
-      (data: { timeLeft: number; type: string; finished?: boolean }) => {
+      (data: {
+        timeLeft: number;
+        type: string;
+        finished?: boolean;
+        answered?: number;
+        total?: number;
+        allAnswered?: boolean;
+      }) => {
         setTimeLeft(data.timeLeft);
+        setAnswerCount({ answered: data.answered || 0, total: data.total || 0 });
+        setTimerFinished(data.finished || false);
       }
     );
+
+    socket.on(IWebsocketEvent.RESULTS, (statistics: IAnswerStatistics) => {
+      setAnswerStatistics(statistics);
+    });
 
     return () => {
       socket.off(IWebsocketEvent.CONNECT);
@@ -63,6 +86,15 @@ export const useWebsocket = (code: string) => {
       socket.off(IWebsocketEvent.MEMBERS);
       socket.off(IWebsocketEvent.QUESTION_DATA);
       socket.off(IWebsocketEvent.TIMER);
+      socket.off(IWebsocketEvent.RESULTS);
     };
-  }, [socket, setMyUser, setUsers, setStatus, setCurrentQuestion, setTimeLeft]);
+  }, [
+    socket,
+    setMyUser,
+    setUsers,
+    setStatus,
+    setCurrentQuestion,
+    setTimeLeft,
+    setAnswerStatistics,
+  ]);
 };
