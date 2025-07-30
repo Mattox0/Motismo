@@ -5,6 +5,7 @@ import { GameService } from "./service/game.service";
 import { TranslationService } from "@/translation/translation.service";
 import { GameUserModule } from "@/gameUser/gameUser.module";
 import { GameController } from "./controller/game.controller";
+import { GameByCodeController } from "./controller/gameByCode.controller";
 import { User } from "@/user/user.entity";
 import { UsersModule } from "@/user/user.module";
 import { Quizz } from "@/quizz/quizz.entity";
@@ -24,7 +25,7 @@ import { GameResponse } from "@/gameResponses/gameResponse.entity";
     forwardRef(() => QuestionModule),
     forwardRef(() => GameResponseModule),
   ],
-  controllers: [GameController],
+  controllers: [GameController, GameByCodeController],
   providers: [GameService, TranslationService],
   exports: [GameService],
 })

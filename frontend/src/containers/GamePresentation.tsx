@@ -1,8 +1,9 @@
 import { FC } from 'react';
 
-import { AnswerResults } from '@/components/game/AnswerResults';
 import { Lobby } from '@/components/game/Lobby';
 import { QuestionChoicePresentation } from '@/components/game/QuestionChoicePresentation';
+import { AnswerResultsContainer } from '@/containers/AnswerResultsContainer';
+import { RankingContainer } from '@/containers/RankingContainer';
 import { useGame } from '@/providers/GameProvider';
 import { useSocket } from '@/providers/SocketProvider';
 import { IQuizz } from '@/types/model/IQuizz';
@@ -15,11 +16,20 @@ interface IGamePresentationProps {
 }
 
 export const GamePresentation: FC<IGamePresentationProps> = ({ quizz, code }) => {
-  const { status, currentQuestion, timeLeft, answerStatistics, timerFinished } = useGame();
+  const { status, currentQuestion, timeLeft, answerStatistics, rankingStatistics, timerFinished } =
+    useGame();
   const socket = useSocket();
 
   const startGame = () => {
     socket?.emit(IWebsocketEvent.START);
+  };
+
+  const showRanking = () => {
+    socket?.emit(IWebsocketEvent.DISPLAY_RANKING);
+  };
+
+  const handleNextQuestion = () => {
+    socket?.emit(IWebsocketEvent.NEXT_QUESTION);
   };
 
   if (status === IGameStatus.NOT_STARTED) {
@@ -40,8 +50,14 @@ export const GamePresentation: FC<IGamePresentationProps> = ({ quizz, code }) =>
   }
 
   if (status === IGameStatus.DISPLAY_ANSWERS && answerStatistics) {
-    return <AnswerResults statistics={answerStatistics} />;
+    return <AnswerResultsContainer statistics={answerStatistics} handleClick={showRanking} />;
   }
 
-  return <div>GamePresentation</div>;
+  if (status === IGameStatus.DISPLAY_RANKING && rankingStatistics) {
+    return (
+      <RankingContainer statistics={rankingStatistics} handleClick={() => handleNextQuestion()} />
+    );
+  }
+
+  return <div>{status}</div>;
 };

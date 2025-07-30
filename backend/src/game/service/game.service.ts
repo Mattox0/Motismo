@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Game } from "../game.entity";
 import { Repository } from "typeorm";
@@ -16,6 +16,7 @@ import { IGameStatus } from "../types/IGameStatus";
 import { IAnswerPayload } from "../types/IAnswerPayload";
 import { GameResponseService } from "@/gameResponses/services/gameResponse.service";
 import { IAnswerStatistics, IChoiceStatistic } from "../types/IAnswerStatistics";
+import { CreateGameUserDto } from "../dto/createGameUser.dto";
 
 @Injectable()
 export class GameService {
@@ -83,9 +84,23 @@ export class GameService {
   async join(socket: IAuthenticatedSocket): Promise<GameUser | null> {
     const game = await this.getGame(socket);
 
-    let user: GameUser | undefined = game.users.find((user: GameUser) => user.id === socket.data.user.userId);
+    // Si un userId est fourni, chercher le gameUser existant
+    if (socket.data.user.userId) {
+      const existingUser = game.users.find((user: GameUser) => user.id === socket.data.user.userId);
+      if (existingUser) {
+        // Mettre à jour le socketId du gameUser existant
+        await this.gameUserService.updateSocketId(socket, game);
+        return this.gameUserService.getOneUser(existingUser.id);
+      } else {
+        // Le gameUser n'existe pas dans ce jeu, erreur
+        throw new Error(await this.translationService.translate("error.GAME_USER_NOT_FOUND"));
+      }
+    }
 
-    console.log("user", user);
+    // Ancienne logique pour compatibilité (si pas d'userId fourni)
+    let user: GameUser | undefined = game.users.find((user: GameUser) => 
+      user.name === socket.data.user.name && !user.user
+    );
 
     if (user) {
       await this.gameUserService.updateSocketId(socket, game);
@@ -148,6 +163,12 @@ export class GameService {
   async submitAnswer(socket: IAuthenticatedSocket, data: IAnswerPayload): Promise<{ allAnswered?: boolean } | void> {
     const game = await this.getGame(socket);
 
+    console.log("socket data", socket.data.user);
+
+    if (!socket.data.user.userId) {
+      throw new Error(await this.translationService.translate("error.USER_NOT_FOUND"));
+    }
+
     const gameUser = await this.gameUserService.getOneUser(socket.data.user.userId);
 
     console.log("gameUser answer", gameUser);
@@ -158,6 +179,10 @@ export class GameService {
 
     if (!game.currentQuestion) {
       throw new Error(await this.translationService.translate("error.NO_CURRENT_QUESTION"));
+    }
+
+    if (gameUser.isAuthor) {
+      throw new Error(await this.translationService.translate("error.AUTHOR_CANNOT_ANSWER"));
     }
 
     // Vérifier si l'utilisateur a déjà répondu
@@ -315,8 +340,6 @@ export class GameService {
       game.id
     );
 
-    console.log("responses", responses);
-
     if (game.currentQuestion instanceof ChoiceQuestion) {
       const choiceStatistics: IChoiceStatistic[] = [];
 
@@ -353,6 +376,33 @@ export class GameService {
     throw new Error(await this.translationService.translate("error.INVALID_QUESTION_TYPE"));
   }
 
+  async displayRanking(socket: IAuthenticatedSocket): Promise<any> {
+    const game = await this.getGame(socket);
+
+    game.status = IGameStatus.DISPLAY_RANKING;
+    await this.gameRepository.save(game);
+
+    const allGameUsers = await this.gameUserService.getGameUsersByGameId(game.id);
+
+    // Trier par points décroissants
+    const ranking = allGameUsers
+      .sort((a, b) => b.points - a.points)
+      .map((user, index) => ({
+        rank: index + 1,
+        id: user.id,
+        name: user.name,
+        avatar: user.avatar,
+        points: user.points,
+        isAuthor: user.isAuthor,
+      }));
+
+    return {
+      gameId: game.id,
+      totalPlayers: allGameUsers.length,
+      ranking,
+    };
+  }
+
   async getAnswerCount(socket: IAuthenticatedSocket): Promise<{ answered: number; total: number }> {
     const game = await this.getGame(socket);
 
@@ -367,6 +417,52 @@ export class GameService {
       answered: responses.length,
       total: allGameUsers.length
     };
+  }
+
+  async createGameUser(code: string, createGameUserDto: CreateGameUserDto): Promise<GameUser> {
+    const game = await this.gameRepository
+      .createQueryBuilder("game")
+      .leftJoinAndSelect("game.author", "author")
+      .leftJoinAndSelect("game.users", "users")
+      .where("game.code = :code", { code })
+      .getOne();
+
+    if (!game) {
+      throw new NotFoundException(await this.translationService.translate("error.GAME_NOT_FOUND"));
+    }
+
+    let existingUser: GameUser | undefined;
+    if (createGameUserDto.externalId) {
+      existingUser = game.users.find(user => 
+        user.user?.id === createGameUserDto.externalId || 
+        (user.name === createGameUserDto.name && !user.user)
+      );
+    }
+
+    if (existingUser) {
+      return existingUser;
+    }
+
+    let createdUser: ICreateGameUserPayload = {
+      game,
+      socketId: '',
+      name: createGameUserDto.name,
+      isAuthor: false,
+      avatar: createGameUserDto.avatar,
+    };
+
+    if (createGameUserDto.externalId) {
+      const externalUser = await this.userService.findOneUser(createGameUserDto.externalId);
+      if (externalUser) {
+        createdUser = { 
+          ...createdUser, 
+          user: externalUser,
+          isAuthor: externalUser.id === game.author.id 
+        };
+      }
+    }
+
+    return await this.gameUserService.create(createdUser);
   }
 }
 

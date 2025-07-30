@@ -14,6 +14,7 @@ import { IWebsocketType } from "../types/IWebsocketType";
 import { IAuthenticatedSocket } from "../types/IAuthenticatedSocket";
 import { GameUserService } from "@/gameUser/service/gameUser.service";
 import { IAnswerPayload } from "../types/IAnswerPayload";
+import { IGameStatus } from "../types/IGameStatus";
 
 function parseMaybeUndefined(val: any) {
   return val === undefined || val === null || val === 'undefined' || val === 'null' ? undefined : val;
@@ -45,12 +46,7 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
 
   handleDisconnect(socket: IAuthenticatedSocket) {
     console.log(`Disconnecting... socket id:`, socket.id);
-    
-    // Nettoyer le timer si c'est le dernier utilisateur de ce code
-    if (socket.data.code) {
-      // Note: on pourrait vérifier s'il reste d'autres utilisateurs connectés
-      // avant de supprimer le timer, mais pour simplifier on le garde pour l'instant
-    }
+
   }
 
   @SubscribeMessage(IWebsocketType.JOIN)
@@ -65,6 +61,15 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
       }
       await this.emitUpdate(socket);
       await this.emitQuestionData(socket);
+      
+      const gameStatus = await this.gameService.getStatus(socket);
+      if (gameStatus === IGameStatus.DISPLAY_ANSWERS && user) {
+        const statistics = await this.gameService.displayAnswers(socket);
+        this.server.to(user.socketId).emit(IWebsocketType.RESULTS, statistics);
+      } else if (gameStatus === IGameStatus.DISPLAY_RANKING && user) {
+        const statistics = await this.gameService.displayRanking(socket);
+        this.server.to(user.socketId).emit(IWebsocketType.RANKING, statistics);
+      }
     });
   }
 
@@ -109,6 +114,16 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
     return this.handleAction(socket, async () => {
       const statistics = await this.gameService.displayAnswers(socket);
       this.server.to(socket.data.code).emit(IWebsocketType.RESULTS, statistics);
+      
+      await this.emitUpdate(socket);
+    });
+  }
+
+  @SubscribeMessage(IWebsocketType.DISPLAY_RANKING)
+  displayRanking(@ConnectedSocket() socket: IAuthenticatedSocket) {
+    return this.handleAction(socket, async () => {
+      const statistics = await this.gameService.displayRanking(socket);
+      this.server.to(socket.data.code).emit(IWebsocketType.RANKING, statistics);
       
       await this.emitUpdate(socket);
     });

@@ -4,12 +4,13 @@ import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 
-import { IPlayerData } from '@/app/game/[code]/page';
+import { ICreateGameUserRequest, useCreateGameUserMutation } from '@/services/game.service';
 import { showToast } from '@/utils/toast';
 
 import { Button } from './forms/Button';
 import { ColorPicker } from './forms/ColorPicker';
 import Input from './forms/Input';
+import { SplashScreen } from './SplashScreen';
 
 export const PlayerAccess: React.FC = () => {
   const params = useParams();
@@ -24,6 +25,7 @@ export const PlayerAccess: React.FC = () => {
   const [eyesOptions, setEyesOptions] = useState<string[]>([]);
   const [mouthOptions, setMouthOptions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [createGameUser] = useCreateGameUserMutation();
 
   const avatarUrl = `https://api.dicebear.com/9.x/fun-emoji/svg?eyes=${eyesOptions[eyeIndex]}&mouth=${mouthOptions[mouthIndex]}&backgroundType=solid&backgroundColor=${color.slice(1)}`;
 
@@ -54,17 +56,27 @@ export const PlayerAccess: React.FC = () => {
       showToast.error('Veuillez entrer un pseudo.');
       return;
     }
-    const player: IPlayerData = { name: name.trim(), avatar: avatarUrl, externalId: data?.user.id };
-    localStorage.setItem(code, JSON.stringify(player));
-    window.location.reload();
+    const player: ICreateGameUserRequest = {
+      name: name.trim(),
+      avatar: avatarUrl,
+      externalId: data?.user.id,
+    };
+    createGameUser({ code, data: player })
+      .unwrap()
+      .then(gameUser => {
+        localStorage.setItem(code, JSON.stringify(gameUser));
+        window.location.reload();
+      })
+      .catch(err => {
+        console.error(err);
+        showToast.error('Impossible de rejoindre la partie');
+      });
   };
 
   if (!code) return null;
 
   if (loading) {
-    <div className="parent-loader">
-      <span className="loader"></span>
-    </div>;
+    return <SplashScreen />;
   }
 
   return (

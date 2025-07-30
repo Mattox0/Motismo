@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 
+import { SplashScreen } from '@/components/SplashScreen';
 import { useWebsocket } from '@/hooks/useWebsocket';
 import { useGame } from '@/providers/GameProvider';
 import { IQuizz } from '@/types/model/IQuizz';
@@ -19,9 +20,7 @@ export const GamePage: FC<IGamePageProps> = ({ code, quizz }) => {
   const { myUser } = useGame();
 
   if (!myUser) {
-    <div className="parent-loader">
-      <span className="loader"></span>
-    </div>;
+    return <SplashScreen />;
   }
 
   return myUser?.isAuthor ? (

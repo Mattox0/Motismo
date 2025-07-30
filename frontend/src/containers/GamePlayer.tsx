@@ -1,5 +1,6 @@
 import { FC } from 'react';
 
+import { AnswerResults } from '@/components/game/AnswerResults';
 import { Lobby } from '@/components/game/Lobby';
 import { QuestionChoicePlayer } from '@/components/game/QuestionChoicePlayer';
 import { useGame } from '@/providers/GameProvider';
@@ -12,7 +13,7 @@ interface IGamePlayerProps {
 }
 
 export const GamePlayer: FC<IGamePlayerProps> = ({ quizz, code }) => {
-  const { status, currentQuestion, timeLeft } = useGame();
+  const { status, currentQuestion, timeLeft, answerStatistics } = useGame();
 
   if (status === IGameStatus.NOT_STARTED) {
     return <Lobby quizz={quizz} code={code} />;
@@ -27,6 +28,10 @@ export const GamePlayer: FC<IGamePlayerProps> = ({ quizz, code }) => {
         currentQuestionNumber={currentQuestion.order}
       />
     );
+  }
+
+  if (status === IGameStatus.DISPLAY_ANSWERS && answerStatistics) {
+    return <AnswerResults statistics={answerStatistics} />;
   }
 
   return <div>GamePlayer</div>;

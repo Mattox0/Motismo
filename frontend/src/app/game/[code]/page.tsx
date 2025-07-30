@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 
 import { PlayerAccess } from '@/components/PlayerAccess';
+import { SplashScreen } from '@/components/SplashScreen';
 import { GamePage } from '@/containers/GamePage';
 import { GameProvider } from '@/providers/GameProvider';
 import { SocketProvider } from '@/providers/SocketProvider';
@@ -31,19 +32,24 @@ export default function GamePageWrapper() {
   useEffect(() => {
     if (!code || !quizz) return;
     try {
-      if (quizz.author.id === session?.user.id) {
+      const stored = localStorage.getItem(code as string);
+      if (stored) {
+        const parsed: IPlayerData = JSON.parse(stored);
+        if (quizz.author.id === session?.user.id) {
+          setPlayer({
+            id: parsed.id,
+            avatar: parsed.avatar,
+            name: session.user.name ?? '',
+            externalId: session.user.id,
+          });
+        } else if (parsed.id) {
+          setPlayer(parsed);
+        }
+      } else if (quizz.author.id === session?.user.id) {
         setPlayer({
           name: session.user.name ?? '',
           externalId: session.user.id,
         });
-      } else {
-        const stored = localStorage.getItem(code as string);
-        if (stored) {
-          const parsed: IPlayerData = JSON.parse(stored);
-          if (parsed.name && parsed.avatar) {
-            setPlayer(parsed);
-          }
-        }
       }
     } catch {
       localStorage.removeItem(code as string);
@@ -53,11 +59,7 @@ export default function GamePageWrapper() {
   if (!code) return router.push('/');
 
   if (!quizz) {
-    return (
-      <div className="parent-loader">
-        <span className="loader"></span>
-      </div>
-    );
+    return <SplashScreen />;
   }
 
   if (!player) {

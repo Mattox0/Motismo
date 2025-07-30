@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 
+import { SplashScreen } from '@/components/SplashScreen';
 import i18n from '@/i18n';
 
 interface II18nProviderProps {
@@ -22,7 +23,7 @@ export const I18nProvider: React.FC<II18nProviderProps> = ({ children }) => {
   }, []);
 
   if (!isInitialized) {
-    return <div>Loading...</div>;
+    return <SplashScreen />;
   }
 
   return <>{children}</>;

@@ -62,7 +62,9 @@ export const Lobby: FC<ILobbyProps> = ({
         <h2 className="lobby-participants-title">Participants</h2>
         <div className="lobby-participants-list">
           {users && users.length > 0 ? (
-            users.map(user => <Avatar key={user.id} user={user} mode="lobby" />)
+            users.map(user => (
+              <Avatar key={user.id} avatar={user.avatar || ''} name={user.name} mode="lobby" />
+            ))
           ) : (
             <div className="lobby-no-participants">Aucun participant pour le moment.</div>
           )}

@@ -1,9 +1,8 @@
 import { motion } from 'framer-motion';
 import { FC } from 'react';
 
+import { useGame } from '@/providers/GameProvider';
 import { IChoiceStatistic } from '@/types/model/IAnswerStatistics';
-import { IGame } from '@/types/model/IGame';
-import { IGameUser } from '@/types/model/IGameUser';
 
 import { Avatar } from './Avatar';
 
@@ -13,6 +12,8 @@ interface IChoiceResultProps {
 }
 
 export const ChoiceResult: FC<IChoiceResultProps> = ({ choice, index }) => {
+  const { myUser } = useGame();
+
   return (
     <motion.div
       className={`choice-result ${choice.isCorrect ? 'choice-result--correct' : 'choice-result--incorrect'}`}
@@ -46,25 +47,17 @@ export const ChoiceResult: FC<IChoiceResultProps> = ({ choice, index }) => {
           <div className="users-label">Répondu par :</div>
           <div className="users-list">
             {choice.users.map(user => {
-              const gameUser: Partial<IGameUser> = {
-                id: user.id,
-                name: user.name,
-                avatar: user.avatar || '/default-avatar.png',
-                socketId: '',
-                points: 0,
-                isAuthor: false,
-                game: {} as IGame,
-              };
+              const isCurrentUser = myUser?.id === user.id;
 
               return (
                 <motion.div
                   key={user.id}
-                  className="user-chip"
+                  className={`user-chip ${isCurrentUser ? 'user-chip--current' : ''}`}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 + 0.5 + choice.users.indexOf(user) * 0.05 }}
                 >
-                  <Avatar user={gameUser as IGameUser} mode="other" />
+                  <Avatar avatar={user.avatar || ''} mode={isCurrentUser ? 'current' : 'other'} />
                 </motion.div>
               );
             })}

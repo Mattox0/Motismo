@@ -5,6 +5,7 @@ import { useSocket } from '@/providers/SocketProvider';
 import { IAnswerStatistics } from '@/types/model/IAnswerStatistics';
 import { IGameUser } from '@/types/model/IGameUser';
 import { IQuestion } from '@/types/model/IQuestion';
+import { IRankingStatistics } from '@/types/model/IRanking';
 import { IGameStatus } from '@/types/websockets/IGameStatus';
 import { IWebsocketEvent } from '@/types/websockets/IWebsocketEvent';
 import { showToast } from '@/utils/toast';
@@ -18,6 +19,7 @@ export const useWebsocket = (code: string) => {
     setCurrentQuestion,
     setTimeLeft,
     setAnswerStatistics,
+    setRankingStatistics,
     setAnswerCount,
     setTimerFinished,
   } = useGame();
@@ -78,6 +80,10 @@ export const useWebsocket = (code: string) => {
       setAnswerStatistics(statistics);
     });
 
+    socket.on(IWebsocketEvent.RANKING, (statistics: IRankingStatistics) => {
+      setRankingStatistics(statistics);
+    });
+
     return () => {
       socket.off(IWebsocketEvent.CONNECT);
       socket.off(IWebsocketEvent.ERROR);
@@ -87,6 +93,7 @@ export const useWebsocket = (code: string) => {
       socket.off(IWebsocketEvent.QUESTION_DATA);
       socket.off(IWebsocketEvent.TIMER);
       socket.off(IWebsocketEvent.RESULTS);
+      socket.off(IWebsocketEvent.RANKING);
     };
   }, [
     socket,
@@ -96,5 +103,8 @@ export const useWebsocket = (code: string) => {
     setCurrentQuestion,
     setTimeLeft,
     setAnswerStatistics,
+    setRankingStatistics,
+    setAnswerCount,
+    setTimerFinished,
   ]);
 };

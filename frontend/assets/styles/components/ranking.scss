@@ -1,0 +1,253 @@
+.ranking-container {
+  position: relative;
+  min-height: 100vh;
+  padding-top: 4rem;
+}
+
+.next-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+
+  &__circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+
+    &:hover {
+      transform: scale(1.1);
+      background: var(--secondary-color);
+    }
+  }
+
+  &__icon {
+    color: white;
+    font-size: 1.25rem;
+  }
+
+  @media (max-width: 480px) {
+    top: 0.75rem;
+    right: 0.75rem;
+
+    &__circle {
+      width: 36px;
+      height: 36px;
+    }
+
+    &__icon {
+      font-size: 1.125rem;
+    }
+  }
+}
+
+.ranking {
+  background-color: var(--background-color);
+  min-height: 100vh;
+  padding: 1.5rem 0.75rem;
+  color: var(--text-color);
+
+  &__container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  &__header {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  &__title {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  &__subtitle {
+    font-size: clamp(0.875rem, 3vw, 1.1rem);
+    color: var(--text-grey);
+    font-weight: 500;
+  }
+
+  &__list-container {
+    padding: 0.5rem;
+  }
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  background: var(--white-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 0; // Pour que text-overflow fonctionne
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+  }
+
+  &--current {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color-light) 0%, #F0F4FF 100%);
+    box-shadow: 0 0 0 2px var(--primary-color-light);
+  }
+
+  &__rank {
+    margin-right: 0.75rem;
+    min-width: 32px;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+    
+    .rank-number {
+      background: var(--secondary-color);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      box-shadow: 0 2px 6px rgba(147, 51, 234, 0.3);
+    }
+  }
+
+  &__player {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0; // Pour que text-overflow fonctionne
+
+    :global(.avatar) {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+
+    .player-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0; // Pour que text-overflow fonctionne
+      flex: 1;
+
+      .player-name {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+      }
+
+      .current-star {
+        color: var(--success-color);
+        font-size: 1rem;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  &__points {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--tertiary-color);
+    background: var(--tertiary-color-light);
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    border: 1px solid rgba(22, 163, 74, 0.2);
+    min-width: 50px;
+    text-align: center;
+    flex-shrink: 0;
+    margin-left: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ranking {
+    padding: 0.75rem 0.5rem;
+    
+    &__container {
+      gap: 1rem;
+    }
+    
+    &__header {
+      padding: 0.75rem;
+    }
+  }
+
+  .ranking-item {
+    padding: 0.625rem;
+
+    &__rank {
+      margin-right: 0.5rem;
+      min-width: 24px;
+      
+      .rank-number {
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
+      }
+    }
+
+    &__player {
+      gap: 0.5rem;
+      
+      :global(.avatar) {
+        width: 32px;
+        height: 32px;
+      }
+
+      .player-info {
+        gap: 0.375rem;
+        
+        .player-name {
+          font-size: 0.875rem;
+        }
+
+        .current-star {
+          font-size: 0.875rem;
+        }
+      }
+    }
+
+    &__points {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      min-width: 40px;
+      margin-left: 0.5rem;
+    }
+  }
+}

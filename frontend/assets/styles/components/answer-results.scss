@@ -125,6 +125,7 @@
   .choice-correct-badge {
     background: var(--success-color, #10b981);
     color: white;
+    margin-right: 10px;
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -204,6 +205,19 @@
       background: var(--secondary-color-light);
       border-color: var(--secondary-color);
     }
+    
+    &--current {
+      background: linear-gradient(135deg, var(--primary-color-light, #fef3e2), var(--background-light));
+      border-color: var(--primary-color);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      
+      &:hover {
+        background: linear-gradient(135deg, var(--primary-color-light, #fef3e2), var(--secondary-color-light));
+        border-color: var(--primary-color);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
   }
   
   .user-avatar {
@@ -230,7 +244,65 @@
   }
 }
 
-// Responsive adjustments
+.answer-results-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+.next-button {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  
+  @media (max-width: 768px) {
+    top: 1rem;
+    right: 1rem;
+  }
+  
+  &__circle {
+    width: 60px;
+    height: 60px;
+    background: #10b981;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    @media (min-width: 1024px) {
+      width: 70px;
+      height: 70px;
+      box-shadow: 0 5px 16px rgba(16, 185, 129, 0.3);
+    }
+    
+    &:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+      
+      @media (min-width: 1024px) {
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      }
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  
+  &__icon {
+    color: white;
+    font-size: 1.5rem;
+    
+    @media (min-width: 1024px) {
+      font-size: 1.75rem;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .answer-results {
     padding: 1rem;
