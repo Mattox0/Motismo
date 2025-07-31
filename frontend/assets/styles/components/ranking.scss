@@ -4,50 +4,6 @@
   padding-top: 4rem;
 }
 
-.next-button {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 10;
-
-  &__circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
-
-    &:hover {
-      transform: scale(1.1);
-      background: var(--secondary-color);
-    }
-  }
-
-  &__icon {
-    color: white;
-    font-size: 1.25rem;
-  }
-
-  @media (max-width: 480px) {
-    top: 0.75rem;
-    right: 0.75rem;
-
-    &__circle {
-      width: 36px;
-      height: 36px;
-    }
-
-    &__icon {
-      font-size: 1.125rem;
-    }
-  }
-}
-
 .ranking {
   background-color: var(--background-color);
   min-height: 100vh;

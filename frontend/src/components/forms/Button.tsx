@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 interface IButtonProps {
   children: React.ReactNode;
-  variant: 'primary' | 'secondary' | 'colored' | 'error';
+  variant: 'primary' | 'secondary' | 'colored' | 'error' | 'other';
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   className?: string;
@@ -23,7 +23,7 @@ export const Button: FC<IButtonProps> = ({
 }) => {
   return (
     <button
-      className={`btn btn-${variant} ${className}`}
+      className={variant === 'other' ? `btn ${className}` : `btn btn-${variant} ${className}`}
       disabled={disabled}
       onClick={onClick}
       type={type}

@@ -5,10 +5,11 @@ export interface IRankingPlayer {
   avatar: string;
   points: number;
   isAuthor: boolean;
+  isFastest: boolean;
 }
 
 export interface IRankingStatistics {
   gameId: string;
   totalPlayers: number;
   ranking: IRankingPlayer[];
-} 
+}

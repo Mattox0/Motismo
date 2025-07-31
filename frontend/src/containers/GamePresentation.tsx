@@ -1,7 +1,9 @@
 import { FC } from 'react';
 
+import { GameFinished } from '@/components/game/GameFinished';
 import { Lobby } from '@/components/game/Lobby';
 import { QuestionChoicePresentation } from '@/components/game/QuestionChoicePresentation';
+import { SplashScreen } from '@/components/SplashScreen';
 import { AnswerResultsContainer } from '@/containers/AnswerResultsContainer';
 import { RankingContainer } from '@/containers/RankingContainer';
 import { useGame } from '@/providers/GameProvider';
@@ -59,5 +61,9 @@ export const GamePresentation: FC<IGamePresentationProps> = ({ quizz, code }) =>
     );
   }
 
-  return <div>{status}</div>;
+  if (status === IGameStatus.FINISHED && rankingStatistics) {
+    return <GameFinished statistics={rankingStatistics} />;
+  }
+
+  return <SplashScreen />;
 };

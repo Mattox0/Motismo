@@ -1,0 +1,266 @@
+.question-type-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.question-type-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--white-color);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+  }
+
+  &:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--primary-color-rgb), 0.15);
+
+    .question-type-option__icon {
+      transform: scale(1.1);
+    }
+  }
+
+  &--selected {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white-color);
+    box-shadow: 0 8px 25px rgba(var(--primary-color-rgb), 0.25);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .question-type-option__icon {
+      border: transparent;
+      transform: scale(1.1);
+    }
+
+    .question-type-option__label {
+      color: var(--white-color);
+    }
+
+    .question-type-option__description {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid var(--primary-color);
+    background: var(--background-color);
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__label {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+  }
+
+  &__description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+  }
+}
+
+.question-type-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  background: var(--background-color);
+  margin: 1rem 0;
+
+  &__icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    color: var(--primary-color);
+  }
+
+  &__content {
+    flex: 1;
+
+    h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .question-type-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .question-type-option {
+    padding: 1rem;
+    gap: 0.75rem;
+
+    &__icon {
+      width: 40px;
+      height: 40px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    &__label {
+      font-size: 0.9rem;
+    }
+
+    &__description {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Radio button styles
+.radio-label {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  .radio-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .radio-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--border-color);
+    transition: all 0.2s ease;
+
+    &--unchecked {
+      display: block;
+    }
+
+    &--checked {
+      display: none;
+      color: var(--primary-color);
+    }
+  }
+
+  .radio-input:checked ~ .radio-icon {
+    &--unchecked {
+      display: none;
+    }
+
+    &--checked {
+      display: block;
+    }
+  }
+}
+
+// Fixed answer text styles
+.answer-text {
+  &--fixed {
+    flex: 1;
+    padding: 0.75rem;
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+  }
+}
+
+.answer-item {
+  &__content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+}
+
+// Animation for smooth transitions when switching types
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-group {
+  animation: fadeInUp 0.3s ease-out;
+}
