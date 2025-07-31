@@ -370,11 +370,11 @@ export class GameService {
     const allGameUsers = await this.gameUserService.getGameUsersByGameId(game.id);
 
     const gameResponses = await this.gameResponseService.findByGameId(game.id);
-    
+
     let fastestPlayerId: string | null = null;
     if (gameResponses.length > 0) {
       const playerFirstResponses = new Map<string, Date>();
-      
+
       gameResponses.forEach(response => {
         const currentFirstResponse = playerFirstResponses.get(response.user.id);
         if (!currentFirstResponse || response.answeredAt < currentFirstResponse) {
@@ -412,7 +412,7 @@ export class GameService {
 
   async nextQuestion(socket: IAuthenticatedSocket): Promise<void> {
     const game = await this.getGame(socket);
-    
+
     if (!game.quizz || !game.quizz.questions) {
       throw new Error(await this.translationService.translate("error.GAME_NOT_FOUND"));
     }
