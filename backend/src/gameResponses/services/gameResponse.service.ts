@@ -49,4 +49,15 @@ export class GameResponseService {
       },
     });
   }
+
+  async findByGameId(gameId: string): Promise<GameResponse[]> {
+    return await this.gameResponseRepository.find({
+      where: {
+        game: { id: gameId },
+      },
+      relations: {
+        user: true,
+      },
+    });
+  }
 }

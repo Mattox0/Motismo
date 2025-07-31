@@ -13,7 +13,7 @@ export const questionApi = baseApi.injectEndpoints({
     }),
     addQuestion: builder.mutation<Question, { quizzId: string; question: FormData }>({
       query: ({ quizzId, question }) => ({
-        url: `quizz/${quizzId}/questions/choice`,
+        url: `quizz/${quizzId}/questions`,
         method: 'POST',
         body: question,
       }),
@@ -24,7 +24,7 @@ export const questionApi = baseApi.injectEndpoints({
       { quizzId: string; questionId: string; question: FormData }
     >({
       query: ({ quizzId, questionId, question }) => ({
-        url: `quizz/${quizzId}/questions/${questionId}/choice`,
+        url: `quizz/${quizzId}/questions/${questionId}`,
         method: 'PUT',
         body: question,
       }),

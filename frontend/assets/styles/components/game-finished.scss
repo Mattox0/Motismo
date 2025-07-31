@@ -1,0 +1,71 @@
+.game-finished {
+  @apply flex items-center justify-center min-h-screen bg-gray-50;
+
+  &__container {
+    @apply bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl mx-4;
+  }
+
+  &__header {
+    @apply text-center mb-8;
+  }
+
+  &__title {
+    @apply text-3xl font-bold text-gray-800;
+  }
+
+  &__winner {
+    @apply text-center mb-12;
+
+    .winner-trophy {
+      @apply mx-auto mb-4;
+    }
+
+    .winner-title {
+      @apply text-xl font-semibold text-gray-600 mb-2;
+    }
+
+    .winner-name {
+      @apply text-2xl font-bold text-indigo-600 mb-1;
+    }
+
+    .winner-points {
+      @apply text-lg text-gray-500;
+    }
+  }
+
+  &__your-rank {
+    @apply text-center p-6 bg-gray-50 rounded-lg mb-8;
+
+    h3 {
+      @apply text-lg font-semibold text-gray-700 mb-2;
+    }
+
+    .your-rank-position {
+      @apply text-3xl font-bold text-indigo-600 mb-1;
+
+      .rank-suffix {
+        @apply text-lg text-gray-500 ml-1;
+      }
+    }
+
+    .your-rank-points {
+      @apply text-gray-500;
+    }
+  }
+
+  &__stats {
+    @apply flex justify-center gap-8;
+
+    .stats-item {
+      @apply text-center;
+
+      .stats-value {
+        @apply text-2xl font-bold text-gray-800;
+      }
+
+      .stats-label {
+        @apply text-sm text-gray-500;
+      }
+    }
+  }
+}

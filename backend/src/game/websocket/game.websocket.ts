@@ -66,7 +66,7 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
       if (gameStatus === IGameStatus.DISPLAY_ANSWERS && user) {
         const statistics = await this.gameService.displayAnswers(socket);
         this.server.to(user.socketId).emit(IWebsocketType.RESULTS, statistics);
-      } else if (gameStatus === IGameStatus.DISPLAY_RANKING && user) {
+      } else if ((gameStatus === IGameStatus.DISPLAY_RANKING || gameStatus === IGameStatus.FINISHED) && user) {
         const statistics = await this.gameService.displayRanking(socket);
         this.server.to(user.socketId).emit(IWebsocketType.RANKING, statistics);
       }
@@ -125,6 +125,14 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
       const statistics = await this.gameService.displayRanking(socket);
       this.server.to(socket.data.code).emit(IWebsocketType.RANKING, statistics);
       
+      await this.emitUpdate(socket);
+    });
+  }
+
+  @SubscribeMessage(IWebsocketType.NEXT_QUESTION)
+  nextQuestion(@ConnectedSocket() socket: IAuthenticatedSocket) {
+    return this.handleAction(socket, async () => {
+      await this.gameService.nextQuestion(socket);
       await this.emitUpdate(socket);
     });
   }

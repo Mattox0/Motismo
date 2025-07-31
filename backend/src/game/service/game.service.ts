@@ -84,20 +84,16 @@ export class GameService {
   async join(socket: IAuthenticatedSocket): Promise<GameUser | null> {
     const game = await this.getGame(socket);
 
-    // Si un userId est fourni, chercher le gameUser existant
     if (socket.data.user.userId) {
       const existingUser = game.users.find((user: GameUser) => user.id === socket.data.user.userId);
       if (existingUser) {
-        // Mettre à jour le socketId du gameUser existant
         await this.gameUserService.updateSocketId(socket, game);
         return this.gameUserService.getOneUser(existingUser.id);
       } else {
-        // Le gameUser n'existe pas dans ce jeu, erreur
         throw new Error(await this.translationService.translate("error.GAME_USER_NOT_FOUND"));
       }
     }
 
-    // Ancienne logique pour compatibilité (si pas d'userId fourni)
     let user: GameUser | undefined = game.users.find((user: GameUser) => 
       user.name === socket.data.user.name && !user.user
     );
@@ -163,15 +159,11 @@ export class GameService {
   async submitAnswer(socket: IAuthenticatedSocket, data: IAnswerPayload): Promise<{ allAnswered?: boolean } | void> {
     const game = await this.getGame(socket);
 
-    console.log("socket data", socket.data.user);
-
     if (!socket.data.user.userId) {
       throw new Error(await this.translationService.translate("error.USER_NOT_FOUND"));
     }
 
     const gameUser = await this.gameUserService.getOneUser(socket.data.user.userId);
-
-    console.log("gameUser answer", gameUser);
 
     if (!gameUser) {
       throw new Error(await this.translationService.translate("error.USER_NOT_FOUND"));
@@ -185,7 +177,6 @@ export class GameService {
       throw new Error(await this.translationService.translate("error.AUTHOR_CANNOT_ANSWER"));
     }
 
-    // Vérifier si l'utilisateur a déjà répondu
     const hasAnswered = await this.gameResponseService.hasUserAnswered(
       gameUser.id,
       game.currentQuestion.id,
@@ -196,7 +187,6 @@ export class GameService {
       throw new Error(await this.translationService.translate("error.ALREADY_ANSWERED"));
     }
 
-    // Switch selon le type de question
     switch (data.type) {
       case 'MULTIPLE_CHOICES':
         return await this.submitMultipleChoiceAnswer(game, gameUser, data.answer as string[]);
@@ -228,11 +218,7 @@ export class GameService {
     const correctChoices = game.currentQuestion.choices.filter((choice) => choice.isCorrect);
     const correctChoiceIds = correctChoices.map((choice) => choice.id);
 
-    // Pour les choix multiples : toutes les bonnes réponses doivent être sélectionnées et aucune mauvaise
-    const isCorrect = 
-      answer.length === correctChoiceIds.length &&
-      answer.every((id) => correctChoiceIds.includes(id)) &&
-      correctChoiceIds.every((id) => answer.includes(id));
+    const isCorrect = answer.length === correctChoiceIds.length && answer.every((id) => correctChoiceIds.includes(id));
 
     if (isCorrect) {
       const points = 100;
@@ -252,7 +238,6 @@ export class GameService {
     const correctChoices = game.currentQuestion.choices.filter((choice) => choice.isCorrect);
     const correctChoiceIds = correctChoices.map((choice) => choice.id);
 
-    // Pour les choix uniques : une seule bonne réponse doit être sélectionnée
     const isCorrect = correctChoiceIds.includes(answer);
 
     if (isCorrect) {
@@ -384,7 +369,28 @@ export class GameService {
 
     const allGameUsers = await this.gameUserService.getGameUsersByGameId(game.id);
 
-    // Trier par points décroissants
+    const gameResponses = await this.gameResponseService.findByGameId(game.id);
+    
+    let fastestPlayerId: string | null = null;
+    if (gameResponses.length > 0) {
+      const playerFirstResponses = new Map<string, Date>();
+      
+      gameResponses.forEach(response => {
+        const currentFirstResponse = playerFirstResponses.get(response.user.id);
+        if (!currentFirstResponse || response.answeredAt < currentFirstResponse) {
+          playerFirstResponses.set(response.user.id, response.answeredAt);
+        }
+      });
+
+      let fastestTime: Date | null = null;
+      playerFirstResponses.forEach((time, playerId) => {
+        if (!fastestTime || time < fastestTime) {
+          fastestTime = time;
+          fastestPlayerId = playerId;
+        }
+      });
+    }
+
     const ranking = allGameUsers
       .sort((a, b) => b.points - a.points)
       .map((user, index) => ({
@@ -394,6 +400,7 @@ export class GameService {
         avatar: user.avatar,
         points: user.points,
         isAuthor: user.isAuthor,
+        isFastest: user.id === fastestPlayerId,
       }));
 
     return {
@@ -401,6 +408,28 @@ export class GameService {
       totalPlayers: allGameUsers.length,
       ranking,
     };
+  }
+
+  async nextQuestion(socket: IAuthenticatedSocket): Promise<void> {
+    const game = await this.getGame(socket);
+    
+    if (!game.quizz || !game.quizz.questions) {
+      throw new Error(await this.translationService.translate("error.GAME_NOT_FOUND"));
+    }
+
+    const currentQuestionOrder = game.currentQuestion?.order || 0;
+    const nextQuestion = game.quizz.questions.find(
+      (question) => question.order === currentQuestionOrder + 1
+    );
+
+    if (nextQuestion) {
+      game.currentQuestion = nextQuestion;
+      game.status = IGameStatus.DISPLAY_QUESTION;
+    } else {
+      game.status = IGameStatus.FINISHED;
+    }
+
+    await this.gameRepository.save(game);
   }
 
   async getAnswerCount(socket: IAuthenticatedSocket): Promise<{ answered: number; total: number }> {

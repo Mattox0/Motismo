@@ -5,6 +5,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import QuestionForm, { QuestionFormData } from '@/components/forms/QuestionForm';
+import { SplashScreen } from '@/components/SplashScreen';
 import { useQuizz } from '@/providers/QuizzProvider';
 import { useDeleteQuestionMutation, useUpdateQuestionMutation } from '@/services/question.service';
 import { showToast } from '@/utils/toast';
@@ -31,6 +32,9 @@ export const QuizzPage: FC<IQuizzPageProps> = ({ quizzId }) => {
       const form = new FormData();
       if (data.title) {
         form.append('title', data.title);
+      }
+      if (data.questionType) {
+        form.append('questionType', data.questionType);
       }
       if (data.image) {
         form.append('image', data.image);
@@ -62,11 +66,7 @@ export const QuizzPage: FC<IQuizzPageProps> = ({ quizzId }) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="parent-loader">
-        <span className="loader"></span>
-      </div>
-    );
+    return <SplashScreen />;
   }
 
   if (!isAuthor) {

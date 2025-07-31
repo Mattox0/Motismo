@@ -1,4 +1,4 @@
-import StarIcon from '@mui/icons-material/Star';
+import BoltIcon from '@mui/icons-material/Bolt';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FC, useState, useEffect } from 'react';
 
@@ -85,8 +85,11 @@ export const Ranking: FC<IRankingProps> = ({ statistics }) => {
                       />
                       <div className="player-info">
                         <span className="player-name">{player.name}</span>
-                        {isCurrentUser && (
-                          <StarIcon className="current-star" style={{ fontSize: '1rem' }} />
+                        {player.isFastest && (
+                          <BoltIcon
+                            className="fastest-player"
+                            style={{ fontSize: '1rem', color: '#FFD700' }}
+                          />
                         )}
                       </div>
                     </div>

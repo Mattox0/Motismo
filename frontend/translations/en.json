@@ -98,14 +98,71 @@
     "passwordMinLength": "Minimum 8 characters",
     "passwordsMustMatch": "Passwords must match",
     "codeLength": "Code must be 6 characters",
-    "codeInvalidFormat": "Invalid code format"
+    "codeInvalidFormat": "Invalid code format",
+    "titleRequired": "Title is required",
+    "choiceRequired": "Answer text is required",
+    "minAnswers": "At least 2 answers are required",
+    "maxAnswers": "Maximum 6 answers allowed",
+    "choicesRequiredForChoiceTypes": "Choices are required for this question type"
   },
   "common": {
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
     "confirm": "Confirm",
+    "saving": "Saving...",
     "loading": "Loading...",
     "error": "An error occurred"
+  },
+  "question": {
+    "title": "Question title",
+    "titlePlaceholder": "Enter your question title",
+    "type": "Question type",
+    "image": "Image (optional)",
+    "answers": "Answers",
+    "addAnswer": "Add answer",
+    "answerPlaceholder": "Answer {{number}}",
+    "correctAnswer": "Correct answer",
+    "save": "Save question",
+    "updateSuccess": "Your question has been updated",
+    "updateError": "Error updating question",
+    "createError": "Error creating question",
+    "addSuccess": "Question added successfully",
+    "addError": "Error adding question",
+    "altTitle": "No title",
+    "choices": "Choices",
+    "noChoicesRequired": "This question type does not require answer choices",
+    "true": "True",
+    "false": "False",
+    "option": "Option {{number}}",
+    "count": "question",
+    "count_plural": "questions",
+    "choicesCount": "choice",
+    "choicesCount_plural": "choices",
+    "delete": "Delete question",
+    "types": {
+      "multipleChoices": "Multiple Choice",
+      "multipleChoicesDesc": "Users can select multiple correct answers",
+      "uniqueChoice": "Single Choice",
+      "uniqueChoiceDesc": "Users can only select one answer",
+      "boolean": "True/False",
+      "booleanDesc": "Simple question with two options: true or false",
+      "wordCloud": "Word Cloud",
+      "wordCloudDesc": "Users enter words that display as a cloud",
+      "matching": "Matching",
+      "matchingDesc": "Users match elements together"
+    }
+  },
+  "quiz": {
+    "untitled": "Untitled Quiz",
+    "noQuestions": "No questions",
+    "noQuestionsDesc": "Add your first question to get started",
+    "launchButton": "Launch Quiz",
+    "launching": "Launching...",
+    "launch": {
+      "success": "Quiz launched successfully!",
+      "error": "Error launching quiz",
+      "noQuestions": "Cannot launch: no questions in quiz"
+    }
   }
 }

@@ -116,7 +116,8 @@
     "answerRequired": "Le texte de la réponse est requis",
     "minAnswers": "Au moins 2 réponses sont requises",
     "maxAnswers": "Maximum 6 réponses autorisées",
-    "choiceRequired": "Le texte est requis"
+    "choiceRequired": "Le texte est requis",
+    "choicesRequiredForChoiceTypes": "Les réponses sont requises pour ce type de question"
   },
   "common": {
     "save": "Enregistrer",
@@ -178,6 +179,7 @@
   "question": {
     "title": "Titre de la question",
     "titlePlaceholder": "Entrez le titre de votre question",
+    "type": "Type de question",
     "image": "Image (optionnelle)",
     "answers": "Réponses",
     "addAnswer": "Ajouter une réponse",
@@ -185,9 +187,45 @@
     "correctAnswer": "Bonne réponse",
     "save": "Enregistrer la question",
     "updateSuccess": "Votre question a été mise à jour",
+    "updateError": "Erreur lors de la mise à jour de la question",
     "createError": "Erreur lors de la création de la question",
+    "addSuccess": "Question ajoutée avec succès",
+    "addError": "Erreur lors de l'ajout de la question",
     "altTitle": "Pas de titre",
-    "choices": "Réponses"
+    "choices": "Réponses",
+    "noChoicesRequired": "Ce type de question ne nécessite pas de choix de réponse",
+    "true": "Vrai",
+    "false": "Faux",
+    "option": "Option {{number}}",
+    "count": "question",
+    "count_plural": "questions",
+    "choicesCount": "choix",
+    "choicesCount_plural": "choix",
+    "delete": "Supprimer la question",
+    "types": {
+      "multipleChoices": "Choix multiples",
+      "multipleChoicesDesc": "Les utilisateurs peuvent sélectionner plusieurs bonnes réponses",
+      "uniqueChoice": "Choix unique",
+      "uniqueChoiceDesc": "Les utilisateurs ne peuvent sélectionner qu'une seule réponse",
+      "boolean": "Vrai/Faux",
+      "booleanDesc": "Question simple avec deux options : vrai ou faux",
+      "wordCloud": "Nuage de mots",
+      "wordCloudDesc": "Les utilisateurs saisissent des mots qui s'affichent en nuage",
+      "matching": "Association",
+      "matchingDesc": "Les utilisateurs associent des éléments entre eux"
+    }
+  },
+  "quiz": {
+    "untitled": "Quiz sans titre",
+    "noQuestions": "Aucune question",
+    "noQuestionsDesc": "Ajoutez votre première question pour commencer",
+    "launchButton": "Lancer le Quiz",
+    "launching": "Lancement...",
+    "launch": {
+      "success": "Quiz lancé avec succès !",
+      "error": "Erreur lors du lancement du quiz",
+      "noQuestions": "Impossible de lancer : aucune question dans le quiz"
+    }
   },
   "create_card": {
     "updateSuccess": "Votre carte a été mise à jour"

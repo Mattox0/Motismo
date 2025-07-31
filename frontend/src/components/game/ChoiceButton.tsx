@@ -27,7 +27,7 @@ export const ChoiceButton: FC<IChoiceButtonProps> = ({
       onClick={() => onClick(index)}
       disabled={disabled}
     >
-      <span className="choice-btn__letter">{String.fromCharCode(65 + index)}</span>
+      <span className="choice-btn__letter">{String.fromCharCode(64 + index)}</span>
       <span className="choice-btn__text">{choice.text}</span>
       {isMultipleChoice && <span className="choice-btn__checkbox">{isSelected ? '✓' : '□'}</span>}
     </button>
