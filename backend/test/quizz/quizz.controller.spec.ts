@@ -31,7 +31,10 @@ describe("QuizzController", () => {
   const mockQuizz: Quizz = {
     id: "quizz-id",
     title: "Quizz title",
-    description: "Quizz description",
+    games: [],
+    image: "image.jpg",
+    questions: [],
+    cards: [],
     author: {} as User,
     creationDate: new Date(),
     quizzType: IQuizzType.QUESTIONS,
@@ -57,6 +60,7 @@ describe("QuizzController", () => {
 
     mockQuizzService = {
       getAll: jest.fn().mockResolvedValue(mockQuizzs),
+      getMyQuizz: jest.fn().mockResolvedValue(mockQuizzs),
       create: jest.fn().mockResolvedValue(undefined),
       update: jest.fn().mockResolvedValue(undefined),
       delete: jest.fn().mockResolvedValue(undefined),
@@ -124,7 +128,7 @@ describe("QuizzController", () => {
 
       jest.spyOn(mockQuizzService, "getAll").mockResolvedValue(quizzs);
 
-      expect(await quizzController.getAll()).toEqual(quizzs);
+      expect(await quizzController.getAll(mockUser)).toEqual(quizzs);
     });
   });
 
@@ -140,11 +144,10 @@ describe("QuizzController", () => {
     it("should create a new quizz", async () => {
       const createQuizzDto: CreateQuizzDto = {
         title: "New Quizz",
-        description: "New Quizz description",
         quizzType: IQuizzType.QUESTIONS,
       };
 
-      jest.spyOn(mockQuizzService, "create").mockResolvedValue(undefined);
+      jest.spyOn(mockQuizzService, "create").mockResolvedValue(mockQuizz);
 
       await quizzController.create(mockUser, createQuizzDto, undefined);
 
@@ -157,7 +160,6 @@ describe("QuizzController", () => {
     it("should upload a file when creating a quizz", async () => {
       const createQuizzDto: CreateQuizzDto = {
         title: "New Quizz",
-        description: "New Quizz description",
         quizzType: IQuizzType.QUESTIONS,
       };
 
@@ -177,7 +179,7 @@ describe("QuizzController", () => {
         .spyOn(mockFileUploadService, "uploadFile")
         .mockResolvedValue(fileName);
       jest.spyOn(mockFileUploadService, "getFileUrl").mockReturnValue(fileUrl);
-      jest.spyOn(mockQuizzService, "create").mockResolvedValue(undefined);
+      jest.spyOn(mockQuizzService, "create").mockResolvedValue(mockQuizz);
 
       await quizzController.create(mockUser, createQuizzDto, file);
 
@@ -201,7 +203,6 @@ describe("QuizzController", () => {
 
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Updated Quizz",
-        description: "Updated Quizz description",
       };
 
       jest.spyOn(mockQuizzService, "update").mockResolvedValue();
@@ -228,7 +229,6 @@ describe("QuizzController", () => {
 
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Updated Quizz",
-        description: "Updated Quizz description",
       };
 
       const file: Express.Multer.File = {
@@ -270,7 +270,6 @@ describe("QuizzController", () => {
 
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Updated Quizz",
-        description: "Updated Quizz description",
       };
 
       await expect(

@@ -71,8 +71,11 @@ describe("QuizzService", () => {
       const quizz1: Quizz = {
         id: "1",
         title: "Quizz 1",
-        description: "Description 1",
         quizzType: IQuizzType.QUESTIONS,
+        games: [],
+        image: "image.jpg",
+        questions: [],
+        cards: [],
         author: {
           id: "1",
           username: "Author 1",
@@ -96,7 +99,6 @@ describe("QuizzService", () => {
     it("should create and save a new quizz", async () => {
       const createQuizzDto: CreateQuizzDto = {
         title: "Quizz 1",
-        description: "Description 1",
         quizzType: IQuizzType.QUESTIONS,
       };
 
@@ -130,7 +132,6 @@ describe("QuizzService", () => {
     it("should throw HttpException if user not found", async () => {
       const createQuizzDto: CreateQuizzDto = {
         title: "Quizz 1",
-        description: "Description 1",
         quizzType: IQuizzType.QUESTIONS,
       };
 
@@ -147,14 +148,16 @@ describe("QuizzService", () => {
       const quizzId = "1";
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Quizz 1 updated",
-        description: "Description 1 updated",
       };
 
-      const existingQuizz = {
+      const existingQuizz: Quizz = {
         id: quizzId,
         title: "Quizz 1",
-        description: "Description 1",
         quizzType: IQuizzType.QUESTIONS,
+        games: [],
+        image: "image.jpg",
+        questions: [],
+        cards: [],
         author: {
           id: "1",
           username: "Author 1",
@@ -193,10 +196,12 @@ describe("QuizzService", () => {
       const oldImage = "old-image.jpg";
       const newImage = "new-image.jpg";
 
-      const existingQuizz = {
+      const existingQuizz: Quizz = {
         id: quizzId,
         title: "Quizz 1",
-        description: "Description 1",
+        games: [],
+        questions: [],
+        cards: [],
         image: oldImage,
         quizzType: IQuizzType.QUESTIONS,
         author: {
@@ -212,7 +217,6 @@ describe("QuizzService", () => {
 
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Quizz 1 updated",
-        description: "Description 1 updated",
         image: newImage,
       };
 
@@ -245,13 +249,15 @@ describe("QuizzService", () => {
       const quizzId = "1";
       const updatedQuizzDto: UpdatedQuizzDto = {
         title: "Quizz 1 updated",
-        description: "Description 1 updated",
       };
 
-      const existingQuizz = {
+      const existingQuizz: Quizz = {
         id: quizzId,
         title: "Quizz 1",
-        description: "Description 1",
+        games: [],
+        image: "image.jpg",
+        questions: [],
+        cards: [],
         quizzType: IQuizzType.QUESTIONS,
         author: {
           id: "1",

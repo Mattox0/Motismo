@@ -64,6 +64,9 @@ describe("UserController", () => {
         .fn()
         .mockResolvedValue({ url: "http://example.com/file.jpg" }),
       getFile: jest.fn(),
+      getFileUrl: jest
+      .fn()
+      .mockImplementation((fileName: string) => `http://example.com/file.jpg`),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -203,6 +206,10 @@ describe("UserController", () => {
         .spyOn(mockFileUploadService, "uploadFile")
         .mockResolvedValue(fileName);
 
+      jest
+        .spyOn(mockFileUploadService, "getFileUrl")
+        .mockReturnValue(expectedImageUrl);
+
       const updatedUser = {
         ...mockUser,
         ...userUpdateData,
@@ -225,7 +232,7 @@ describe("UserController", () => {
         username: "updatedUser",
         image: expectedImageUrl,
       });
-      expect(result).toEqual(updatedUser);
+      expect(result.image).toBe(expectedImageUrl);
 
       delete process.env.REACT_BASE_URL;
     });

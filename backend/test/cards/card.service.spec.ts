@@ -59,10 +59,13 @@ describe("CardService", () => {
   const mockQuizz: Quizz = {
     id: "quizz-id",
     title: "Quizz title",
-    description: "Quizz description",
     author: mockUser,
     creationDate: new Date(),
     quizzType: IQuizzType.QUESTIONS,
+    games: [],
+    image: "image.jpg",
+    questions: [],
+    cards: [],
   };
 
   const mockCard: Card = {
