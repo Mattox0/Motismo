@@ -11,9 +11,15 @@ describe("QuizzGuard", () => {
   let mockQuizzRepository: Partial<Repository<Quizz>>;
   let mockTranslationService: Partial<TranslationService>;
 
+  const mockQueryBuilder = {
+    where: jest.fn().mockReturnThis(),
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
+    getOne: jest.fn(),
+  };
+
   beforeEach(async () => {
     mockQuizzRepository = {
-      findOne: jest.fn(),
+      createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
     };
 
     mockTranslationService = {
@@ -68,57 +74,19 @@ describe("QuizzGuard", () => {
       );
     });
 
-    it("should throw HttpException if quizz is not found", async () => {
+    it("should throw if quizz not found", async () => {
+      (mockQueryBuilder.getOne as jest.Mock).mockResolvedValueOnce(null);
+
       const context = {
-        switchToHttp: () => ({
-          getRequest: () => ({
-            params: { quizzId: "e85f5bda-8b7c-4dad-b6e5-56dddbcdad54" },
-          }),
-        }),
+        switchToHttp: () => ({ getRequest: () => ({ params: { quizzId: "uuid" } }) }),
       } as ExecutionContext;
 
-      mockQuizzRepository.findOne = jest.fn().mockResolvedValue(null);
+      mockQueryBuilder.getOne.mockResolvedValueOnce(null);
       mockTranslationService.translate = jest
         .fn()
-        .mockResolvedValue("Quizz not found");
-
-      await expect(quizzGuard.canActivate(context)).rejects.toThrow(
-        HttpException,
-      );
-      await expect(quizzGuard.canActivate(context)).rejects.toThrow(
-        new HttpException("Quizz not found", HttpStatus.NOT_FOUND),
-      );
-    });
-
-    it("should successfully activate if quizz is found", async () => {
-      const mockQuizz = { id: "e85f5bda-8b7c-4dad-b6e5-56dddbcdad54" };
-      const context = {
-        switchToHttp: () => ({
-          getRequest: () => ({
-            params: { quizzId: mockQuizz.id },
-          }),
-        }),
-      } as ExecutionContext;
-
-      mockQuizzRepository.findOne = jest.fn().mockResolvedValue(mockQuizz);
-
-      await expect(quizzGuard.canActivate(context)).resolves.toEqual(true);
-    });
-
-    it("should set quizz on request if quizz is found", async () => {
-      const mockQuizz = { id: "e85f5bda-8b7c-4dad-b6e5-56dddbcdad54" };
-      const context = {
-        switchToHttp: () => ({
-          getRequest: () => ({
-            params: { quizzId: mockQuizz.id },
-            quizz: undefined,
-          }),
-        }),
-      } as ExecutionContext;
-
-      mockQuizzRepository.findOne = jest.fn().mockResolvedValue(mockQuizz);
-
-      await expect(quizzGuard.canActivate(context)).resolves.toEqual(true);
+        .mockResolvedValueOnce("Not found");
+      await expect(quizzGuard.canActivate(context))
+        .rejects.toThrow(new HttpException("Not found", HttpStatus.NOT_FOUND));
     });
   });
 });

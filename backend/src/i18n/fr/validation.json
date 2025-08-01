@@ -16,5 +16,6 @@
   "IS_NOT_UUID": "{property} n'est pas un uuid",
   "NOT_ENUM": "{property} n'est pas un {enum}",
   "NOT_ARRAY": "{property} n'est pas un tableau",
-  "NOT_VALIDATE_NESTED": "{property} n'est pas valide"
+  "NOT_VALIDATE_NESTED": "{property} n'est pas valide",
+  "NOT_PASSWORD": "{property} n'est pas un mot de passe valide"
 }

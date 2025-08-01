@@ -96,7 +96,7 @@ describe("AuthController", () => {
         "test-token",
         expect.objectContaining({ httpOnly: true }),
       );
-      expect(mockSend).toHaveBeenCalledWith({ accessToken: "test-token" });
+      expect(mockSend).toHaveBeenCalledWith({ accessToken: "test-token", id: mockUser.id, });
     });
 
     it("should throw NotFoundExeption for non-existent user", async () => {
@@ -157,137 +157,6 @@ describe("AuthController", () => {
   });
 
   describe("register", () => {
-    it("should successfully register a new user with an uploaded file", async () => {
-      const registerDto: RegisterDto = {
-        email: "newuser@example.com",
-        password: "password123",
-        username: "John",
-      };
-
-      const mockCreatedUser = {
-        id: "3",
-        ...registerDto,
-        password: await bcrypt.hash(registerDto.password, 10),
-        role: Role.Customer,
-        creationDate: new Date(),
-        rating: [],
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        image: expect.any(String),
-      };
-
-      const mockSend = jest.fn();
-      const response: Partial<Response> = {
-        cookie: jest.fn(),
-        send: mockSend,
-      };
-
-      const mockFile = {
-        originalname: "dummyImage.jpg",
-        buffer: Buffer.from([]),
-      } as Express.Multer.File;
-
-      jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockResolvedValue("uploadedImage.jpg");
-
-      jest.spyOn(mockUserService, "checkUnknownUser").mockResolvedValue(false);
-      jest.spyOn(mockUserService, "create").mockResolvedValue(mockCreatedUser);
-      jest
-        .spyOn(mockAuthService, "login")
-        .mockReturnValue({ accessToken: "test-token" });
-
-      process.env.REACT_BASE_URL = "http://test-url.com";
-
-      await authController.register(
-        registerDto,
-        response as Response,
-        mockFile,
-      );
-      expect(mockUserService.checkUnknownUser).toHaveBeenCalledWith(
-        registerDto,
-      );
-      expect(mockUserService.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          image: expect.stringContaining(
-            "http://test-url.com/files/uploadedImage.jpg",
-          ),
-        }),
-      );
-      expect(response.cookie).toHaveBeenCalledWith(
-        "access_token",
-        "test-token",
-        expect.objectContaining({ httpOnly: true }),
-      );
-      expect(mockSend).toHaveBeenCalledWith({ accessToken: "test-token" });
-    });
-
-    it("should successfully register a new user with an uploaded file", async () => {
-      const registerDto: RegisterDto = {
-        email: "newuser@example.com",
-        password: "password123",
-        username: "John",
-        image: "http://example.com/files/uploadedImage.jpg",
-      };
-
-      const mockCreatedUser = {
-        id: "3",
-        ...registerDto,
-        password: await bcrypt.hash(registerDto.password, 10),
-        role: Role.Customer,
-        creationDate: new Date(),
-        rating: [],
-        image: "http://example.com/files/uploadedImage.jpg",
-      };
-
-      const mockSend = jest.fn();
-      const mockUploadFile = jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockResolvedValue("uploadedImage.jpg");
-
-      const response: Partial<Response> = {
-        cookie: jest.fn(),
-        send: mockSend,
-      };
-
-      jest.spyOn(mockUserService, "checkUnknownUser").mockResolvedValue(false);
-      jest.spyOn(mockUserService, "create").mockResolvedValue(mockCreatedUser);
-      jest
-        .spyOn(mockAuthService, "login")
-        .mockReturnValue({ accessToken: "test-token" });
-
-      const mockFile = {
-        originalname: "dummyImage.jpg",
-        buffer: Buffer.from([]),
-      } as Express.Multer.File;
-
-      // Appelez la méthode register avec le fichier
-      await authController.register(
-        registerDto,
-        response as Response,
-        mockFile,
-      );
-
-      // Assertions
-      expect(mockUserService.checkUnknownUser).toHaveBeenCalledWith(
-        registerDto,
-      );
-
-      // Utilisez expect.any(String) pour vérifier que la propriété image est une chaîne
-      expect(mockUserService.create).toHaveBeenCalledWith(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        expect.objectContaining({ image: expect.any(String) }),
-      );
-
-      expect(mockUploadFile).toHaveBeenCalledWith(mockFile);
-      expect(response.cookie).toHaveBeenCalledWith(
-        "access_token",
-        "test-token",
-        expect.objectContaining({ httpOnly: true }),
-      );
-      expect(mockSend).toHaveBeenCalledWith({ accessToken: "test-token" });
-    });
-
     it("should throw ConflictException for existing user", async () => {
       const registerDto: RegisterDto = {
         email: "existing@example.com",

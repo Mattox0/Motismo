@@ -57,6 +57,7 @@ export type I18nTranslations = {
         "NOT_ENUM": string;
         "NOT_ARRAY": string;
         "NOT_VALIDATE_NESTED": string;
+        "NOT_PASSWORD": string;
     };
 };
 /* prettier-ignore */

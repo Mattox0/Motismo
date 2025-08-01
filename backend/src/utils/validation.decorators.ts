@@ -62,3 +62,8 @@ export const ValidateNested = (options?: ValidationOptions) =>
     ...options,
     message: i18nValidationMessage<I18nTranslations>("validation.NOT_VALIDATE_NESTED"),
   });
+
+export const IsPassword = () =>
+  OriginalIsString({
+    message: i18nValidationMessage<I18nTranslations>("validation.NOT_PASSWORD"),
+  });
