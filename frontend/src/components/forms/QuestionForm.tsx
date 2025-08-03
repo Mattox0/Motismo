@@ -163,7 +163,7 @@ const QuestionForm = ({ onSubmit, initialData, onDelete }: IQuestionFormProps) =
         title: initialData.title || '',
         questionType: initialData.questionType || IQuestionType.MULTIPLE_CHOICES,
         choices: initialData.choices || [
-          { text: '', isCorrect: true }, // Default first choice as correct
+          { text: '', isCorrect: true },
           { text: '', isCorrect: false },
         ],
         correctAnswer,
@@ -194,7 +194,6 @@ const QuestionForm = ({ onSubmit, initialData, onDelete }: IQuestionFormProps) =
 
   const handleFormSubmit: SubmitHandler<QuestionFormData> = async formData => {
     try {
-      // Convert correctAnswer to isCorrect for single choice questions
       if (isSingleChoiceQuestion(formData.questionType) && formData.correctAnswer !== undefined) {
         const correctIndex = parseInt(formData.correctAnswer);
         const updatedChoices = formData.choices?.map((choice, index) => ({
@@ -321,7 +320,6 @@ const QuestionForm = ({ onSubmit, initialData, onDelete }: IQuestionFormProps) =
                     />
                     <div className="answer-actions">
                       {isMultipleChoiceQuestion(watchedQuestionType) ? (
-                        // Multiple choice: checkboxes
                         <label className="checkbox-label">
                           <input
                             type="checkbox"

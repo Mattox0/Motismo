@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { UserGuard } from "@/user/guards/user.guard"; // Chemin vers votre UserGuard
+import { UserGuard } from "@/user/guards/user.guard";
 import { TranslationService } from "@/translation/translation.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { User } from "@/user/user.entity";

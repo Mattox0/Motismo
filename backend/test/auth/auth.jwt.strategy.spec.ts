@@ -46,7 +46,6 @@ describe("JwtStrategy", () => {
         },
       } as unknown as Request;
 
-      // Accéder à la méthode statique privée via la propriété prototype
       type ExtractJwtFunction = (request: Request) => string | null;
       const extractJWT = (
         JwtStrategy as unknown as { extractJWT: ExtractJwtFunction }

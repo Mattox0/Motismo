@@ -41,7 +41,6 @@ export class CreateQuestionDto {
   @IsEnum(QuestionType)
   questionType: QuestionType;
 
-  // Optional choices field for choice-based questions
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })

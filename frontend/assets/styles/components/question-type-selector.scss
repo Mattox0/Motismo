@@ -144,7 +144,6 @@
   }
 }
 
-// Responsive design
 @media (max-width: 768px) {
   .question-type-selector {
     grid-template-columns: 1fr;
@@ -174,7 +173,6 @@
   }
 }
 
-// Radio button styles
 .radio-label {
   position: relative;
   cursor: pointer;
@@ -224,7 +222,6 @@
   }
 }
 
-// Fixed answer text styles
 .answer-text {
   &--fixed {
     flex: 1;
@@ -249,7 +246,6 @@
   }
 }
 
-// Animation for smooth transitions when switching types
 @keyframes fadeInUp {
   from {
     opacity: 0;

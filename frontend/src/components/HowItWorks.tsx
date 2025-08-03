@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import Step, { Step as StepType } from './Step';
+import Step, { IStep as StepType } from './Step';
 
 const HowItWorks = () => {
   const { t } = useTranslation();

@@ -261,7 +261,6 @@ export class GameService {
     const correctChoices = game.currentQuestion.choices.filter((choice) => choice.isCorrect);
     const correctChoiceIds = correctChoices.map((choice) => choice.id);
 
-    // Pour les questions booléennes : une seule bonne réponse (Vrai/Faux)
     const isCorrect = correctChoiceIds.includes(answer);
 
     if (isCorrect) {

@@ -579,12 +579,10 @@ describe("CardService", () => {
         .fn()
         .mockReturnValue(mockQueryBuilder);
 
-      // Call reorderCards without an oldOrder, simulating an insert
       const privateService = service as unknown as ICardServicePrivate;
 
       await privateService.reorderCards("quizz-id", 2);
 
-      // Verify the where conditions for insertion
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         "card.order >= :newOrder",
         { newOrder: 2 },
@@ -636,16 +634,13 @@ describe("CardService", () => {
         .fn()
         .mockReturnValue(mockQueryBuilder);
 
-      // Call the private getMaxOrder method
       const privateService = service as unknown as ICardServicePrivate;
       const result = await privateService.getMaxOrder("empty-quizz-id");
 
-      // Verify that -1 is returned when no cards exist
       expect(result).toBe(-1);
     });
 
     it("should return -1 when maxOrder is null", async () => {
-      // Create a mock for the query builder that returns an object with null maxOrder
       const mockQueryBuilder = {
         select: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
@@ -656,11 +651,9 @@ describe("CardService", () => {
         .fn()
         .mockReturnValue(mockQueryBuilder);
 
-      // Call the private getMaxOrder method
       const privateService = service as unknown as ICardServicePrivate;
       const result = await privateService.getMaxOrder("quizz-id");
 
-      // Verify that -1 is returned when maxOrder is null
       expect(result).toBe(-1);
     });
   });

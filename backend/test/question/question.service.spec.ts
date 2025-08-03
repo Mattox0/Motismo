@@ -381,7 +381,6 @@ describe("QuestionService", () => {
     });
 
     it("should throw error for invalid order", async () => {
-      // Mock getMaxOrder to return a specific value for validation
       jest.spyOn(service as any, 'getMaxOrder').mockResolvedValue(3);
       
       const nonChoiceQuestion = {
@@ -391,7 +390,7 @@ describe("QuestionService", () => {
       };
       
       const updateQuestionDto = {
-        order: 5, // Invalid: > maxOrder (3)
+        order: 5,
       };
 
       await expect(service.updateQuestion(mockQuizz as any, nonChoiceQuestion as any, updateQuestionDto as any))

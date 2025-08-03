@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
 import { withAuth } from 'next-auth/middleware';
 
-// Cette fonction sera exécutée avant withAuth
 function middleware() {
   return NextResponse.next();
 }
 
-// On exporte le middleware avec withAuth
 export default withAuth(middleware, {
   callbacks: {
     authorized: ({ token, req }) => {

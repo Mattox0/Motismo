@@ -1,17 +1,14 @@
-import { AllQuestion } from '@/../../backend/src/question/types/AllQuestion';
-
 import { baseApi } from '@/services/base.service';
+import { IQuestion } from '@/types/model/IQuestion';
 import { QueryTags } from '@/types/QueryTags';
-
-import { Question } from '../../../backend/src/question/question.entity';
 
 export const questionApi = baseApi.injectEndpoints({
   endpoints: builder => ({
-    getQuestions: builder.query<AllQuestion[], string>({
+    getQuestions: builder.query<IQuestion[], string>({
       query: (quizzId: string) => `quizz/${quizzId}/questions`,
       providesTags: [QueryTags.QUIZ],
     }),
-    addQuestion: builder.mutation<Question, { quizzId: string; question: FormData }>({
+    addQuestion: builder.mutation<IQuestion, { quizzId: string; question: FormData }>({
       query: ({ quizzId, question }) => ({
         url: `quizz/${quizzId}/questions`,
         method: 'POST',
@@ -20,7 +17,7 @@ export const questionApi = baseApi.injectEndpoints({
       invalidatesTags: [QueryTags.QUIZ],
     }),
     updateQuestion: builder.mutation<
-      Question,
+      IQuestion,
       { quizzId: string; questionId: string; question: FormData }
     >({
       query: ({ quizzId, questionId, question }) => ({
