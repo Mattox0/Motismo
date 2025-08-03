@@ -10,7 +10,6 @@ export const setupStore = () => {
   return configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware =>
-      // adding the api middleware enables caching, invalidation, polling and other features of `rtk-query`
       getDefaultMiddleware().concat(baseApi.middleware),
   });
 };

@@ -101,7 +101,6 @@ describe('CreateGameUserDto', () => {
     dto.avatar = 'https://api.dicebear.com/avatar.png';
 
     const errors = await validate(dto);
-    // Note: @IsNotEmpty() allows whitespace-only strings, this test documents current behavior
     expect(errors.length).toBe(0);
   });
 
@@ -111,7 +110,6 @@ describe('CreateGameUserDto', () => {
     dto.avatar = '   ';
 
     const errors = await validate(dto);
-    // Note: @IsNotEmpty() allows whitespace-only strings, this test documents current behavior
     expect(errors.length).toBe(0);
   });
 });

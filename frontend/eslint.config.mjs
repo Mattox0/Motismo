@@ -12,14 +12,11 @@ import prettierPlugin from "eslint-plugin-prettier";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Configuration simplifiée pour éviter la récursion
 const eslintConfig = [
-  // Configuration de base
   {
     ignores: ["node_modules/**", ".next/**", "out/**", "public/**"],
   },
   
-  // Configuration pour tous les fichiers
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
@@ -42,7 +39,6 @@ const eslintConfig = [
       "prettier": prettierPlugin
     },
     rules: {
-      // Règles générales
       "no-console": ["warn", { allow: ["warn", "error"] }],
       "no-debugger": "warn",
       'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
@@ -50,7 +46,6 @@ const eslintConfig = [
       "no-var": "error",
       "eqeqeq": ["error", "always"],
       
-      // Règles TypeScript
       "@typescript-eslint/no-unused-vars": ["error", { 
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
@@ -70,15 +65,13 @@ const eslintConfig = [
         }
       ],
       
-      // Règles React
-      "react/react-in-jsx-scope": "off", // Non nécessaire dans Next.js
-      "react/prop-types": "off", // Utiliser TypeScript à la place
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
       "react/jsx-props-no-spreading": "off",
       "react/display-name": "off",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "off",
       
-      // Règles d'importation
       "import/order": ["error", {
         "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
         "newlines-between": "always",
@@ -86,14 +79,12 @@ const eslintConfig = [
       }],
       "import/no-duplicates": "error",
       
-      // Règles d'accessibilité
       "jsx-a11y/anchor-is-valid": ["error", {
         "components": ["Link"],
         "specialLink": ["hrefLeft", "hrefRight"],
         "aspects": ["invalidHref", "preferButton"]
       }],
       
-      // Règles de formatage (via Prettier)
       "prettier/prettier": ["error", {
         "singleQuote": true,
         "trailingComma": "es5",
@@ -114,13 +105,23 @@ const eslintConfig = [
     }
   },
   
-  // Règles spécifiques pour les tests
   {
     files: ["**/*.test.{js,jsx,ts,tsx}", "**/*.spec.{js,jsx,ts,tsx}"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "no-console": "off"
     }
+  },
+
+  {
+    overrides: [
+      {
+        files: ['jest.setup.js'],
+        parserOptions: {
+          project: null,
+        },
+      },
+    ],
   }
 ];
 

@@ -70,7 +70,6 @@ export const Navbar: React.FC = () => {
               </button>
             )
           ) : (
-            // Placeholder pendant l'hydratation
             <button className="btn btn-secondary" style={{ visibility: 'hidden' }}>
               {t('navigation.login')}
             </button>

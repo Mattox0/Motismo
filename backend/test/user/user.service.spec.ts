@@ -334,10 +334,8 @@ describe("UserService", () => {
           email: "new_user@example.com",
         };
 
-        // Appel de la méthode
         const result = await service.checkUnknownUser(userDto);
 
-        // Vérifications
         expect(mockQueryBuilder.where).toHaveBeenCalledWith(
           "user.username = :username",
           {

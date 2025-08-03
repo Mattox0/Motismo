@@ -4,7 +4,7 @@ import React from 'react';
 
 export const SplashScreen: React.FC = () => {
   return (
-    <div className="splash-screen">
+    <div className="splash-screen" data-testid="splash-screen">
       <div className="splash-content">
         <div className="splash-icon">
           <div className="animated-icon">

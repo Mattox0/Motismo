@@ -26,7 +26,6 @@ describe("UserRequest Decorator", () => {
       creationDate: new Date("2025-02-23T20:13:43.578Z"),
     };
 
-    // Simuler un contexte d'exécution avec la requête utilisateur
     const context = {
       switchToHttp: () => ({
         getRequest: () => ({

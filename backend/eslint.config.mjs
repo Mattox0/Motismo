@@ -30,7 +30,6 @@ export default tseslint.config(
   },
   {
     rules: {
-      // Règles TypeScript
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-unsafe-argument': 'error',
@@ -60,15 +59,12 @@ export default tseslint.config(
       '@typescript-eslint/no-misused-spread': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'off',
 
-      // Règles de performance
       'max-depth': ['error', 4],
       'complexity': ['error', 10],
 
-      // Règles de maintenabilité
       'max-params': 'off',
       'max-statements': ['error', 20],
 
-      // Règles de style
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
       'no-duplicate-imports': 'error',
@@ -84,24 +80,21 @@ export default tseslint.config(
         { blankLine: 'any', prev: ['const', 'let', 'var'], next: ['const', 'let', 'var']}
       ],
 
-      // Formatage
+      //Formatage
       'semi': ['error', 'always'],
       'comma-dangle': ['error', 'always-multiline'],
 
-      // Gestion des promesses et asynchrone
       'no-promise-executor-return': 'error',
       'prefer-promise-reject-errors': 'error',
       'require-atomic-updates': 'error',
       'max-classes-per-file': ['error', 2],
 
-      // Sécurité
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-new-func': 'error',
       'no-caller': 'error',
       'no-invalid-this': 'error',
 
-      // Meilleures pratiques
       'array-callback-return': 'error',
       'default-param-last': 'error',
       'no-else-return': 'error',
@@ -114,7 +107,6 @@ export default tseslint.config(
       'prefer-spread': 'error',
       'require-await': 'error',
 
-      // Formatage Prettier
       'prettier/prettier': [
         'error',
         {

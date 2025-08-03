@@ -57,7 +57,6 @@ describe("UserAuthGuard", () => {
         }),
       } as unknown as ExecutionContext;
 
-      // Mock la méthode canActivate du JwtAuthGuard parent
       jest.spyOn(JwtAuthGuard.prototype, "canActivate").mockResolvedValue(true);
     });
 
