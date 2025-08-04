@@ -56,13 +56,9 @@ describe("UserGuard", () => {
         }),
       } as ExecutionContext;
 
-      mockTranslationService.translate = jest
-        .fn()
-        .mockResolvedValue("Invalid ID");
+      mockTranslationService.translate = jest.fn().mockResolvedValue("Invalid ID");
 
-      await expect(userGuard.canActivate(context)).rejects.toThrow(
-        HttpException,
-      );
+      await expect(userGuard.canActivate(context)).rejects.toThrow(HttpException);
       await expect(userGuard.canActivate(context)).rejects.toThrow(
         new HttpException("Invalid ID", HttpStatus.BAD_REQUEST),
       );
@@ -78,13 +74,9 @@ describe("UserGuard", () => {
       } as ExecutionContext;
 
       mockUserRepository.findOne = jest.fn().mockResolvedValue(null);
-      mockTranslationService.translate = jest
-        .fn()
-        .mockResolvedValue("User not found");
+      mockTranslationService.translate = jest.fn().mockResolvedValue("User not found");
 
-      await expect(userGuard.canActivate(context)).rejects.toThrow(
-        HttpException,
-      );
+      await expect(userGuard.canActivate(context)).rejects.toThrow(HttpException);
       await expect(userGuard.canActivate(context)).rejects.toThrow(
         new HttpException("User not found", HttpStatus.NOT_FOUND),
       );

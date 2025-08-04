@@ -1,8 +1,8 @@
 jest.mock('@/services/base.service', () => {
   const injectEndpointsMock = jest.fn((config: any) => ({
-    endpoints: {}, 
-    useGetQuestionsQuery:    jest.fn(),
-    useAddQuestionMutation:  jest.fn(),
+    endpoints: {},
+    useGetQuestionsQuery: jest.fn(),
+    useAddQuestionMutation: jest.fn(),
     useUpdateQuestionMutation: jest.fn(),
     useDeleteQuestionMutation: jest.fn(),
   }));
@@ -15,6 +15,8 @@ jest.mock('@/services/base.service', () => {
 });
 
 import { baseApi } from '@/services/base.service';
+import { QueryTags } from '@/types/QueryTags';
+
 import {
   questionApi,
   useGetQuestionsQuery,
@@ -22,10 +24,9 @@ import {
   useUpdateQuestionMutation,
   useDeleteQuestionMutation,
 } from '../question.service';
-import { QueryTags } from '@/types/QueryTags';
 
 describe('question.service endpoints', () => {
-  const injectEndpointsMock = (baseApi.injectEndpoints as jest.Mock);
+  const injectEndpointsMock = baseApi.injectEndpoints as jest.Mock;
   const builder = {
     query: jest.fn(),
     mutation: jest.fn(),
@@ -79,7 +80,10 @@ describe('question.service endpoints', () => {
 
     const updCfg = builder.mutation.mock.calls
       .map(c => c[0])
-      .find(cfg => cfg.query({ quizzId: 'a', questionId: 'b', question: new FormData() }).method === 'PUT')!;
+      .find(
+        cfg =>
+          cfg.query({ quizzId: 'a', questionId: 'b', question: new FormData() }).method === 'PUT'
+      )!;
 
     const result = (updCfg.query as Function)({
       quizzId: 'quiz-123',

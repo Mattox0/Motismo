@@ -39,8 +39,7 @@ describe("TranslationModule", () => {
   });
 
   it("should export TranslationService", () => {
-    const translationService =
-      module.get<TranslationService>(TranslationService);
+    const translationService = module.get<TranslationService>(TranslationService);
 
     expect(translationService).toBeDefined();
     expect(translationService).toBeInstanceOf(TranslationService);

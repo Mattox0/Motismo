@@ -13,9 +13,7 @@ export class LoginDto {
   @IsEmail(
     {},
     {
-      message: i18nValidationMessage<I18nTranslations>(
-        "validation.INVALID_EMAIL",
-      ),
+      message: i18nValidationMessage<I18nTranslations>("validation.INVALID_EMAIL"),
     },
   )
   email: string;

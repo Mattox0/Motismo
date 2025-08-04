@@ -1,6 +1,6 @@
+import { configureStore } from '@reduxjs/toolkit';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
 
 import { AskCreateSection } from '../AskCreateSection';
 
@@ -34,7 +34,7 @@ jest.mock('react-i18next', () => ({
 jest.mock('@/services/quiz.service', () => ({
   useCreateQuizzMutation: () => [
     jest.fn().mockResolvedValue({ data: { id: 'test-id', quizzType: 'QUESTIONS' } }),
-    { isLoading: false }
+    { isLoading: false },
   ],
 }));
 
@@ -47,24 +47,21 @@ jest.mock('@/utils/toast', () => ({
 }));
 
 // Create a mock store
-const createMockStore = () => configureStore({
-  reducer: {
-    // Add any reducers your component needs
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
-});
+const createMockStore = () =>
+  configureStore({
+    reducer: {
+      // Add any reducers your component needs
+    },
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }),
+  });
 
 // Wrapper component for Redux
 const renderWithRedux = (component: React.ReactElement) => {
   const store = createMockStore();
-  return render(
-    <Provider store={store}>
-      {component}
-    </Provider>
-  );
+  return render(<Provider store={store}>{component}</Provider>);
 };
 
 describe('AskCreateSection', () => {
@@ -229,7 +226,7 @@ describe('AskCreateSection', () => {
       renderWithRedux(<AskCreateSection />);
 
       const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-      
+
       // Should not throw error
       expect(() => {
         fireEvent.click(quizButton);
@@ -244,7 +241,7 @@ describe('AskCreateSection', () => {
       renderWithRedux(<AskCreateSection />);
 
       const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-      
+
       // Should not throw error
       expect(() => {
         fireEvent.click(quizButton);
@@ -276,4 +273,4 @@ describe('AskCreateSection', () => {
       expect(mockT).toHaveBeenCalledWith('profile.ask_create_section.create_cards');
     });
   });
-}); 
+});

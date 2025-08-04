@@ -34,4 +34,4 @@ describe('initializeCard', () => {
     const result2 = initializeCard();
     expect(result1).not.toBe(result2);
   });
-}); 
+});

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Card } from "../card.entity";
@@ -35,9 +31,7 @@ export class CardService {
     });
 
     if (!card) {
-      throw new NotFoundException(
-        await this.translationService.translate("error.CARD_NOT_FOUND"),
-      );
+      throw new NotFoundException(await this.translationService.translate("error.CARD_NOT_FOUND"));
     }
 
     return card;
@@ -53,11 +47,7 @@ export class CardService {
     return result?.maxOrder ?? -1;
   }
 
-  private async reorderCards(
-    quizzId: string,
-    newOrder: number,
-    oldOrder?: number,
-  ): Promise<void> {
+  private async reorderCards(quizzId: string, newOrder: number, oldOrder?: number): Promise<void> {
     const queryBuilder = this.cardRepository
       .createQueryBuilder("card")
       .update(Card)
@@ -66,21 +56,15 @@ export class CardService {
 
     if (oldOrder !== undefined) {
       if (newOrder > oldOrder) {
-        queryBuilder.andWhere(
-          "card.order > :oldOrder AND card.order <= :newOrder",
-          {
-            oldOrder,
-            newOrder,
-          },
-        );
+        queryBuilder.andWhere("card.order > :oldOrder AND card.order <= :newOrder", {
+          oldOrder,
+          newOrder,
+        });
       } else {
-        queryBuilder.andWhere(
-          "card.order >= :newOrder AND card.order < :oldOrder",
-          {
-            oldOrder,
-            newOrder,
-          },
-        );
+        queryBuilder.andWhere("card.order >= :newOrder AND card.order < :oldOrder", {
+          oldOrder,
+          newOrder,
+        });
       }
     } else {
       queryBuilder.andWhere("card.order >= :newOrder", { newOrder });
@@ -94,9 +78,7 @@ export class CardService {
     const order = createCardDto.order ?? maxOrder + 1;
 
     if (order < 0 || order > maxOrder + 1) {
-      throw new BadRequestException(
-        await this.translationService.translate("error.INVALID_ORDER_VALUE"),
-      );
+      throw new BadRequestException(await this.translationService.translate("error.INVALID_ORDER_VALUE"));
     }
 
     if (order <= maxOrder) {
@@ -112,38 +94,21 @@ export class CardService {
     return this.cardRepository.save(card);
   }
 
-  private async deleteUnusedImages(
-    card: Card,
-    updateCardDto: UpdateCardDto,
-  ): Promise<void> {
-    if (
-      updateCardDto.rectoImage &&
-      card.rectoImage &&
-      updateCardDto.rectoImage !== card.rectoImage
-    ) {
+  private async deleteUnusedImages(card: Card, updateCardDto: UpdateCardDto): Promise<void> {
+    if (updateCardDto.rectoImage && card.rectoImage && updateCardDto.rectoImage !== card.rectoImage) {
       await this.fileUploadService.deleteFile(card.rectoImage);
     }
-    if (
-      updateCardDto.versoImage &&
-      card.versoImage &&
-      updateCardDto.versoImage !== card.versoImage
-    ) {
+    if (updateCardDto.versoImage && card.versoImage && updateCardDto.versoImage !== card.versoImage) {
       await this.fileUploadService.deleteFile(card.versoImage);
     }
   }
 
-  async updateCard(
-    quizz: Quizz,
-    card: Card,
-    updateCardDto: UpdateCardDto,
-  ): Promise<Card> {
+  async updateCard(quizz: Quizz, card: Card, updateCardDto: UpdateCardDto): Promise<Card> {
     const maxOrder = await this.getMaxOrder(quizz.id);
 
     if (updateCardDto.order !== undefined) {
       if (updateCardDto.order < 0 || updateCardDto.order > maxOrder) {
-        throw new BadRequestException(
-          await this.translationService.translate("error.INVALID_ORDER_VALUE"),
-        );
+        throw new BadRequestException(await this.translationService.translate("error.INVALID_ORDER_VALUE"));
       }
 
       await this.reorderCards(quizz.id, updateCardDto.order, card.order);

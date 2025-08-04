@@ -20,9 +20,7 @@ describe("JwtStrategy", () => {
   describe("constructor", () => {
     it("should throw error if JWT_SECRET is not defined", () => {
       delete process.env.JWT_SECRET;
-      expect(() => new JwtStrategy()).toThrow(
-        "JWT_SECRET environment variable is not defined",
-      );
+      expect(() => new JwtStrategy()).toThrow("JWT_SECRET environment variable is not defined");
     });
 
     it("should create strategy instance when JWT_SECRET is defined", () => {
@@ -47,9 +45,7 @@ describe("JwtStrategy", () => {
       } as unknown as Request;
 
       type ExtractJwtFunction = (request: Request) => string | null;
-      const extractJWT = (
-        JwtStrategy as unknown as { extractJWT: ExtractJwtFunction }
-      ).extractJWT;
+      const extractJWT = (JwtStrategy as unknown as { extractJWT: ExtractJwtFunction }).extractJWT;
 
       const result = extractJWT(mockRequest);
 
@@ -62,9 +58,7 @@ describe("JwtStrategy", () => {
       } as Request;
 
       type ExtractJwtFunction = (request: Request) => string | null;
-      const extractJWT = (
-        JwtStrategy as unknown as { extractJWT: ExtractJwtFunction }
-      ).extractJWT;
+      const extractJWT = (JwtStrategy as unknown as { extractJWT: ExtractJwtFunction }).extractJWT;
 
       const result = extractJWT(mockRequest);
 
@@ -79,9 +73,7 @@ describe("JwtStrategy", () => {
       } as unknown as Request;
 
       type ExtractJwtFunction = (request: Request) => string | null;
-      const extractJWT = (
-        JwtStrategy as unknown as { extractJWT: ExtractJwtFunction }
-      ).extractJWT;
+      const extractJWT = (JwtStrategy as unknown as { extractJWT: ExtractJwtFunction }).extractJWT;
 
       const result = extractJWT(mockRequest);
 

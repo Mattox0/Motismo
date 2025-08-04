@@ -15,14 +15,7 @@ describe('createQuizCodeSchema', () => {
 
   describe('code validation', () => {
     it('should accept valid 6-character alphanumeric codes', () => {
-      const validCodes = [
-        'ABC123',
-        '123ABC',
-        'A1B2C3',
-        'abcdef',
-        '123456',
-        'abc123',
-      ];
+      const validCodes = ['ABC123', '123ABC', 'A1B2C3', 'abcdef', '123456', 'abc123'];
 
       validCodes.forEach(code => {
         const result = schema.safeParse({ code });
@@ -137,4 +130,4 @@ describe('createQuizCodeSchema', () => {
       expect(result.error.errors[0].message).toBe('validation.codeLength');
     }
   });
-}); 
+});

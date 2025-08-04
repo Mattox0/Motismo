@@ -1,7 +1,9 @@
 import { render, screen } from '@testing-library/react';
-import { AnswerResults } from '../AnswerResults';
-import { IAnswerStatistics } from '@/types/model/IAnswerStatistics';
+
 import { GameProvider } from '@/providers/GameProvider';
+import { IAnswerStatistics } from '@/types/model/IAnswerStatistics';
+
+import { AnswerResults } from '../AnswerResults';
 
 jest.mock('@/providers/GameProvider', () => ({
   GameProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -44,7 +46,7 @@ describe('AnswerResults', () => {
         <AnswerResults statistics={mockStatistics} />
       </GameProvider>
     );
-    
+
     expect(screen.getByText('Test Question')).toBeInTheDocument();
   });
 
@@ -54,7 +56,7 @@ describe('AnswerResults', () => {
         <AnswerResults statistics={mockStatistics} />
       </GameProvider>
     );
-    
+
     expect(screen.getByText('5 réponses')).toBeInTheDocument();
   });
 
@@ -63,13 +65,13 @@ describe('AnswerResults', () => {
       ...mockStatistics,
       totalResponses: 1,
     };
-    
+
     render(
       <GameProvider>
         <AnswerResults statistics={singleResponseStats} />
       </GameProvider>
     );
-    
+
     expect(screen.getByText('1 réponse')).toBeInTheDocument();
   });
 
@@ -79,8 +81,8 @@ describe('AnswerResults', () => {
         <AnswerResults statistics={mockStatistics} />
       </GameProvider>
     );
-    
+
     expect(screen.getByText('Choice 1')).toBeInTheDocument();
     expect(screen.getByText('Choice 2')).toBeInTheDocument();
   });
-}); 
+});

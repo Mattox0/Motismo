@@ -62,24 +62,23 @@ describe("GameByCodeController", () => {
     });
 
     it("should throw BadRequestException if code is empty", async () => {
-      await expect(controller.createGameUser("", mockCreateGameUserDto))
-        .rejects.toThrow(BadRequestException);
+      await expect(controller.createGameUser("", mockCreateGameUserDto)).rejects.toThrow(BadRequestException);
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.GAME_CODE_REQUIRED");
       expect(mockGameService.createGameUser).not.toHaveBeenCalled();
     });
 
     it("should throw BadRequestException if code is null", async () => {
-      await expect(controller.createGameUser(null as any, mockCreateGameUserDto))
-        .rejects.toThrow(BadRequestException);
+      await expect(controller.createGameUser(null as any, mockCreateGameUserDto)).rejects.toThrow(BadRequestException);
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.GAME_CODE_REQUIRED");
       expect(mockGameService.createGameUser).not.toHaveBeenCalled();
     });
 
     it("should throw BadRequestException if code is undefined", async () => {
-      await expect(controller.createGameUser(undefined as any, mockCreateGameUserDto))
-        .rejects.toThrow(BadRequestException);
+      await expect(controller.createGameUser(undefined as any, mockCreateGameUserDto)).rejects.toThrow(
+        BadRequestException,
+      );
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.GAME_CODE_REQUIRED");
       expect(mockGameService.createGameUser).not.toHaveBeenCalled();
@@ -87,10 +86,10 @@ describe("GameByCodeController", () => {
 
     it("should propagate service errors", async () => {
       const serviceError = new Error("Game not found");
+
       mockGameService.createGameUser.mockRejectedValue(serviceError);
 
-      await expect(controller.createGameUser("ABCDEF", mockCreateGameUserDto))
-        .rejects.toThrow(serviceError);
+      await expect(controller.createGameUser("ABCDEF", mockCreateGameUserDto)).rejects.toThrow(serviceError);
 
       expect(mockGameService.createGameUser).toHaveBeenCalledWith("ABCDEF", mockCreateGameUserDto);
     });

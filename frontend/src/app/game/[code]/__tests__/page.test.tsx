@@ -1,8 +1,9 @@
 // src/app/game/[code]/page.test.tsx
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import React from 'react';
+
 import { useGetQuizByCodeQuery } from '@/services/quiz.service';
 
 jest.mock('next/navigation', () => ({
@@ -32,9 +33,7 @@ jest.mock('@/components/SplashScreen', () => ({
 }));
 jest.mock('@/containers/GamePage', () => ({
   __esModule: true,
-  GamePage: ({ code, quizz }: any) => (
-    <div data-testid="game-page">{`${code}:${quizz.id}`}</div>
-  ),
+  GamePage: ({ code, quizz }: any) => <div data-testid="game-page">{`${code}:${quizz.id}`}</div>,
 }));
 jest.mock('@/providers/GameProvider', () => ({
   __esModule: true,
@@ -55,9 +54,7 @@ describe('GamePageWrapper', () => {
   const mockUseParams = useParams as jest.MockedFunction<typeof useParams>;
   const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
   const mockUseSession = useSession as jest.MockedFunction<typeof useSession>;
-  const mockUseGetQuiz   = useGetQuizByCodeQuery as jest.MockedFunction<
-    typeof useGetQuizByCodeQuery
-  >;
+  const mockUseGetQuiz = useGetQuizByCodeQuery as jest.MockedFunction<typeof useGetQuizByCodeQuery>;
   const mockPush = jest.fn();
 
   beforeEach(() => {
@@ -111,7 +108,10 @@ describe('GamePageWrapper', () => {
     const stored: IPlayerData = { id: 'p1', avatar: 'img', name: 'Name' };
     mockUseParams.mockReturnValue({ code: 'abc' });
     mockUseGetQuiz.mockReturnValue({ data: quiz, isLoading: false, error: null } as any);
-    mockUseSession.mockReturnValue({ data: { user: { id: 'other', name: 'X' } }, status: 'authenticated' } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: 'other', name: 'X' } },
+      status: 'authenticated',
+    } as any);
     window.localStorage.getItem = jest.fn(() => JSON.stringify(stored));
     render(<GamePageWrapperComponent />);
     expect(screen.getByTestId('socket-provider')).toBeInTheDocument();
@@ -123,7 +123,10 @@ describe('GamePageWrapper', () => {
     const quiz = { id: 'q1', author: { id: 'auth1' } };
     mockUseParams.mockReturnValue({ code: 'abc' });
     mockUseGetQuiz.mockReturnValue({ data: quiz, isLoading: false, error: null } as any);
-    mockUseSession.mockReturnValue({ data: { user: { id: 'auth1', name: 'Auth' } }, status: 'authenticated' } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: 'auth1', name: 'Auth' } },
+      status: 'authenticated',
+    } as any);
     window.localStorage.getItem = jest.fn(() => null);
     render(<GamePageWrapperComponent />);
     // author should be treated as player
@@ -154,7 +157,11 @@ describe('GamePageWrapper', () => {
 
   it('handles quiz query error by showing splash', () => {
     mockUseParams.mockReturnValue({ code: 'abc' });
-    mockUseGetQuiz.mockReturnValue({ data: null, isLoading: false, error: { message: 'fail' } } as any);
+    mockUseGetQuiz.mockReturnValue({
+      data: null,
+      isLoading: false,
+      error: { message: 'fail' },
+    } as any);
     render(<GamePageWrapperComponent />);
     expect(screen.getByTestId('splash-screen')).toBeInTheDocument();
   });

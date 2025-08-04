@@ -15,7 +15,12 @@ export class GameResponseService {
     private translationService: TranslationService,
   ) {}
 
-  async createResponse(user: GameUser, question: Question, game: Game, answer: string | string[]): Promise<GameResponse> {
+  async createResponse(
+    user: GameUser,
+    question: Question,
+    game: Game,
+    answer: string | string[],
+  ): Promise<GameResponse> {
     const gameResponse = this.gameResponseRepository.create({
       user,
       question,

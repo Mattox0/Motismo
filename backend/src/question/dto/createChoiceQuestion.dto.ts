@@ -1,10 +1,4 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsNotEmpty,
-  IsString,
-  ValidateNested,
-} from "@/utils/validation.decorators";
+import { IsArray, IsBoolean, IsNotEmpty, IsString, ValidateNested } from "@/utils/validation.decorators";
 import { Transform, Type } from "class-transformer";
 import { CreateQuestionDto } from "@/question/dto/createQuestion.dto";
 

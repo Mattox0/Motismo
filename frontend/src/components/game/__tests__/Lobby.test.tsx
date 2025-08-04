@@ -2,9 +2,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import { useGame } from '@/providers/GameProvider';
 import { IQuizz } from '@/types/model/IQuizz';
+import { IQuizzType } from '@/types/model/IQuizzType';
 
 import { Lobby } from '../Lobby';
-import { IQuizzType } from '@/types/model/IQuizzType';
 
 jest.mock('@/providers/GameProvider', () => ({
   useGame: jest.fn(),
@@ -43,24 +43,26 @@ describe('Lobby', () => {
 
   it('renders quiz title and code', () => {
     render(<Lobby quizz={mockQuizz} code="TEST123" />);
-    
+
     expect(screen.getByText('Test Quiz')).toBeInTheDocument();
     expect(screen.getByText('TEST123')).toBeInTheDocument();
   });
 
   it('shows start button when presentation is true', () => {
-    render(<Lobby quizz={mockQuizz} code="TEST123" presentation={true} handleClick={mockHandleClick} />);
-    
+    render(
+      <Lobby quizz={mockQuizz} code="TEST123" presentation={true} handleClick={mockHandleClick} />
+    );
+
     const startButton = screen.getByText('Démarrer le quizz');
     expect(startButton).toBeInTheDocument();
-    
+
     fireEvent.click(startButton);
     expect(mockHandleClick).toHaveBeenCalled();
   });
 
   it('shows waiting message when presentation is false', () => {
     render(<Lobby quizz={mockQuizz} code="TEST123" presentation={false} />);
-    
+
     expect(screen.getByText('En attente du présentateur pour lancer le quizz')).toBeInTheDocument();
   });
-}); 
+});

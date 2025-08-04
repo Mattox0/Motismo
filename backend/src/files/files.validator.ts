@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  PipeTransform,
-} from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, PipeTransform } from "@nestjs/common";
 import { extname } from "node:path";
 
 import { TranslationService } from "@/translation/translation.service";

@@ -18,4 +18,4 @@ describe('gameApi', () => {
     const endpoints = gameApi.endpoints;
     expect(endpoints).toBeDefined();
   });
-}); 
+});

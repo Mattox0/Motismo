@@ -1,11 +1,12 @@
 import { renderHook } from '@testing-library/react';
 import { useEffect } from 'react';
 
-import { useWebsocket } from '../useWebsocket';
 import { useGame } from '@/providers/GameProvider';
 import { useSocket } from '@/providers/SocketProvider';
 import { IWebsocketEvent } from '@/types/websockets/IWebsocketEvent';
 import { showToast } from '@/utils/toast';
+
+import { useWebsocket } from '../useWebsocket';
 
 // Mock des dépendances
 jest.mock('@/providers/GameProvider');
@@ -37,7 +38,7 @@ describe('useWebsocket', () => {
   beforeEach(() => {
     mockUseSocket.mockReturnValue(mockSocket as any);
     mockUseGame.mockReturnValue(mockGameSetters as any);
-    
+
     // Mock localStorage
     Object.defineProperty(window, 'localStorage', {
       value: {
@@ -55,7 +56,7 @@ describe('useWebsocket', () => {
 
   test('should set up socket event listeners', () => {
     renderHook(() => useWebsocket('ABC123'));
-    
+
     expect(mockSocket.on).toHaveBeenCalledWith(IWebsocketEvent.CONNECT, expect.any(Function));
     expect(mockSocket.on).toHaveBeenCalledWith(IWebsocketEvent.JOIN, expect.any(Function));
     expect(mockSocket.on).toHaveBeenCalledWith(IWebsocketEvent.ERROR, expect.any(Function));
@@ -64,48 +65,45 @@ describe('useWebsocket', () => {
 
   test('should handle join event and store user data', () => {
     const mockUser = { id: '1', name: 'Test User' };
-    
+
     renderHook(() => useWebsocket('ABC123'));
-    
+
     // Simuler l'événement JOIN
     const joinHandler = mockSocket.on.mock.calls.find(
       call => call[0] === IWebsocketEvent.JOIN
     )?.[1];
-    
+
     if (joinHandler) {
       joinHandler(mockUser);
-      
-      expect(window.localStorage.setItem).toHaveBeenCalledWith(
-        'ABC123',
-        JSON.stringify(mockUser)
-      );
+
+      expect(window.localStorage.setItem).toHaveBeenCalledWith('ABC123', JSON.stringify(mockUser));
       expect(mockGameSetters.setMyUser).toHaveBeenCalledWith(mockUser);
     }
   });
 
   test('should handle error event and show toast', () => {
     renderHook(() => useWebsocket('ABC123'));
-    
+
     // Simuler l'événement ERROR
     const errorHandler = mockSocket.on.mock.calls.find(
       call => call[0] === IWebsocketEvent.ERROR
     )?.[1];
-    
+
     if (errorHandler) {
       errorHandler('Test error message');
-      
+
       expect(showToast.error).toHaveBeenCalledWith('Test error message');
     }
   });
 
   test('should clean up event listeners on unmount', () => {
     const { unmount } = renderHook(() => useWebsocket('ABC123'));
-    
+
     unmount();
-    
+
     expect(mockSocket.off).toHaveBeenCalledWith(IWebsocketEvent.CONNECT);
     expect(mockSocket.off).toHaveBeenCalledWith(IWebsocketEvent.ERROR);
     expect(mockSocket.off).toHaveBeenCalledWith(IWebsocketEvent.STATUS);
     expect(mockSocket.off).toHaveBeenCalledWith(IWebsocketEvent.JOIN);
   });
-}); 
+});

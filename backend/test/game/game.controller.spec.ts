@@ -18,10 +18,7 @@ describe("GameController", () => {
       translate: jest.fn().mockImplementation((key) => Promise.resolve(key)),
     };
 
-    controller = new GameController(
-      mockGameService as GameService,
-      mockTranslationService as TranslationService
-    );
+    controller = new GameController(mockGameService as GameService, mockTranslationService as TranslationService);
   });
 
   it("should be defined", () => {
@@ -47,9 +44,7 @@ describe("GameController", () => {
     it("should throw BadRequestException for non-question quizz type", async () => {
       const invalidQuizz = { ...mockQuizz, quizzType: IQuizzType.CARDS };
 
-      await expect(
-        controller.createGame(invalidQuizz as any, mockUser as any)
-      ).rejects.toThrow(BadRequestException);
+      await expect(controller.createGame(invalidQuizz as any, mockUser as any)).rejects.toThrow(BadRequestException);
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.QUIZZ_TYPE");
     });
@@ -57,9 +52,7 @@ describe("GameController", () => {
     it("should throw BadRequestException for quizz without questions", async () => {
       const invalidQuizz = { ...mockQuizz, questions: [] };
 
-      await expect(
-        controller.createGame(invalidQuizz as any, mockUser as any)
-      ).rejects.toThrow(BadRequestException);
+      await expect(controller.createGame(invalidQuizz as any, mockUser as any)).rejects.toThrow(BadRequestException);
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.ANY_QUESTIONS");
     });
@@ -67,9 +60,7 @@ describe("GameController", () => {
     it("should throw UnauthorizedException if user is not the author", async () => {
       const invalidQuizz = { ...mockQuizz, author: { id: "other-user-id" } };
 
-      await expect(
-        controller.createGame(invalidQuizz as any, mockUser as any)
-      ).rejects.toThrow(UnauthorizedException);
+      await expect(controller.createGame(invalidQuizz as any, mockUser as any)).rejects.toThrow(UnauthorizedException);
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.PERMISSION_DENIED");
     });

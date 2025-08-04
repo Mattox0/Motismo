@@ -14,7 +14,15 @@ const __dirname = dirname(__filename);
 
 const eslintConfig = [
   {
-    ignores: ["node_modules/**", ".next/**", "out/**", "public/**"],
+    ignores: [
+      "node_modules/**", 
+      ".next/**", 
+      "out/**", 
+      "public/**", 
+      "coverage/**",
+      "jest.config.js",
+      "jest.setup.js"
+    ],
   },
   
   {
@@ -109,20 +117,14 @@ const eslintConfig = [
     files: ["**/*.test.{js,jsx,ts,tsx}", "**/*.spec.{js,jsx,ts,tsx}"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "no-unused-vars": "off",
       "no-console": "off"
     }
   },
 
-  {
-    overrides: [
-      {
-        files: ['jest.setup.js'],
-        parserOptions: {
-          project: null,
-        },
-      },
-    ],
-  }
+
 ];
 
 export default eslintConfig;

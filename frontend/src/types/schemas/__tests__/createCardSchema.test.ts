@@ -6,7 +6,7 @@ describe('cardSchema', () => {
       term: 'Test Term',
       definition: 'Test Definition',
     };
-    
+
     const result = cardSchema.safeParse(validCard);
     expect(result.success).toBe(true);
   });
@@ -17,7 +17,7 @@ describe('cardSchema', () => {
       rectoImage: mockFile,
       versoImage: mockFile,
     };
-    
+
     const result = cardSchema.safeParse(validCard);
     expect(result.success).toBe(true);
   });
@@ -26,7 +26,7 @@ describe('cardSchema', () => {
     const invalidCard = {
       definition: 'Test Definition',
     };
-    
+
     const result = cardSchema.safeParse(invalidCard);
     expect(result.success).toBe(false);
   });
@@ -35,7 +35,7 @@ describe('cardSchema', () => {
     const invalidCard = {
       term: 'Test Term',
     };
-    
+
     const result = cardSchema.safeParse(invalidCard);
     expect(result.success).toBe(false);
   });
@@ -46,7 +46,7 @@ describe('cardSchema', () => {
       rectoImage: largeFile,
       versoImage: largeFile,
     };
-    
+
     const result = cardSchema.safeParse(invalidCard);
     expect(result.success).toBe(false);
   });
@@ -57,8 +57,8 @@ describe('cardSchema', () => {
       rectoImage: unsupportedFile,
       versoImage: unsupportedFile,
     };
-    
+
     const result = cardSchema.safeParse(invalidCard);
     expect(result.success).toBe(false);
   });
-}); 
+});

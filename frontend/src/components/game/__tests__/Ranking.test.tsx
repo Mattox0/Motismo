@@ -11,9 +11,21 @@ jest.mock('@/providers/GameProvider', () => ({
 
 jest.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, className, ...props }: any) => <div className={className} {...props}>{children}</div>,
-    h1: ({ children, className, ...props }: any) => <h1 className={className} {...props}>{children}</h1>,
-    p: ({ children, className, ...props }: any) => <p className={className} {...props}>{children}</p>,
+    div: ({ children, className, ...props }: any) => (
+      <div className={className} {...props}>
+        {children}
+      </div>
+    ),
+    h1: ({ children, className, ...props }: any) => (
+      <h1 className={className} {...props}>
+        {children}
+      </h1>
+    ),
+    p: ({ children, className, ...props }: any) => (
+      <p className={className} {...props}>
+        {children}
+      </p>
+    ),
   },
   AnimatePresence: ({ children }: any) => <div>{children}</div>,
 }));
@@ -25,9 +37,33 @@ describe('Ranking', () => {
     gameId: '1',
     totalPlayers: 3,
     ranking: [
-      { id: '1', name: 'Player 1', avatar: 'avatar1.jpg', rank: 1, points: 100, isFastest: true, isAuthor: false },
-      { id: '2', name: 'Player 2', avatar: 'avatar2.jpg', rank: 2, points: 80, isFastest: false, isAuthor: false },
-      { id: '3', name: 'Player 3', avatar: 'avatar3.jpg', rank: 3, points: 60, isFastest: false, isAuthor: false },
+      {
+        id: '1',
+        name: 'Player 1',
+        avatar: 'avatar1.jpg',
+        rank: 1,
+        points: 100,
+        isFastest: true,
+        isAuthor: false,
+      },
+      {
+        id: '2',
+        name: 'Player 2',
+        avatar: 'avatar2.jpg',
+        rank: 2,
+        points: 80,
+        isFastest: false,
+        isAuthor: false,
+      },
+      {
+        id: '3',
+        name: 'Player 3',
+        avatar: 'avatar3.jpg',
+        rank: 3,
+        points: 60,
+        isFastest: false,
+        isAuthor: false,
+      },
     ],
   };
 
@@ -39,7 +75,7 @@ describe('Ranking', () => {
 
   it('renders ranking title and player count', async () => {
     render(<Ranking statistics={mockStatistics} />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('Classement')).toBeInTheDocument();
       expect(screen.getByText('3 joueurs')).toBeInTheDocument();
@@ -48,7 +84,7 @@ describe('Ranking', () => {
 
   it('renders all players in ranking', async () => {
     render(<Ranking statistics={mockStatistics} />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('Player 1')).toBeInTheDocument();
       expect(screen.getByText('Player 2')).toBeInTheDocument();
@@ -58,11 +94,11 @@ describe('Ranking', () => {
 
   it('shows points for each player', async () => {
     render(<Ranking statistics={mockStatistics} />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('100 pts')).toBeInTheDocument();
       expect(screen.getByText('80 pts')).toBeInTheDocument();
       expect(screen.getByText('60 pts')).toBeInTheDocument();
     });
   });
-}); 
+});

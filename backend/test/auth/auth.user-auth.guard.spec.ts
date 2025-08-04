@@ -1,9 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import {
-  ExecutionContext,
-  BadRequestException,
-  NotFoundException,
-} from "@nestjs/common";
+import { ExecutionContext, BadRequestException, NotFoundException } from "@nestjs/common";
 import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
 import { TranslationService } from "@/translation/translation.service";
 import { UserService } from "@/user/service/user.service";
@@ -77,9 +73,7 @@ describe("UserAuthGuard", () => {
     });
 
     it("should return false when JwtAuthGuard returns false", async () => {
-      jest
-        .spyOn(JwtAuthGuard.prototype, "canActivate")
-        .mockResolvedValue(false);
+      jest.spyOn(JwtAuthGuard.prototype, "canActivate").mockResolvedValue(false);
 
       const result = await guard.canActivate(mockExecutionContext);
 
@@ -93,23 +87,15 @@ describe("UserAuthGuard", () => {
         }),
       } as unknown as ExecutionContext;
 
-      await expect(guard.canActivate(contextWithoutUser)).rejects.toThrow(
-        BadRequestException,
-      );
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "error.USER_NOT_FOUND",
-      );
+      await expect(guard.canActivate(contextWithoutUser)).rejects.toThrow(BadRequestException);
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.USER_NOT_FOUND");
     });
 
     it("should throw NotFoundException when user is not found in database", async () => {
       jest.spyOn(mockUserService, "findOneUser").mockResolvedValue(null);
 
-      await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
-        NotFoundException,
-      );
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "error.USER_NOT_FOUND",
-      );
+      await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(NotFoundException);
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.USER_NOT_FOUND");
     });
   });
 });

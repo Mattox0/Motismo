@@ -7,4 +7,4 @@ describe('FooterHeroSection', () => {
     render(<FooterHeroSection />);
     expect(true).toBe(true);
   });
-}); 
+});

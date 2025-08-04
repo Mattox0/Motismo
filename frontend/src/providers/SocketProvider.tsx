@@ -24,8 +24,6 @@ export const SocketProvider: React.FC<ISocketProviderProperties> = ({ children, 
   useEffect(() => {
     if (!code) return;
 
-    console.log('player', player);
-
     const newSocket = io(`${process.env.NEXT_PUBLIC_API_URL}/room`, {
       query: {
         code,

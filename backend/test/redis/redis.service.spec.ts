@@ -62,9 +62,7 @@ describe("RedisService", () => {
     it("should throw error if arguments are not even", async () => {
       const fieldAndValues = ["field1", "value1", "field2"];
 
-      await expect(redisService.hset("key", fieldAndValues)).rejects.toThrow(
-        "The number of arguments must be even.",
-      );
+      await expect(redisService.hset("key", fieldAndValues)).rejects.toThrow("The number of arguments must be even.");
     });
   });
 
@@ -81,9 +79,7 @@ describe("RedisService", () => {
   describe("hgetall", () => {
     it("should get all hash fields and values", async () => {
       const mockResult = { field1: "value1", field2: "value2" };
-      const hgetallSpy = jest
-        .spyOn(mockRedis, "hgetall")
-        .mockResolvedValue(mockResult);
+      const hgetallSpy = jest.spyOn(mockRedis, "hgetall").mockResolvedValue(mockResult);
       const result = await redisService.hgetall("key");
 
       expect(result).toEqual(mockResult);
@@ -133,9 +129,7 @@ describe("RedisService", () => {
   describe("lgetall", () => {
     it("should get all values from a list", async () => {
       const mockValues = ["value1", "value2"];
-      const lrangeSpy = jest
-        .spyOn(mockRedis, "lrange")
-        .mockResolvedValue(mockValues);
+      const lrangeSpy = jest.spyOn(mockRedis, "lrange").mockResolvedValue(mockValues);
       const result = await redisService.lgetall("key");
 
       expect(result).toEqual(mockValues);

@@ -1,6 +1,7 @@
-import { createQuestionSchema } from '../createQuestionForm';
-import { IQuestionType } from '../../QuestionType';
 import { TFunction } from 'i18next';
+
+import { IQuestionType } from '../../QuestionType';
+import { createQuestionSchema } from '../createQuestionForm';
 
 const mockT = ((key: string) => key) as unknown as TFunction;
 
@@ -16,7 +17,7 @@ describe('createQuestionSchema', () => {
         { text: 'Choice 2', isCorrect: false },
       ],
     };
-    
+
     const result = schema.safeParse(validQuestion);
     expect(result.success).toBe(true);
   });
@@ -29,7 +30,7 @@ describe('createQuestionSchema', () => {
         { text: 'Choice 2', isCorrect: false },
       ],
     };
-    
+
     const result = schema.safeParse(invalidQuestion);
     expect(result.success).toBe(false);
   });
@@ -39,7 +40,7 @@ describe('createQuestionSchema', () => {
       title: 'Test Question',
       questionType: IQuestionType.MULTIPLE_CHOICES,
     };
-    
+
     const result = schema.safeParse(invalidQuestion);
     expect(result.success).toBe(false);
   });
@@ -48,11 +49,9 @@ describe('createQuestionSchema', () => {
     const invalidQuestion = {
       title: 'Test Question',
       questionType: IQuestionType.MULTIPLE_CHOICES,
-      choices: [
-        { text: 'Choice 1', isCorrect: true },
-      ],
+      choices: [{ text: 'Choice 1', isCorrect: true }],
     };
-    
+
     const result = schema.safeParse(invalidQuestion);
     expect(result.success).toBe(false);
   });
@@ -71,7 +70,7 @@ describe('createQuestionSchema', () => {
         { text: 'Choice 7', isCorrect: false },
       ],
     };
-    
+
     const result = schema.safeParse(invalidQuestion);
     expect(result.success).toBe(false);
   });
@@ -87,7 +86,7 @@ describe('createQuestionSchema', () => {
         { text: 'Choice 2', isCorrect: false },
       ],
     };
-    
+
     const result = schema.safeParse(validQuestion);
     expect(result.success).toBe(true);
   });
@@ -103,8 +102,8 @@ describe('createQuestionSchema', () => {
         { text: 'Choice 2', isCorrect: false },
       ],
     };
-    
+
     const result = schema.safeParse(invalidQuestion);
     expect(result.success).toBe(false);
   });
-}); 
+});

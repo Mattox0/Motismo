@@ -83,8 +83,7 @@ describe("ChoiceService", () => {
 
       mockChoiceRepository.create.mockReturnValue(null);
 
-      await expect(service.createChoice(choiceDto as any, mockQuestion as any))
-        .rejects.toThrow(BadRequestException);
+      await expect(service.createChoice(choiceDto as any, mockQuestion as any)).rejects.toThrow(BadRequestException);
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.FAILED_TO_CREATE_CHOICE");
     });
@@ -133,12 +132,8 @@ describe("ChoiceService", () => {
       const mockCreatedChoice1 = { id: "choice-1", ...newChoices[0] };
       const mockCreatedChoice2 = { id: "choice-2", ...newChoices[1] };
 
-      mockChoiceRepository.create
-        .mockReturnValueOnce(mockCreatedChoice1)
-        .mockReturnValueOnce(mockCreatedChoice2);
-      mockChoiceRepository.save
-        .mockResolvedValueOnce(mockCreatedChoice1)
-        .mockResolvedValueOnce(mockCreatedChoice2);
+      mockChoiceRepository.create.mockReturnValueOnce(mockCreatedChoice1).mockReturnValueOnce(mockCreatedChoice2);
+      mockChoiceRepository.save.mockResolvedValueOnce(mockCreatedChoice1).mockResolvedValueOnce(mockCreatedChoice2);
 
       await service.updateChoices(mockQuestion as any, newChoices as any);
 
@@ -180,8 +175,7 @@ describe("ChoiceService", () => {
     it("should throw NotFoundException if choice not found", async () => {
       mockChoiceRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.getChoice("invalid-id"))
-        .rejects.toThrow(NotFoundException);
+      await expect(service.getChoice("invalid-id")).rejects.toThrow(NotFoundException);
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.CHOICE_NOT_FOUND");
     });

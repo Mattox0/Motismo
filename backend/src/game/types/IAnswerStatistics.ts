@@ -16,4 +16,4 @@ export interface IAnswerStatistics {
   questionTitle: string;
   totalResponses: number;
   choices: IChoiceStatistic[];
-} 
+}

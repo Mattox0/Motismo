@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Choice } from "@/choice/choice.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -18,18 +14,11 @@ export class ChoiceService {
     private readonly translationService: TranslationService,
   ) {}
 
-  async createChoice(
-    choice: CreateChoiceDto,
-    question: ChoiceQuestion,
-  ): Promise<Choice> {
+  async createChoice(choice: CreateChoiceDto, question: ChoiceQuestion): Promise<Choice> {
     const newChoice = this.choiceRepository.create(choice);
 
     if (!newChoice) {
-      throw new BadRequestException(
-        await this.translationService.translate(
-          "error.FAILED_TO_CREATE_CHOICE",
-        ),
-      );
+      throw new BadRequestException(await this.translationService.translate("error.FAILED_TO_CREATE_CHOICE"));
     }
 
     newChoice.question = question;
@@ -43,10 +32,7 @@ export class ChoiceService {
     });
   }
 
-  async updateChoices(
-    question: ChoiceQuestion,
-    choices: CreateChoiceDto[],
-  ): Promise<void> {
+  async updateChoices(question: ChoiceQuestion, choices: CreateChoiceDto[]): Promise<void> {
     await this.choiceRepository.delete({ question: { id: question.id } });
 
     for (const choice of choices) {
@@ -60,9 +46,7 @@ export class ChoiceService {
     });
 
     if (!choice) {
-      throw new NotFoundException(
-        await this.translationService.translate("error.CHOICE_NOT_FOUND"),
-      );
+      throw new NotFoundException(await this.translationService.translate("error.CHOICE_NOT_FOUND"));
     }
 
     return choice;

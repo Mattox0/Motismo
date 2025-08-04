@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+
 import { Timer } from '../Timer';
 
 describe('Timer', () => {
@@ -8,7 +9,7 @@ describe('Timer', () => {
 
   it('should render timer with time', () => {
     render(<Timer {...defaultProps} />);
-    
+
     expect(screen.getByText('30')).toBeInTheDocument();
   });
 
@@ -17,9 +18,9 @@ describe('Timer', () => {
       ...defaultProps,
       answerCount: { answered: 5, total: 10 },
     };
-    
+
     render(<Timer {...props} />);
-    
+
     expect(screen.getByText('5/10')).toBeInTheDocument();
   });
 
@@ -29,9 +30,9 @@ describe('Timer', () => {
       isFinished: true,
       answerCount: { answered: 8, total: 10 },
     };
-    
+
     render(<Timer {...props} />);
-    
+
     expect(screen.getByText('8/10')).toBeInTheDocument();
   });
 
@@ -41,10 +42,13 @@ describe('Timer', () => {
       isFinished: true,
       isPresenter: true,
     };
-    
+
     render(<Timer {...props} />);
-    
-    const timerCircle = screen.getByText('0/0').closest('.question-timer')?.querySelector('.timer-circle');
+
+    const timerCircle = screen
+      .getByText('0/0')
+      .closest('.question-timer')
+      ?.querySelector('.timer-circle');
     expect(timerCircle).toHaveClass('finished-state');
   });
 
@@ -54,10 +58,13 @@ describe('Timer', () => {
       isFinished: true,
       isPresenter: false,
     };
-    
+
     render(<Timer {...props} />);
-    
-    const timerCircle = screen.getByText('0/0').closest('.question-timer')?.querySelector('.timer-circle');
+
+    const timerCircle = screen
+      .getByText('0/0')
+      .closest('.question-timer')
+      ?.querySelector('.timer-circle');
     expect(timerCircle).toHaveClass('finished-state');
   });
 
@@ -68,18 +75,21 @@ describe('Timer', () => {
       isFinished: true,
       onFinishedClick,
     };
-    
+
     render(<Timer {...props} />);
-    
-    const timerCircle = screen.getByText('0/0').closest('.question-timer')?.querySelector('.timer-circle');
+
+    const timerCircle = screen
+      .getByText('0/0')
+      .closest('.question-timer')
+      ?.querySelector('.timer-circle');
     fireEvent.click(timerCircle!);
-    
+
     expect(onFinishedClick).toHaveBeenCalled();
   });
 
   it('should have correct CSS classes', () => {
     render(<Timer {...defaultProps} />);
-    
+
     const container = screen.getByText('30').closest('.question-timer');
     expect(container).toHaveClass('question-timer');
   });
@@ -89,9 +99,9 @@ describe('Timer', () => {
       ...defaultProps,
       isFinished: true,
     };
-    
+
     render(<Timer {...props} />);
-    
+
     const container = screen.getByText('0/0').closest('.question-timer');
     expect(container).toHaveClass('finished');
   });
@@ -100,9 +110,9 @@ describe('Timer', () => {
     const props = {
       timeLeft: 15000,
     };
-    
+
     render(<Timer {...props} />);
-    
+
     expect(screen.getByText('15')).toBeInTheDocument();
   });
-}); 
+});

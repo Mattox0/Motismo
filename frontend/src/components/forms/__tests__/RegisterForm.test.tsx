@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+
 import RegisterForm from '../RegisterForm';
 
 jest.mock('react-hook-form', () => ({
@@ -44,7 +45,7 @@ describe('RegisterForm', () => {
 
   it('should render all form fields', () => {
     render(<RegisterForm />);
-    
+
     expect(screen.getByText('auth.name')).toBeInTheDocument();
     expect(screen.getByText('auth.email')).toBeInTheDocument();
     expect(screen.getByText('auth.password')).toBeInTheDocument();
@@ -53,17 +54,17 @@ describe('RegisterForm', () => {
 
   it('should render submit button', () => {
     render(<RegisterForm />);
-    
+
     const submitButton = screen.getByRole('button', { name: /auth.register/i });
     expect(submitButton).toBeInTheDocument();
   });
 
   it('should handle form submission', async () => {
     render(<RegisterForm />);
-    
+
     const submitButton = screen.getByRole('button', { name: /auth.register/i });
     fireEvent.click(submitButton);
-    
+
     await waitFor(() => {
       expect(submitButton).toBeInTheDocument();
     });
@@ -71,8 +72,8 @@ describe('RegisterForm', () => {
 
   it('should render form with proper structure', () => {
     render(<RegisterForm />);
-    
+
     const form = screen.getByRole('button', { name: /auth.register/i }).closest('form');
     expect(form).toHaveClass('auth-form');
   });
-}); 
+});

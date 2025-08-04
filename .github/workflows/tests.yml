@@ -1,4 +1,4 @@
-name: CI – Tests Back & Front
+name: CI - Motismo
 
 on:
   push:

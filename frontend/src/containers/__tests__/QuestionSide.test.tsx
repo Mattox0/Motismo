@@ -1,5 +1,6 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
+
 import { useQuizz } from '@/providers/QuizzProvider';
 import { useAddQuestionMutation, useDeleteQuestionMutation } from '@/services/question.service';
 import { useCreateGameMutation } from '@/services/quiz.service';
@@ -74,7 +75,7 @@ describe('QuestionSide', () => {
 
   it('renders empty state when no questions', () => {
     render(<QuestionSide quizzId="quiz-1" />);
-    
+
     expect(screen.getByText('quiz.noQuestions')).toBeInTheDocument();
     expect(screen.getByText('quiz.noQuestionsDesc')).toBeInTheDocument();
   });
@@ -93,7 +94,7 @@ describe('QuestionSide', () => {
     } as any);
 
     render(<QuestionSide quizzId="quiz-1" />);
-    
+
     expect(screen.getByTestId('question-q1')).toBeInTheDocument();
     expect(screen.getByTestId('question-q2')).toBeInTheDocument();
   });
@@ -102,7 +103,7 @@ describe('QuestionSide', () => {
     mockAddQuestion.mockResolvedValue({ data: {} });
 
     render(<QuestionSide quizzId="quiz-1" />);
-    
+
     const addButton = screen.getByText('edit_quiz.add.question');
     fireEvent.click(addButton);
 
@@ -125,7 +126,7 @@ describe('QuestionSide', () => {
     } as any);
 
     render(<QuestionSide quizzId="quiz-1" />);
-    
+
     const deleteButton = screen.getByText('Delete');
     fireEvent.click(deleteButton);
 
@@ -136,4 +137,4 @@ describe('QuestionSide', () => {
       });
     });
   });
-}); 
+});

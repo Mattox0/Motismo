@@ -54,9 +54,7 @@ describe("AdminGuard", () => {
         }),
       } as ExecutionContext;
 
-      jest
-        .spyOn(UserAuthGuard.prototype, "canActivate")
-        .mockResolvedValue(true);
+      jest.spyOn(UserAuthGuard.prototype, "canActivate").mockResolvedValue(true);
 
       await expect(adminGuard.canActivate(context)).resolves.toEqual(true);
     });
@@ -70,16 +68,10 @@ describe("AdminGuard", () => {
         }),
       } as ExecutionContext;
 
-      jest
-        .spyOn(UserAuthGuard.prototype, "canActivate")
-        .mockResolvedValue(true);
+      jest.spyOn(UserAuthGuard.prototype, "canActivate").mockResolvedValue(true);
 
-      await expect(adminGuard.canActivate(context)).rejects.toThrow(
-        ForbiddenException,
-      );
-      await expect(adminGuard.canActivate(context)).rejects.toThrow(
-        new ForbiddenException("Translated error message"),
-      );
+      await expect(adminGuard.canActivate(context)).rejects.toThrow(ForbiddenException);
+      await expect(adminGuard.canActivate(context)).rejects.toThrow(new ForbiddenException("Translated error message"));
     });
 
     it("should return false if the user is not authenticated", async () => {
@@ -91,9 +83,7 @@ describe("AdminGuard", () => {
         }),
       } as ExecutionContext;
 
-      jest
-        .spyOn(UserAuthGuard.prototype, "canActivate")
-        .mockResolvedValue(false);
+      jest.spyOn(UserAuthGuard.prototype, "canActivate").mockResolvedValue(false);
 
       await expect(adminGuard.canActivate(context)).resolves.toEqual(false);
     });

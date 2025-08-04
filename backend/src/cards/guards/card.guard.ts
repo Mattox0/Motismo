@@ -1,10 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from "@nestjs/common";
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -26,10 +20,7 @@ export class CardGuard implements CanActivate {
     const { cardId } = request.params;
 
     if (!cardId || !uuidRegex.test(cardId)) {
-      throw new HttpException(
-        await this.translationsService.translate("error.ID_INVALID"),
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(await this.translationsService.translate("error.ID_INVALID"), HttpStatus.BAD_REQUEST);
     }
 
     const card = await this.cardRepository.findOne({
@@ -42,10 +33,7 @@ export class CardGuard implements CanActivate {
     });
 
     if (!card) {
-      throw new HttpException(
-        await this.translationsService.translate("error.CARD_NOT_FOUND"),
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(await this.translationsService.translate("error.CARD_NOT_FOUND"), HttpStatus.NOT_FOUND);
     }
 
     request.card = card;

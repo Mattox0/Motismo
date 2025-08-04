@@ -53,8 +53,7 @@ export class CardController {
   @UseGuards(QuizzGuard)
   @ApiOperation({ summary: "Get all cards for a specific quizz" })
   @ApiOkResponse({
-    description:
-      "Returns all cards for the specified quizz, ordered by their order field",
+    description: "Returns all cards for the specified quizz, ordered by their order field",
     type: [Card],
   })
   getCards(@QuizzRequest() quizz: Quizz): Promise<Card[]> {
@@ -95,24 +94,17 @@ export class CardController {
       const validatedFiles = await this.parseFilesPipe.transform(files);
 
       if (!validatedFiles || "originalname" in validatedFiles) {
-        throw new HttpException(
-          await this.translationService.translate("error.INVALID_FILE"),
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException(await this.translationService.translate("error.INVALID_FILE"), HttpStatus.BAD_REQUEST);
       }
 
       if (validatedFiles.rectoImage?.[0]) {
-        const key = await this.fileUploadService.uploadFile(
-          validatedFiles.rectoImage[0],
-        );
+        const key = await this.fileUploadService.uploadFile(validatedFiles.rectoImage[0]);
 
         createCardDto.rectoImage = this.fileUploadService.getFileUrl(key);
       }
 
       if (validatedFiles.versoImage?.[0]) {
-        const key = await this.fileUploadService.uploadFile(
-          validatedFiles.versoImage[0],
-        );
+        const key = await this.fileUploadService.uploadFile(validatedFiles.versoImage[0]);
 
         createCardDto.versoImage = this.fileUploadService.getFileUrl(key);
       }
@@ -144,24 +136,17 @@ export class CardController {
       const validatedFiles = await this.parseFilesPipe.transform(files);
 
       if (!validatedFiles || "originalname" in validatedFiles) {
-        throw new HttpException(
-          await this.translationService.translate("error.INVALID_FILE"),
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException(await this.translationService.translate("error.INVALID_FILE"), HttpStatus.BAD_REQUEST);
       }
 
       if (validatedFiles.rectoImage?.[0]) {
-        const key = await this.fileUploadService.uploadFile(
-          validatedFiles.rectoImage[0],
-        );
+        const key = await this.fileUploadService.uploadFile(validatedFiles.rectoImage[0]);
 
         updateCardDto.rectoImage = this.fileUploadService.getFileUrl(key);
       }
 
       if (validatedFiles.versoImage?.[0]) {
-        const key = await this.fileUploadService.uploadFile(
-          validatedFiles.versoImage[0],
-        );
+        const key = await this.fileUploadService.uploadFile(validatedFiles.versoImage[0]);
 
         updateCardDto.versoImage = this.fileUploadService.getFileUrl(key);
       }
@@ -177,10 +162,7 @@ export class CardController {
   @ApiOperation({ summary: "Delete a specific card by ID" })
   @ApiOkResponse({ description: "Returns the specified card" })
   @ApiNotFoundResponse({ description: "Card not found" })
-  deleteCard(
-    @QuizzRequest() quizz: Quizz,
-    @CardRequest() card: Card,
-  ): Promise<void> {
+  deleteCard(@QuizzRequest() quizz: Quizz, @CardRequest() card: Card): Promise<void> {
     return this.cardService.delete(quizz, card);
   }
 }

@@ -4,8 +4,9 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
-import { Navbar } from '../Navbar';
 import { useAuth } from '@/hooks/useAuth';
+
+import { Navbar } from '../Navbar';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -143,12 +144,12 @@ describe('Navbar component', () => {
     render(<Navbar />);
 
     const hamburgerButton = screen.getByLabelText('Toggle menu');
-    
+
     expect(screen.getByText('Accueil').closest('.navigation')).not.toHaveClass('open');
-    
+
     fireEvent.click(hamburgerButton);
     expect(screen.getByText('Accueil').closest('.navigation')).toHaveClass('open');
-    
+
     fireEvent.click(hamburgerButton);
     expect(screen.getByText('Accueil').closest('.navigation')).not.toHaveClass('open');
   });
@@ -224,9 +225,9 @@ describe('Navbar component', () => {
 
     render(<Navbar />);
 
-    const hamburgerLines = screen.getAllByRole('generic').filter(el => 
-      el.className.includes('hamburger-line')
-    );
+    const hamburgerLines = screen
+      .getAllByRole('generic')
+      .filter(el => el.className.includes('hamburger-line'));
     expect(hamburgerLines).toHaveLength(3);
   });
-}); 
+});

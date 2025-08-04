@@ -24,4 +24,4 @@ describe('fonts', () => {
   test('should have correct CSS variable', () => {
     expect(poppins.variable).toBe('--font-poppins');
   });
-}); 
+});

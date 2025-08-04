@@ -18,6 +18,22 @@ import { GameResponseService } from "@/gameResponses/services/gameResponse.servi
 import { IAnswerStatistics, IChoiceStatistic } from "../types/IAnswerStatistics";
 import { CreateGameUserDto } from "../dto/createGameUser.dto";
 
+interface IRankingPlayer {
+  rank: number;
+  id: string;
+  name: string;
+  avatar: string;
+  points: number;
+  isAuthor: boolean;
+  isFastest: boolean;
+}
+
+interface IRankingResult {
+  gameId: string;
+  totalPlayers: number;
+  ranking: IRankingPlayer[];
+}
+
 @Injectable()
 export class GameService {
   constructor(
@@ -86,16 +102,17 @@ export class GameService {
 
     if (socket.data.user.userId) {
       const existingUser = game.users.find((user: GameUser) => user.id === socket.data.user.userId);
+
       if (existingUser) {
         await this.gameUserService.updateSocketId(socket, game);
+
         return this.gameUserService.getOneUser(existingUser.id);
-      } else {
-        throw new Error(await this.translationService.translate("error.GAME_USER_NOT_FOUND"));
       }
+      throw new Error(await this.translationService.translate("error.GAME_USER_NOT_FOUND"));
     }
 
-    let user: GameUser | undefined = game.users.find((user: GameUser) => 
-      user.name === socket.data.user.name && !user.user
+    let user: GameUser | undefined = game.users.find(
+      (user: GameUser) => user.name === socket.data.user.name && !user.user,
     );
 
     if (user) {
@@ -108,8 +125,10 @@ export class GameService {
         isAuthor: socket.data.user.externalId === game.author.id,
         avatar: socket.data.user.avatar,
       };
+
       if (socket.data?.user?.externalId) {
         const externalUser = await this.userService.findOneUser(socket.data.user.externalId);
+
         if (externalUser) {
           createdUser = { ...createdUser, user: externalUser };
         }
@@ -132,7 +151,7 @@ export class GameService {
 
   async getCurrentQuestion(socket: IAuthenticatedSocket): Promise<Question | null> {
     const game = await this.getGame(socket);
-    
+
     if (!game.currentQuestion) {
       return null;
     }
@@ -177,38 +196,38 @@ export class GameService {
       throw new Error(await this.translationService.translate("error.AUTHOR_CANNOT_ANSWER"));
     }
 
-    const hasAnswered = await this.gameResponseService.hasUserAnswered(
-      gameUser.id,
-      game.currentQuestion.id,
-      game.id
-    );
+    const hasAnswered = await this.gameResponseService.hasUserAnswered(gameUser.id, game.currentQuestion.id, game.id);
 
     if (hasAnswered) {
       throw new Error(await this.translationService.translate("error.ALREADY_ANSWERED"));
     }
 
     switch (data.type) {
-      case 'MULTIPLE_CHOICES':
+      case "MULTIPLE_CHOICES":
         return await this.submitMultipleChoiceAnswer(game, gameUser, data.answer as string[]);
-      
-      case 'UNIQUE_CHOICES':
+
+      case "UNIQUE_CHOICES":
         return await this.submitUniqueChoiceAnswer(game, gameUser, data.answer as string);
-      
-      case 'BOOLEAN_CHOICES':
+
+      case "BOOLEAN_CHOICES":
         return await this.submitBooleanChoiceAnswer(game, gameUser, data.answer as string);
-      
-      case 'MATCHING':
+
+      case "MATCHING":
         return await this.submitMatchingAnswer(game, gameUser, data.answer);
-      
-      case 'WORD_CLOUD':
+
+      case "WORD_CLOUD":
         return await this.submitWordCloudAnswer(game, gameUser, data.answer as string);
-      
+
       default:
         throw new Error(await this.translationService.translate("error.INVALID_QUESTION_TYPE"));
     }
   }
 
-  private async submitMultipleChoiceAnswer(game: Game, gameUser: GameUser, answer: string[]): Promise<{ allAnswered?: boolean } | void> {
+  private async submitMultipleChoiceAnswer(
+    game: Game,
+    gameUser: GameUser,
+    answer: string[],
+  ): Promise<{ allAnswered?: boolean } | void> {
     if (!game.currentQuestion || !(game.currentQuestion instanceof ChoiceQuestion)) {
       throw new Error(await this.translationService.translate("error.INVALID_QUESTION_TYPE"));
     }
@@ -218,17 +237,24 @@ export class GameService {
     const correctChoices = game.currentQuestion.choices.filter((choice) => choice.isCorrect);
     const correctChoiceIds = correctChoices.map((choice) => choice.id);
 
-    const isCorrect = answer.length === correctChoiceIds.length && answer.every((id) => correctChoiceIds.includes(id));
+    const isCorrect =
+      answer.length === correctChoiceIds.length &&
+      answer.every((id) => correctChoiceIds.includes(id)) ;
 
     if (isCorrect) {
       const points = 100;
+
       await this.gameUserService.addPoints(gameUser.id, points);
     }
 
     return await this.checkAllPlayersAnswered(game);
   }
 
-  private async submitUniqueChoiceAnswer(game: Game, gameUser: GameUser, answer: string): Promise<{ allAnswered?: boolean } | void> {
+  private async submitUniqueChoiceAnswer(
+    game: Game,
+    gameUser: GameUser,
+    answer: string,
+  ): Promise<{ allAnswered?: boolean } | void> {
     if (!game.currentQuestion || !(game.currentQuestion instanceof ChoiceQuestion)) {
       throw new Error(await this.translationService.translate("error.INVALID_QUESTION_TYPE"));
     }
@@ -242,13 +268,18 @@ export class GameService {
 
     if (isCorrect) {
       const points = 100;
+
       await this.gameUserService.addPoints(gameUser.id, points);
     }
 
     return await this.checkAllPlayersAnswered(game);
   }
 
-  private async submitBooleanChoiceAnswer(game: Game, gameUser: GameUser, answer: string): Promise<{ allAnswered?: boolean } | void> {
+  private async submitBooleanChoiceAnswer(
+    game: Game,
+    gameUser: GameUser,
+    answer: string,
+  ): Promise<{ allAnswered?: boolean } | void> {
     if (!game.currentQuestion || !(game.currentQuestion instanceof ChoiceQuestion)) {
       throw new Error(await this.translationService.translate("error.INVALID_QUESTION_TYPE"));
     }
@@ -262,35 +293,41 @@ export class GameService {
 
     if (isCorrect) {
       const points = 100;
+
       await this.gameUserService.addPoints(gameUser.id, points);
     }
 
     return await this.checkAllPlayersAnswered(game);
   }
 
-  private async submitMatchingAnswer(game: Game, gameUser: GameUser, answer: any): Promise<{ allAnswered?: boolean } | void> {
+  private async submitMatchingAnswer(
+    game: Game,
+    gameUser: GameUser,
+    answer: string | string[],
+  ): Promise<{ allAnswered?: boolean } | void> {
     if (!game.currentQuestion) {
       throw new Error(await this.translationService.translate("error.NO_CURRENT_QUESTION"));
     }
 
-    // TODO: Implémenter la logique pour les questions d'association
     await this.gameResponseService.createResponse(gameUser, game.currentQuestion, game, answer);
-    
-    // Pour l'instant, pas de vérification de correction
-    
+
     return await this.checkAllPlayersAnswered(game);
   }
 
-  private async submitWordCloudAnswer(game: Game, gameUser: GameUser, answer: string): Promise<{ allAnswered?: boolean } | void> {
+  private async submitWordCloudAnswer(
+    game: Game,
+    gameUser: GameUser,
+    answer: string,
+  ): Promise<{ allAnswered?: boolean } | void> {
     if (!game.currentQuestion) {
       throw new Error(await this.translationService.translate("error.NO_CURRENT_QUESTION"));
     }
 
     // TODO: Implémenter la logique pour les nuages de mots
     await this.gameResponseService.createResponse(gameUser, game.currentQuestion, game, answer);
-    
+
     // Pour l'instant, pas de vérification de correction (pas de bonne/mauvaise réponse)
-    
+
     return await this.checkAllPlayersAnswered(game);
   }
 
@@ -301,7 +338,7 @@ export class GameService {
 
     const allGameUsers = await this.gameUserService.getGameUsersByGameId(game.id);
     const responses = await this.gameResponseService.getResponsesByQuestionAndGame(game.currentQuestion.id, game.id);
-    
+
     const allPlayersAnswered = allGameUsers.length === responses.length;
 
     if (allPlayersAnswered) {
@@ -319,17 +356,15 @@ export class GameService {
     game.status = IGameStatus.DISPLAY_ANSWERS;
     await this.gameRepository.save(game);
 
-    const responses = await this.gameResponseService.getResponsesByQuestionAndGame(
-      game.currentQuestion.id,
-      game.id
-    );
+    const responses = await this.gameResponseService.getResponsesByQuestionAndGame(game.currentQuestion.id, game.id);
 
     if (game.currentQuestion instanceof ChoiceQuestion) {
       const choiceStatistics: IChoiceStatistic[] = [];
 
       for (const choice of game.currentQuestion.choices) {
-        const usersWhoSelectedThis = responses.filter(response => {
+        const usersWhoSelectedThis = responses.filter((response) => {
           const userAnswers = Array.isArray(response.answer) ? response.answer : [response.answer];
+
           return userAnswers.includes(choice.id);
         });
 
@@ -341,7 +376,7 @@ export class GameService {
           isCorrect: choice.isCorrect,
           count: usersWhoSelectedThis.length,
           percentage: Math.round(percentage * 100) / 100,
-          users: usersWhoSelectedThis.map(response => ({
+          users: usersWhoSelectedThis.map((response) => ({
             id: response.user.id,
             name: response.user.name,
             avatar: response.user.avatar,
@@ -360,7 +395,7 @@ export class GameService {
     throw new Error(await this.translationService.translate("error.INVALID_QUESTION_TYPE"));
   }
 
-  async displayRanking(socket: IAuthenticatedSocket): Promise<any> {
+  async displayRanking(socket: IAuthenticatedSocket): Promise<IRankingResult> {
     const game = await this.getGame(socket);
 
     game.status = IGameStatus.DISPLAY_RANKING;
@@ -371,17 +406,20 @@ export class GameService {
     const gameResponses = await this.gameResponseService.findByGameId(game.id);
 
     let fastestPlayerId: string | null = null;
+
     if (gameResponses.length > 0) {
       const playerFirstResponses = new Map<string, Date>();
 
-      gameResponses.forEach(response => {
+      gameResponses.forEach((response) => {
         const currentFirstResponse = playerFirstResponses.get(response.user.id);
+
         if (!currentFirstResponse || response.answeredAt < currentFirstResponse) {
           playerFirstResponses.set(response.user.id, response.answeredAt);
         }
       });
 
       let fastestTime: Date | null = null;
+
       playerFirstResponses.forEach((time, playerId) => {
         if (!fastestTime || time < fastestTime) {
           fastestTime = time;
@@ -417,9 +455,7 @@ export class GameService {
     }
 
     const currentQuestionOrder = game.currentQuestion?.order || 0;
-    const nextQuestion = game.quizz.questions.find(
-      (question) => question.order === currentQuestionOrder + 1
-    );
+    const nextQuestion = game.quizz.questions.find((question) => question.order === currentQuestionOrder + 1);
 
     if (nextQuestion) {
       game.currentQuestion = nextQuestion;
@@ -443,7 +479,7 @@ export class GameService {
 
     return {
       answered: responses.length,
-      total: allGameUsers.length
+      total: allGameUsers.length,
     };
   }
 
@@ -460,10 +496,11 @@ export class GameService {
     }
 
     let existingUser: GameUser | undefined;
+
     if (createGameUserDto.externalId) {
-      existingUser = game.users.find(user => 
-        user.user?.id === createGameUserDto.externalId || 
-        (user.name === createGameUserDto.name && !user.user)
+      existingUser = game.users.find(
+        (user) =>
+          user.user?.id === createGameUserDto.externalId || (user.name === createGameUserDto.name && !user.user),
       );
     }
 
@@ -473,7 +510,7 @@ export class GameService {
 
     let createdUser: ICreateGameUserPayload = {
       game,
-      socketId: '',
+      socketId: "",
       name: createGameUserDto.name,
       isAuthor: false,
       avatar: createGameUserDto.avatar,
@@ -481,11 +518,12 @@ export class GameService {
 
     if (createGameUserDto.externalId) {
       const externalUser = await this.userService.findOneUser(createGameUserDto.externalId);
+
       if (externalUser) {
-        createdUser = { 
-          ...createdUser, 
+        createdUser = {
+          ...createdUser,
           user: externalUser,
-          isAuthor: externalUser.id === game.author.id 
+          isAuthor: externalUser.id === game.author.id,
         };
       }
     }

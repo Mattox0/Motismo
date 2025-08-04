@@ -167,20 +167,11 @@ describe("CardController", () => {
         order: 1,
       };
 
-      jest
-        .spyOn(mockCardService, "createCard")
-        .mockResolvedValue(mocks.mockCard);
+      jest.spyOn(mockCardService, "createCard").mockResolvedValue(mocks.mockCard);
 
-      await cardController.createCard(
-        mocks.mockQuizz,
-        createCardDto,
-        undefined,
-      );
+      await cardController.createCard(mocks.mockQuizz, createCardDto, undefined);
 
-      expect(mockCardService.createCard).toHaveBeenCalledWith(
-        mocks.mockQuizz,
-        createCardDto,
-      );
+      expect(mockCardService.createCard).toHaveBeenCalledWith(mocks.mockQuizz, createCardDto);
     });
 
     it("should upload files when creating a card", async () => {
@@ -216,13 +207,9 @@ describe("CardController", () => {
       const fileName = "test.jpg";
       const fileUrl = "http://example.com/test.jpg";
 
-      jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockResolvedValue(fileName);
+      jest.spyOn(mockFileUploadService, "uploadFile").mockResolvedValue(fileName);
       jest.spyOn(mockFileUploadService, "getFileUrl").mockReturnValue(fileUrl);
-      jest
-        .spyOn(mockCardService, "createCard")
-        .mockResolvedValue(mocks.mockCard);
+      jest.spyOn(mockCardService, "createCard").mockResolvedValue(mocks.mockCard);
 
       await cardController.createCard(mocks.mockQuizz, createCardDto, files);
 
@@ -252,9 +239,7 @@ describe("CardController", () => {
       jest.spyOn(mockParseFilesPipe, "transform").mockImplementation(() => {
         throw new HttpException("Invalid file", HttpStatus.BAD_REQUEST);
       });
-      jest
-        .spyOn(mockTranslationService, "translate")
-        .mockResolvedValue("Invalid file");
+      jest.spyOn(mockTranslationService, "translate").mockResolvedValue("Invalid file");
 
       await expect(
         cardController.createCard(mocks.mockQuizz, createCardDto, {
@@ -291,13 +276,9 @@ describe("CardController", () => {
         buffer: Buffer.from("test"),
         size: 1024,
       } as Express.Multer.File);
-      jest
-        .spyOn(mockTranslationService, "translate")
-        .mockResolvedValue("Invalid file");
+      jest.spyOn(mockTranslationService, "translate").mockResolvedValue("Invalid file");
 
-      await expect(
-        cardController.createCard(mocks.mockQuizz, createCardDto, files),
-      ).rejects.toThrow(HttpException);
+      await expect(cardController.createCard(mocks.mockQuizz, createCardDto, files)).rejects.toThrow(HttpException);
     });
   });
 
@@ -309,22 +290,11 @@ describe("CardController", () => {
         order: 2,
       };
 
-      jest
-        .spyOn(mockCardService, "updateCard")
-        .mockResolvedValue(mocks.mockCard);
+      jest.spyOn(mockCardService, "updateCard").mockResolvedValue(mocks.mockCard);
 
-      await cardController.updateCard(
-        mocks.mockQuizz,
-        mocks.mockCard,
-        updateCardDto,
-        undefined,
-      );
+      await cardController.updateCard(mocks.mockQuizz, mocks.mockCard, updateCardDto, undefined);
 
-      expect(mockCardService.updateCard).toHaveBeenCalledWith(
-        mocks.mockQuizz,
-        mocks.mockCard,
-        updateCardDto,
-      );
+      expect(mockCardService.updateCard).toHaveBeenCalledWith(mocks.mockQuizz, mocks.mockCard, updateCardDto);
     });
 
     it("should upload files when updating a card", async () => {
@@ -360,30 +330,17 @@ describe("CardController", () => {
       const fileName = "test.jpg";
       const fileUrl = "http://example.com/test.jpg";
 
-      jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockResolvedValue(fileName);
+      jest.spyOn(mockFileUploadService, "uploadFile").mockResolvedValue(fileName);
       jest.spyOn(mockFileUploadService, "getFileUrl").mockReturnValue(fileUrl);
-      jest
-        .spyOn(mockCardService, "updateCard")
-        .mockResolvedValue(mocks.mockCard);
+      jest.spyOn(mockCardService, "updateCard").mockResolvedValue(mocks.mockCard);
 
-      await cardController.updateCard(
-        mocks.mockQuizz,
-        mocks.mockCard,
-        updateCardDto,
-        files,
-      );
+      await cardController.updateCard(mocks.mockQuizz, mocks.mockCard, updateCardDto, files);
 
-      expect(mockCardService.updateCard).toHaveBeenCalledWith(
-        mocks.mockQuizz,
-        mocks.mockCard,
-        {
-          ...updateCardDto,
-          rectoImage: fileUrl,
-          versoImage: fileUrl,
-        },
-      );
+      expect(mockCardService.updateCard).toHaveBeenCalledWith(mocks.mockQuizz, mocks.mockCard, {
+        ...updateCardDto,
+        rectoImage: fileUrl,
+        versoImage: fileUrl,
+      });
     });
 
     it("should throw HttpException when files validation fails during update", async () => {
@@ -405,19 +362,12 @@ describe("CardController", () => {
       jest.spyOn(mockParseFilesPipe, "transform").mockImplementation(() => {
         throw new HttpException("Invalid file", HttpStatus.BAD_REQUEST);
       });
-      jest
-        .spyOn(mockTranslationService, "translate")
-        .mockResolvedValue("Invalid file");
+      jest.spyOn(mockTranslationService, "translate").mockResolvedValue("Invalid file");
 
       await expect(
-        cardController.updateCard(
-          mocks.mockQuizz,
-          mocks.mockCard,
-          updateCardDto,
-          {
-            rectoImage: [invalidFile],
-          },
-        ),
+        cardController.updateCard(mocks.mockQuizz, mocks.mockCard, updateCardDto, {
+          rectoImage: [invalidFile],
+        }),
       ).rejects.toThrow(HttpException);
     });
 
@@ -449,18 +399,11 @@ describe("CardController", () => {
         buffer: Buffer.from("test"),
         size: 1024,
       } as Express.Multer.File);
-      jest
-        .spyOn(mockTranslationService, "translate")
-        .mockResolvedValue("Invalid file");
+      jest.spyOn(mockTranslationService, "translate").mockResolvedValue("Invalid file");
 
-      await expect(
-        cardController.updateCard(
-          mocks.mockQuizz,
-          mocks.mockCard,
-          updateCardDto,
-          files,
-        ),
-      ).rejects.toThrow(HttpException);
+      await expect(cardController.updateCard(mocks.mockQuizz, mocks.mockCard, updateCardDto, files)).rejects.toThrow(
+        HttpException,
+      );
     });
 
     it("should throw HttpException when file upload fails during update", async () => {
@@ -485,21 +428,12 @@ describe("CardController", () => {
 
       jest
         .spyOn(mockFileUploadService, "uploadFile")
-        .mockRejectedValue(
-          new HttpException("Upload failed", HttpStatus.BAD_REQUEST),
-        );
-      jest
-        .spyOn(mockTranslationService, "translate")
-        .mockResolvedValue("File upload failed");
+        .mockRejectedValue(new HttpException("Upload failed", HttpStatus.BAD_REQUEST));
+      jest.spyOn(mockTranslationService, "translate").mockResolvedValue("File upload failed");
 
-      await expect(
-        cardController.updateCard(
-          mocks.mockQuizz,
-          mocks.mockCard,
-          updateCardDto,
-          files,
-        ),
-      ).rejects.toThrow(HttpException);
+      await expect(cardController.updateCard(mocks.mockQuizz, mocks.mockCard, updateCardDto, files)).rejects.toThrow(
+        HttpException,
+      );
     });
   });
 
@@ -509,10 +443,7 @@ describe("CardController", () => {
 
       await cardController.deleteCard(mocks.mockQuizz, mocks.mockCard);
 
-      expect(mockCardService.delete).toHaveBeenCalledWith(
-        mocks.mockQuizz,
-        mocks.mockCard,
-      );
+      expect(mockCardService.delete).toHaveBeenCalledWith(mocks.mockQuizz, mocks.mockCard);
     });
   });
 });

@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 
-import { QuizzProvider, useQuizz } from '../QuizzProvider';
 import { useAuth } from '@/hooks/useAuth';
 import { useGetOneQuizQuery } from '@/services/quiz.service';
+
+import { QuizzProvider, useQuizz } from '../QuizzProvider';
 
 // Mock des dépendances
 jest.mock('@/hooks/useAuth');
@@ -61,7 +62,7 @@ describe('QuizzProvider', () => {
         <TestComponent />
       </QuizzProvider>
     );
-    
+
     expect(screen.getByTestId('isLoading')).toHaveTextContent('false');
     expect(screen.getByTestId('isAuthor')).toHaveTextContent('true');
     expect(screen.getByTestId('currentQuestion')).toHaveTextContent('Question 1');
@@ -71,13 +72,13 @@ describe('QuizzProvider', () => {
     mockUseAuth.mockReturnValue({
       session: { user: { id: 'user2' } },
     } as any);
-    
+
     render(
       <QuizzProvider quizId="1">
         <TestComponent />
       </QuizzProvider>
     );
-    
+
     expect(screen.getByTestId('isAuthor')).toHaveTextContent('false');
   });
 
@@ -88,13 +89,13 @@ describe('QuizzProvider', () => {
       error: undefined,
       refetch: jest.fn(),
     } as any);
-    
+
     render(
       <QuizzProvider quizId="1">
         <TestComponent />
       </QuizzProvider>
     );
-    
+
     expect(screen.getByTestId('isLoading')).toHaveTextContent('true');
   });
 
@@ -103,4 +104,4 @@ describe('QuizzProvider', () => {
       render(<TestComponent />);
     }).toThrow('useQuizz must be used within a QuizzProvider');
   });
-}); 
+});

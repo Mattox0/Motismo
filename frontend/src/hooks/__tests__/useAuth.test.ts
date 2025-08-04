@@ -1,8 +1,9 @@
-import { signIn, signOut, useSession } from 'next-auth/react';
 import { renderHook, act } from '@testing-library/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
+
+import { showToast } from '@/utils/toast';
 
 import { useAuth } from '../useAuth';
-import { showToast } from '@/utils/toast';
 
 const createSignInResponse = (error: string | null, ok: boolean) => ({
   error,
@@ -86,13 +87,23 @@ describe('useAuth', () => {
     });
 
     it('should handle login error and show toast', async () => {
-      mockSignIn.mockResolvedValue({ error: 'Invalid credentials', ok: false, status: 200, url: null });
+      mockSignIn.mockResolvedValue({
+        error: 'Invalid credentials',
+        ok: false,
+        status: 200,
+        url: null,
+      });
 
       const { result } = renderHook(() => useAuth());
 
       await act(async () => {
         const loginResult = await result.current.login('test@example.com', 'wrongpassword');
-        expect(loginResult).toEqual({ error: 'Invalid credentials', ok: false, status: 200, url: null });
+        expect(loginResult).toEqual({
+          error: 'Invalid credentials',
+          ok: false,
+          status: 200,
+          url: null,
+        });
       });
 
       expect(mockSignIn).toHaveBeenCalledWith('credentials', {
@@ -110,7 +121,9 @@ describe('useAuth', () => {
       const { result } = renderHook(() => useAuth());
 
       await act(async () => {
-        await expect(result.current.login('test@example.com', 'password123')).rejects.toThrow('Network error');
+        await expect(result.current.login('test@example.com', 'password123')).rejects.toThrow(
+          'Network error'
+        );
       });
     });
   });
@@ -178,9 +191,9 @@ describe('useAuth', () => {
     });
 
     it('should handle registration failure', async () => {
-      const mockResponse = { 
-        ok: false, 
-        json: jest.fn().mockResolvedValue({ message: 'Email already exists' }) 
+      const mockResponse = {
+        ok: false,
+        json: jest.fn().mockResolvedValue({ message: 'Email already exists' }),
       };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
@@ -194,9 +207,9 @@ describe('useAuth', () => {
     });
 
     it('should handle registration failure with default error message', async () => {
-      const mockResponse = { 
-        ok: false, 
-        json: jest.fn().mockRejectedValue(new Error('JSON parse error')) 
+      const mockResponse = {
+        ok: false,
+        json: jest.fn().mockRejectedValue(new Error('JSON parse error')),
       };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
@@ -217,7 +230,9 @@ describe('useAuth', () => {
       const { result } = renderHook(() => useAuth());
 
       await act(async () => {
-        await expect(result.current.register(mockUserData)).rejects.toThrow('Auto-login after registration failed');
+        await expect(result.current.register(mockUserData)).rejects.toThrow(
+          'Auto-login after registration failed'
+        );
       });
     });
 
@@ -314,4 +329,4 @@ describe('useAuth', () => {
       expect(formData.get('image')).toBeNull();
     });
   });
-}); 
+});

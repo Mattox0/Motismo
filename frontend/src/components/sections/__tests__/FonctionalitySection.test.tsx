@@ -7,4 +7,4 @@ describe('FonctionalitySection', () => {
     render(<FonctionalitySection />);
     expect(true).toBe(true);
   });
-}); 
+});

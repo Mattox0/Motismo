@@ -92,13 +92,11 @@ describe("UserService", () => {
         execute: jest.fn().mockResolvedValue({ affected: 0 }),
       });
 
-      await expect(
-        service.update("12345", { username: "updatedUser" } as UserUpdatedDto),
-      ).rejects.toThrow(HttpException);
-
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "error.USER_NOT_FOUND",
+      await expect(service.update("12345", { username: "updatedUser" } as UserUpdatedDto)).rejects.toThrow(
+        HttpException,
       );
+
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.USER_NOT_FOUND");
     });
   });
 
@@ -116,7 +114,7 @@ describe("UserService", () => {
 
       jest
         .spyOn(userRepo, "createQueryBuilder")
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+
         .mockImplementation(() => mockQueryBuilder as any);
 
       await service.update(userId, userUpdateDto);
@@ -141,16 +139,12 @@ describe("UserService", () => {
 
       jest
         .spyOn(userRepo, "createQueryBuilder")
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
         .mockImplementation(() => mockQueryBuilder as any);
 
-      await expect(service.update(userId, userUpdateDto)).rejects.toThrow(
-        HttpException,
-      );
+      await expect(service.update(userId, userUpdateDto)).rejects.toThrow(HttpException);
 
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "error.USER_NOT_FOUND",
-      );
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.USER_NOT_FOUND");
     });
   });
 
@@ -167,7 +161,7 @@ describe("UserService", () => {
 
       jest
         .spyOn(userRepo, "createQueryBuilder")
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
         .mockImplementation(() => mockQueryBuilder as any);
 
       await service.delete(userId);
@@ -191,14 +185,12 @@ describe("UserService", () => {
 
       jest
         .spyOn(userRepo, "createQueryBuilder")
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
         .mockImplementation(() => mockQueryBuilder as any);
 
       await expect(service.delete(userId)).rejects.toThrow(HttpException);
 
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "error.USER_NOT_FOUND",
-      );
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.USER_NOT_FOUND");
     });
 
     describe("findOneEmail", () => {
@@ -208,13 +200,11 @@ describe("UserService", () => {
 
         jest.spyOn(userRepo, "createQueryBuilder").mockImplementation(
           () =>
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             ({
               where: jest.fn().mockReturnThis(),
               leftJoinAndSelect: jest.fn().mockReturnThis(),
               addSelect: jest.fn().mockReturnThis(),
               getOne: jest.fn().mockResolvedValue(mockUser),
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
             }) as any,
         );
 
@@ -244,7 +234,7 @@ describe("UserService", () => {
 
         jest
           .spyOn(userRepo, "createQueryBuilder")
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
           .mockImplementation(() => mockQueryBuilder as any);
 
         const result = await service.findOneUser("123");
@@ -252,9 +242,7 @@ describe("UserService", () => {
         expect(mockQueryBuilder.where).toHaveBeenCalledWith("user.id = :id", {
           id: "123",
         });
-        expect(mockQueryBuilder.addSelect).toHaveBeenCalledWith(
-          "user.password",
-        );
+        expect(mockQueryBuilder.addSelect).toHaveBeenCalledWith("user.password");
         expect(result).toEqual(mockUser);
       });
 
@@ -268,7 +256,7 @@ describe("UserService", () => {
 
         jest
           .spyOn(userRepo, "createQueryBuilder")
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
           .mockImplementation(() => mockQueryBuilder as any);
 
         const result = await service.findOneUser("not_found_id");
@@ -276,9 +264,7 @@ describe("UserService", () => {
         expect(mockQueryBuilder.where).toHaveBeenCalledWith("user.id = :id", {
           id: "not_found_id",
         });
-        expect(mockQueryBuilder.addSelect).toHaveBeenCalledWith(
-          "user.password",
-        );
+        expect(mockQueryBuilder.addSelect).toHaveBeenCalledWith("user.password");
         expect(result).toBeNull();
       });
     });
@@ -326,7 +312,7 @@ describe("UserService", () => {
 
         jest
           .spyOn(userRepo, "createQueryBuilder")
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
           .mockImplementation(() => mockQueryBuilder as any);
 
         const userDto = {
@@ -336,18 +322,12 @@ describe("UserService", () => {
 
         const result = await service.checkUnknownUser(userDto);
 
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-          "user.username = :username",
-          {
-            username: userDto.username,
-          },
-        );
-        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith(
-          "user.email = :email",
-          {
-            email: userDto.email,
-          },
-        );
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith("user.username = :username", {
+          username: userDto.username,
+        });
+        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith("user.email = :email", {
+          email: userDto.email,
+        });
         expect(result).toBe(false);
       });
 
@@ -366,7 +346,7 @@ describe("UserService", () => {
 
         jest
           .spyOn(userRepo, "createQueryBuilder")
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
           .mockImplementation(() => mockQueryBuilder as any);
 
         const userDto = {
@@ -376,18 +356,12 @@ describe("UserService", () => {
 
         const result = await service.checkUnknownUser(userDto, "456");
 
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-          "user.username = :username",
-          {
-            username: userDto.username,
-          },
-        );
-        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith(
-          "user.email = :email",
-          {
-            email: userDto.email,
-          },
-        );
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith("user.username = :username", {
+          username: userDto.username,
+        });
+        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith("user.email = :email", {
+          email: userDto.email,
+        });
         expect(result).toBe(true);
       });
 
@@ -406,7 +380,7 @@ describe("UserService", () => {
 
         jest
           .spyOn(userRepo, "createQueryBuilder")
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
           .mockImplementation(() => mockQueryBuilder as any);
 
         const userDto = {
@@ -416,18 +390,12 @@ describe("UserService", () => {
 
         const result = await service.checkUnknownUser(userDto, "123");
 
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-          "user.username = :username",
-          {
-            username: userDto.username,
-          },
-        );
-        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith(
-          "user.email = :email",
-          {
-            email: userDto.email,
-          },
-        );
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith("user.username = :username", {
+          username: userDto.username,
+        });
+        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith("user.email = :email", {
+          email: userDto.email,
+        });
         expect(result).toBe(false);
       });
 
@@ -440,7 +408,7 @@ describe("UserService", () => {
 
         jest
           .spyOn(userRepo, "createQueryBuilder")
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
           .mockImplementation(() => mockQueryBuilder as any);
 
         const userDto = {
@@ -450,18 +418,12 @@ describe("UserService", () => {
 
         const result = await service.checkUnknownUser(userDto);
 
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-          "user.username = :username",
-          {
-            username: userDto.username,
-          },
-        );
-        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith(
-          "user.email = :email",
-          {
-            email: userDto.email,
-          },
-        );
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith("user.username = :username", {
+          username: userDto.username,
+        });
+        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith("user.email = :email", {
+          email: userDto.email,
+        });
 
         expect(result).toBe(false);
       });
@@ -481,7 +443,7 @@ describe("UserService", () => {
 
         jest
           .spyOn(userRepo, "createQueryBuilder")
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
           .mockImplementation(() => mockQueryBuilder as any);
 
         const userDto = {
@@ -491,18 +453,12 @@ describe("UserService", () => {
 
         const result = await service.checkUnknownUser(userDto, "123");
 
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-          "user.username = :username",
-          {
-            username: userDto.username,
-          },
-        );
-        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith(
-          "user.email = :email",
-          {
-            email: userDto.email,
-          },
-        );
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith("user.username = :username", {
+          username: userDto.username,
+        });
+        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith("user.email = :email", {
+          email: userDto.email,
+        });
 
         expect(result).toBe(false);
       });
@@ -522,7 +478,7 @@ describe("UserService", () => {
 
         jest
           .spyOn(userRepo, "createQueryBuilder")
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
           .mockImplementation(() => mockQueryBuilder as any);
 
         const userDto = {
@@ -532,18 +488,12 @@ describe("UserService", () => {
 
         const result = await service.checkUnknownUser(userDto, "123");
 
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-          "user.username = :username",
-          {
-            username: userDto.username,
-          },
-        );
-        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith(
-          "user.email = :email",
-          {
-            email: userDto.email,
-          },
-        );
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith("user.username = :username", {
+          username: userDto.username,
+        });
+        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith("user.email = :email", {
+          email: userDto.email,
+        });
 
         expect(result).toBe(true);
       });
@@ -563,7 +513,7 @@ describe("UserService", () => {
 
         jest
           .spyOn(userRepo, "createQueryBuilder")
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+
           .mockImplementation(() => mockQueryBuilder as any);
 
         const userDto = {
@@ -573,18 +523,12 @@ describe("UserService", () => {
 
         const result = await service.checkUnknownUser(userDto);
 
-        expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-          "user.username = :username",
-          {
-            username: userDto.username,
-          },
-        );
-        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith(
-          "user.email = :email",
-          {
-            email: userDto.email,
-          },
-        );
+        expect(mockQueryBuilder.where).toHaveBeenCalledWith("user.username = :username", {
+          username: userDto.username,
+        });
+        expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith("user.email = :email", {
+          email: userDto.email,
+        });
         expect(result).toBe(true);
       });
     });

@@ -1,6 +1,7 @@
 /// <reference types="@testing-library/jest-dom" />
 
 import { render, screen, fireEvent } from '@testing-library/react';
+
 import AuthPage from '../page';
 
 jest.mock('@/components/auth/AuthNav', () => {
@@ -58,7 +59,7 @@ jest.mock('react-i18next', () => ({
 describe('AuthPage', () => {
   it('should render with login tab active by default', () => {
     render(<AuthPage />);
-    
+
     expect(screen.getByTestId('auth-layout')).toBeInTheDocument();
     expect(screen.getByTestId('auth-nav')).toBeInTheDocument();
     expect(screen.getByTestId('active-tab')).toHaveTextContent('login');
@@ -66,16 +67,16 @@ describe('AuthPage', () => {
 
   it('should display login title and description when login tab is active', () => {
     render(<AuthPage />);
-    
+
     expect(screen.getByText('auth.welcome')).toBeInTheDocument();
     expect(screen.getByText('auth.loginDescription')).toBeInTheDocument();
   });
 
   it('should switch to register tab when register button is clicked', () => {
     render(<AuthPage />);
-    
+
     fireEvent.click(screen.getByTestId('register-tab'));
-    
+
     expect(screen.getByTestId('active-tab')).toHaveTextContent('register');
     expect(screen.getByText('auth.registerWelcome')).toBeInTheDocument();
     expect(screen.getByText('auth.registerDescription')).toBeInTheDocument();
@@ -83,20 +84,20 @@ describe('AuthPage', () => {
 
   it('should switch back to login tab when login button is clicked', () => {
     render(<AuthPage />);
-    
+
     fireEvent.click(screen.getByTestId('register-tab'));
     expect(screen.getByTestId('active-tab')).toHaveTextContent('register');
-    
+
     fireEvent.click(screen.getByTestId('login-tab'));
     expect(screen.getByTestId('active-tab')).toHaveTextContent('login');
   });
 
   it('should render login form with active class when login tab is active', () => {
     render(<AuthPage />);
-    
+
     const loginWrapper = screen.getByTestId('login-form').closest('.auth-form-wrapper');
     expect(loginWrapper).toHaveClass('login', 'active');
-    
+
     const registerWrapper = screen.getByTestId('register-form').closest('.auth-form-wrapper');
     expect(registerWrapper).toHaveClass('register');
     expect(registerWrapper).not.toHaveClass('active');
@@ -104,27 +105,27 @@ describe('AuthPage', () => {
 
   it('should render register form with active class when register tab is active', () => {
     render(<AuthPage />);
-    
+
     fireEvent.click(screen.getByTestId('register-tab'));
-    
+
     const loginWrapper = screen.getByTestId('login-form').closest('.auth-form-wrapper');
     expect(loginWrapper).toHaveClass('login');
     expect(loginWrapper).not.toHaveClass('active');
-    
+
     const registerWrapper = screen.getByTestId('register-form').closest('.auth-form-wrapper');
     expect(registerWrapper).toHaveClass('register', 'active');
   });
 
   it('should render divider and social login components', () => {
     render(<AuthPage />);
-    
+
     expect(screen.getByTestId('divider')).toBeInTheDocument();
     expect(screen.getByTestId('social-login')).toBeInTheDocument();
   });
 
   it('should render all form components', () => {
     render(<AuthPage />);
-    
+
     expect(screen.getByTestId('login-form')).toBeInTheDocument();
     expect(screen.getByTestId('register-form')).toBeInTheDocument();
   });

@@ -13,4 +13,4 @@ describe('GamePlayer', () => {
     );
     expect(true).toBe(true);
   });
-}); 
+});

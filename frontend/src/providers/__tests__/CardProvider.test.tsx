@@ -29,7 +29,9 @@ const TestComponent = () => {
 
 describe('CardProvider', () => {
   const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
-  const mockUseGetOneQuizQuery = useGetOneQuizQuery as jest.MockedFunction<typeof useGetOneQuizQuery>;
+  const mockUseGetOneQuizQuery = useGetOneQuizQuery as jest.MockedFunction<
+    typeof useGetOneQuizQuery
+  >;
 
   const mockQuizz: IQuizz = {
     id: '1',
@@ -38,7 +40,12 @@ describe('CardProvider', () => {
     questions: [],
     quizzType: IQuizzType.QUESTIONS,
     creationDate: new Date(),
-    author: { id: 'user1', username: 'testuser', email: 'test@example.com', creationDate: new Date() },
+    author: {
+      id: 'user1',
+      username: 'testuser',
+      email: 'test@example.com',
+      creationDate: new Date(),
+    },
   };
 
   beforeEach(() => {
@@ -85,4 +92,4 @@ describe('CardProvider', () => {
 
     expect(screen.getByTestId('is-author')).toHaveTextContent('Not author');
   });
-}); 
+});

@@ -71,12 +71,8 @@ describe("QuizzController", () => {
     };
 
     mockFileUploadService = {
-      uploadFile: jest
-        .fn()
-        .mockResolvedValue("http://example.com/new-file.jpg"),
-      getFileUrl: jest
-        .fn()
-        .mockResolvedValue("http://example.com/new-file.jpg"),
+      uploadFile: jest.fn().mockResolvedValue("http://example.com/new-file.jpg"),
+      getFileUrl: jest.fn().mockResolvedValue("http://example.com/new-file.jpg"),
     };
 
     mockParseFilesPipe = {
@@ -151,10 +147,7 @@ describe("QuizzController", () => {
 
       await quizzController.create(mockUser, createQuizzDto, undefined);
 
-      expect(mockQuizzService.create).toHaveBeenCalledWith(
-        createQuizzDto,
-        mockUser.id,
-      );
+      expect(mockQuizzService.create).toHaveBeenCalledWith(createQuizzDto, mockUser.id);
     });
 
     it("should upload a file when creating a quizz", async () => {
@@ -175,9 +168,7 @@ describe("QuizzController", () => {
       const fileName = "test.jpg";
       const fileUrl = "http://example.com/new-file.jpg";
 
-      jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockResolvedValue(fileName);
+      jest.spyOn(mockFileUploadService, "uploadFile").mockResolvedValue(fileName);
       jest.spyOn(mockFileUploadService, "getFileUrl").mockReturnValue(fileUrl);
       jest.spyOn(mockQuizzService, "create").mockResolvedValue(mockQuizz);
 
@@ -207,17 +198,9 @@ describe("QuizzController", () => {
 
       jest.spyOn(mockQuizzService, "update").mockResolvedValue();
 
-      await quizzController.update(
-        mockUser,
-        quizzExisting,
-        updatedQuizzDto,
-        undefined,
-      );
+      await quizzController.update(mockUser, quizzExisting, updatedQuizzDto, undefined);
 
-      expect(mockQuizzService.update).toHaveBeenCalledWith(
-        quizzExisting,
-        updatedQuizzDto,
-      );
+      expect(mockQuizzService.update).toHaveBeenCalledWith(quizzExisting, updatedQuizzDto);
     });
 
     it("should upload a file when updating a quizz", async () => {
@@ -242,18 +225,11 @@ describe("QuizzController", () => {
 
       const fileUrl = "http://example.com/new-file.jpg";
 
-      jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockResolvedValue("test.jpg");
+      jest.spyOn(mockFileUploadService, "uploadFile").mockResolvedValue("test.jpg");
       jest.spyOn(mockFileUploadService, "getFileUrl").mockReturnValue(fileUrl);
       jest.spyOn(mockQuizzService, "update").mockResolvedValue();
 
-      await quizzController.update(
-        mockUser,
-        quizzExisting,
-        updatedQuizzDto,
-        file,
-      );
+      await quizzController.update(mockUser, quizzExisting, updatedQuizzDto, file);
 
       expect(mockQuizzService.update).toHaveBeenCalledWith(quizzExisting, {
         ...updatedQuizzDto,
@@ -272,14 +248,9 @@ describe("QuizzController", () => {
         title: "Updated Quizz",
       };
 
-      await expect(
-        quizzController.update(
-          mockUser,
-          quizzExisting,
-          updatedQuizzDto,
-          undefined,
-        ),
-      ).rejects.toThrow(HttpException);
+      await expect(quizzController.update(mockUser, quizzExisting, updatedQuizzDto, undefined)).rejects.toThrow(
+        HttpException,
+      );
     });
   });
 

@@ -62,31 +62,26 @@ describe("QuizzGuard", () => {
         }),
       } as ExecutionContext;
 
-      mockTranslationService.translate = jest
-        .fn()
-        .mockResolvedValue("Invalid ID");
+      mockTranslationService.translate = jest.fn().mockResolvedValue("Invalid ID");
 
-      await expect(quizzGuard.canActivate(context)).rejects.toThrow(
-        HttpException,
-      );
+      await expect(quizzGuard.canActivate(context)).rejects.toThrow(HttpException);
       await expect(quizzGuard.canActivate(context)).rejects.toThrow(
         new HttpException("Invalid ID", HttpStatus.BAD_REQUEST),
       );
     });
 
     it("should throw if quizz not found", async () => {
-      (mockQueryBuilder.getOne as jest.Mock).mockResolvedValueOnce(null);
+      mockQueryBuilder.getOne.mockResolvedValueOnce(null);
 
       const context = {
         switchToHttp: () => ({ getRequest: () => ({ params: { quizzId: "uuid" } }) }),
       } as ExecutionContext;
 
       mockQueryBuilder.getOne.mockResolvedValueOnce(null);
-      mockTranslationService.translate = jest
-        .fn()
-        .mockResolvedValueOnce("Not found");
-      await expect(quizzGuard.canActivate(context))
-        .rejects.toThrow(new HttpException("Not found", HttpStatus.NOT_FOUND));
+      mockTranslationService.translate = jest.fn().mockResolvedValueOnce("Not found");
+      await expect(quizzGuard.canActivate(context)).rejects.toThrow(
+        new HttpException("Not found", HttpStatus.NOT_FOUND),
+      );
     });
   });
 });

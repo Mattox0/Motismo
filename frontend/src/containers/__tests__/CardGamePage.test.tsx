@@ -1,9 +1,10 @@
-
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+
 import { useCard } from '@/providers/CardProvider';
 import { IQuizzType } from '@/types/model/IQuizzType';
+
 import { CardGamePage } from '../CardGamePage';
 
 jest.mock('framer-motion', () => ({
@@ -48,7 +49,7 @@ jest.mock('react-i18next', () => ({
 
 describe('CardGamePage', () => {
   const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
-  const mockUseCard   = useCard   as jest.MockedFunction<typeof useCard>;
+  const mockUseCard = useCard as jest.MockedFunction<typeof useCard>;
 
   beforeEach(() => {
     jest.clearAllMocks();

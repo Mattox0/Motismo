@@ -1,5 +1,5 @@
-import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
@@ -41,10 +41,11 @@ jest.mock('@/utils/toast', () => ({
   showToast: { error: jest.fn() },
 }));
 
-import Profile from '../page';
 import { useGetQuizQuery, useCreateGameMutation } from '@/services/quiz.service';
-import { showToast } from '@/utils/toast';
 import { IQuizzType } from '@/types/model/IQuizzType';
+import { showToast } from '@/utils/toast';
+
+import Profile from '../page';
 
 describe('Profile page', () => {
   const mockGetQuiz = useGetQuizQuery as jest.MockedFunction<typeof useGetQuizQuery>;
@@ -53,10 +54,7 @@ describe('Profile page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockCreate = jest.fn();
-    (useCreateGameMutation as jest.Mock).mockReturnValue([
-      mockCreate,
-      { isLoading: false }
-    ]);
+    (useCreateGameMutation as jest.Mock).mockReturnValue([mockCreate, { isLoading: false }]);
   });
 
   it('shows loader when data is still loading', () => {
@@ -75,8 +73,22 @@ describe('Profile page', () => {
 
   it('renders question and card quizzes and allows creating a game', () => {
     const fakeData = [
-      { id: 'q1', quizzType: IQuizzType.QUESTIONS, title: 'Quiz One', questions: [1,2], image: '/i.png', creationDate: '2025-01-01' },
-      { id: 'c1', quizzType: IQuizzType.CARDS,     title: 'Quiz Two',     cards: [ { order:1 } ], image: '/i2.png', creationDate: '2025-02-02' },
+      {
+        id: 'q1',
+        quizzType: IQuizzType.QUESTIONS,
+        title: 'Quiz One',
+        questions: [1, 2],
+        image: '/i.png',
+        creationDate: '2025-01-01',
+      },
+      {
+        id: 'c1',
+        quizzType: IQuizzType.CARDS,
+        title: 'Quiz Two',
+        cards: [{ order: 1 }],
+        image: '/i2.png',
+        creationDate: '2025-02-02',
+      },
     ];
     mockGetQuiz.mockReturnValue({ data: fakeData, isLoading: false } as any);
 
@@ -97,15 +109,18 @@ describe('Profile page', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const unwrap = jest.fn().mockRejectedValue(new Error('fail'));
     mockCreate.mockReturnValue({ unwrap });
-    mockGetQuiz.mockReturnValue({ data: [ { id:'x', quizzType:IQuizzType.QUESTIONS, title:'X', questions:[] } ], isLoading:false } as any);
+    mockGetQuiz.mockReturnValue({
+      data: [{ id: 'x', quizzType: IQuizzType.QUESTIONS, title: 'X', questions: [] }],
+      isLoading: false,
+    } as any);
 
     render(<Profile />);
     const button = screen.getByTestId('card').querySelector('button')!;
-    
+
     await act(async () => {
       fireEvent.click(button);
     });
-    
+
     // The error should be logged to console.error
     expect(consoleSpy).toHaveBeenCalled();
     consoleSpy.mockRestore();

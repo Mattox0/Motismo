@@ -1,6 +1,7 @@
 /// <reference types="@testing-library/jest-dom" />
 
 import { toast } from 'react-toastify';
+
 import { showToast, defaultOptions } from '../toast';
 
 jest.mock('react-toastify', () => ({

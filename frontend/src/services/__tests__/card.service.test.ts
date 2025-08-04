@@ -22,8 +22,8 @@ describe('cardApi', () => {
   it('should invalidate quiz tags', () => {
     const createCardEndpoint = cardApi.endpoints.createCard;
     const updateCardEndpoint = cardApi.endpoints.updateCard;
-    
+
     expect(createCardEndpoint).toBeDefined();
     expect(updateCardEndpoint).toBeDefined();
   });
-}); 
+});

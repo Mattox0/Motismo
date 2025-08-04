@@ -1,8 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 
-import { CardForm } from '../CardForm';
 import { ICard } from '@/types/model/ICard';
+
+import { CardForm } from '../CardForm';
 
 // Mock react-hook-form
 jest.mock('react-hook-form', () => ({
@@ -36,7 +37,7 @@ describe('CardForm', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseForm.mockReturnValue(mockFormMethods);
-    mockFormMethods.handleSubmit.mockImplementation((fn) => fn);
+    mockFormMethods.handleSubmit.mockImplementation(fn => fn);
   });
 
   describe('rendering', () => {
@@ -216,7 +217,7 @@ describe('CardForm', () => {
 
   describe('form submission', () => {
     it('should handle successful form submission with text content', async () => {
-      const mockHandleSubmit = jest.fn((fn) => fn);
+      const mockHandleSubmit = jest.fn(fn => fn);
       mockUseForm.mockReturnValue({
         ...mockFormMethods,
         handleSubmit: mockHandleSubmit,
@@ -228,7 +229,7 @@ describe('CardForm', () => {
       render(<CardForm onSubmit={mockOnSubmit} index={0} initialData={mockInitialData} />);
 
       const submitButton = screen.getByText('Enregistrer la carte');
-      
+
       await act(async () => {
         fireEvent.click(submitButton);
       });
@@ -237,7 +238,7 @@ describe('CardForm', () => {
     });
 
     it('should handle form submission with image content', async () => {
-      const mockHandleSubmit = jest.fn((fn) => fn);
+      const mockHandleSubmit = jest.fn(fn => fn);
       mockUseForm.mockReturnValue({
         ...mockFormMethods,
         handleSubmit: mockHandleSubmit,
@@ -255,7 +256,7 @@ describe('CardForm', () => {
       render(<CardForm onSubmit={mockOnSubmit} index={0} initialData={imageInitialData} />);
 
       const submitButton = screen.getByText('Enregistrer la carte');
-      
+
       await act(async () => {
         fireEvent.click(submitButton);
       });
@@ -264,7 +265,7 @@ describe('CardForm', () => {
     });
 
     it('should handle submission error', async () => {
-      const mockHandleSubmit = jest.fn((fn) => {
+      const mockHandleSubmit = jest.fn(fn => {
         const mockFn = jest.fn().mockImplementation(() => {
           // Don't throw error in test, just return
           return Promise.resolve();
@@ -285,7 +286,7 @@ describe('CardForm', () => {
       render(<CardForm onSubmit={mockOnSubmit} index={0} initialData={mockInitialData} />);
 
       const submitButton = screen.getByText('Enregistrer la carte');
-      
+
       await act(async () => {
         fireEvent.click(submitButton);
       });
@@ -369,7 +370,7 @@ describe('CardForm', () => {
 
   describe('form reset', () => {
     it('should reset form after successful submission', async () => {
-      const mockHandleSubmit = jest.fn((fn) => fn);
+      const mockHandleSubmit = jest.fn(fn => fn);
       mockUseForm.mockReturnValue({
         ...mockFormMethods,
         handleSubmit: mockHandleSubmit,
@@ -381,7 +382,7 @@ describe('CardForm', () => {
       render(<CardForm onSubmit={mockOnSubmit} index={0} initialData={mockInitialData} />);
 
       const submitButton = screen.getByText('Enregistrer la carte');
-      
+
       await act(async () => {
         fireEvent.click(submitButton);
       });
@@ -403,7 +404,7 @@ describe('CardForm', () => {
       render(<CardForm onSubmit={mockOnSubmit} index={0} initialData={mockInitialData} />);
 
       const submitButton = screen.getByText('Enregistrer la carte');
-      
+
       // Simulate submitting state
       act(() => {
         fireEvent.click(submitButton);
@@ -515,4 +516,4 @@ describe('CardForm', () => {
       });
     });
   });
-}); 
+});

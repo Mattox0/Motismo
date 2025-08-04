@@ -14,7 +14,7 @@ describe('GameProvider', () => {
         <TestComponent />
       </GameProvider>
     );
-    
+
     expect(screen.getByTestId('test-component')).toBeInTheDocument();
   });
-}); 
+});
