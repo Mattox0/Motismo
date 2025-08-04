@@ -27,7 +27,7 @@ services:
       MINIO_CONSOLE_ADDRESS: ":${MINIO_CONSOLE_ADDRESS}"
     command: minio server /data
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:${MINIO_ADDRESS}/minio/health/ready || exit 1"]
       interval: 3s
       timeout: 5s
       retries: 3
@@ -50,9 +50,7 @@ services:
 
 networks:
   motismo:
-    name: motismo
   back:
-    name: back
 
 volumes:
   s3-storage:

@@ -51,7 +51,7 @@ export const QuizzProvider: React.FC<{ children: React.ReactNode; quizId: string
   }, [quizz]);
 
   const selectCurrentQuestion = (id: string) => {
-    setCurrentQuestion(quizz?.questions?.find(question => question.id === id));
+    setCurrentQuestion(quizz?.questions?.find(question => question.id === id) || null);
   };
 
   const value = useMemo(

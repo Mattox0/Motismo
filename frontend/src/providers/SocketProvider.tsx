@@ -24,7 +24,8 @@ export const SocketProvider: React.FC<ISocketProviderProperties> = ({ children, 
   useEffect(() => {
     if (!code) return;
 
-    const newSocket = io(`${process.env.NEXT_PUBLIC_API_URL}/room`, {
+    const newSocket = io(`${process.env.NEXT_PUBLIC_WS_URL}/room`, {
+      path: '/socket.io',
       query: {
         code,
         userId: player.id,
