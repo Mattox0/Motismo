@@ -51,16 +51,12 @@ describe("FileUploadController", () => {
 
       const mockKey = "uploaded-file-key";
 
-      jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockResolvedValue(mockKey);
+      jest.spyOn(mockFileUploadService, "uploadFile").mockResolvedValue(mockKey);
 
       const result = await controller.uploadFile(mockFile);
 
       expect(mockFileUploadService.uploadFile).toHaveBeenCalledWith(mockFile);
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "files.FILE_UPLOAD",
-      );
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("files.FILE_UPLOAD");
       expect(result).toEqual({
         message: "Translated message",
         key: mockKey,
@@ -73,13 +69,9 @@ describe("FileUploadController", () => {
         buffer: Buffer.from("test"),
       } as Express.Multer.File;
 
-      jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockRejectedValue(new Error("Upload failed"));
+      jest.spyOn(mockFileUploadService, "uploadFile").mockRejectedValue(new Error("Upload failed"));
 
-      await expect(controller.uploadFile(mockFile)).rejects.toThrow(
-        "Upload failed",
-      );
+      await expect(controller.uploadFile(mockFile)).rejects.toThrow("Upload failed");
     });
   });
 
@@ -104,9 +96,7 @@ describe("FileUploadController", () => {
         end: jest.fn().mockReturnThis(),
       } as unknown as Response;
 
-      jest
-        .spyOn(mockFileUploadService, "getFile")
-        .mockResolvedValue(mockStream as unknown as Readable);
+      jest.spyOn(mockFileUploadService, "getFile").mockResolvedValue(mockStream as unknown as Readable);
 
       await controller.getFile(mockKey, mockResponse);
 
@@ -125,13 +115,9 @@ describe("FileUploadController", () => {
         end: jest.fn().mockReturnThis(),
       } as unknown as Response;
 
-      jest
-        .spyOn(mockFileUploadService, "getFile")
-        .mockRejectedValue(new Error("File not found"));
+      jest.spyOn(mockFileUploadService, "getFile").mockRejectedValue(new Error("File not found"));
 
-      await expect(controller.getFile(mockKey, mockResponse)).rejects.toThrow(
-        "File not found",
-      );
+      await expect(controller.getFile(mockKey, mockResponse)).rejects.toThrow("File not found");
     });
   });
 
@@ -139,29 +125,21 @@ describe("FileUploadController", () => {
     it("should delete file successfully", async () => {
       const mockKey = "file-to-delete";
 
-      jest
-        .spyOn(mockFileUploadService, "deleteFile")
-        .mockResolvedValue(undefined);
+      jest.spyOn(mockFileUploadService, "deleteFile").mockResolvedValue(undefined);
 
       const result = await controller.deleteFile(mockKey);
 
       expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(mockKey);
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "files.FILE_UPLOAD",
-      );
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("files.FILE_UPLOAD");
       expect(result).toBe("Translated message");
     });
 
     it("should handle delete failure", async () => {
       const mockKey = "non-existent-file";
 
-      jest
-        .spyOn(mockFileUploadService, "deleteFile")
-        .mockRejectedValue(new Error("Delete failed"));
+      jest.spyOn(mockFileUploadService, "deleteFile").mockRejectedValue(new Error("Delete failed"));
 
-      await expect(controller.deleteFile(mockKey)).rejects.toThrow(
-        "Delete failed",
-      );
+      await expect(controller.deleteFile(mockKey)).rejects.toThrow("Delete failed");
     });
   });
 
@@ -169,16 +147,10 @@ describe("FileUploadController", () => {
     it("should handle translation service failures", async () => {
       const mockKey = "test-key";
 
-      jest
-        .spyOn(mockFileUploadService, "deleteFile")
-        .mockResolvedValue(undefined);
-      jest
-        .spyOn(mockTranslationService, "translate")
-        .mockRejectedValue(new Error("Translation failed"));
+      jest.spyOn(mockFileUploadService, "deleteFile").mockResolvedValue(undefined);
+      jest.spyOn(mockTranslationService, "translate").mockRejectedValue(new Error("Translation failed"));
 
-      await expect(controller.deleteFile(mockKey)).rejects.toThrow(
-        "Translation failed",
-      );
+      await expect(controller.deleteFile(mockKey)).rejects.toThrow("Translation failed");
     });
   });
 
@@ -186,17 +158,13 @@ describe("FileUploadController", () => {
     it("should reject null file", async () => {
       const nullFile = null as unknown as Express.Multer.File;
 
-      await expect(controller.uploadFile(nullFile)).rejects.toThrow(
-        "File is missing",
-      );
+      await expect(controller.uploadFile(nullFile)).rejects.toThrow("File is missing");
     });
 
     it("should reject undefined file", async () => {
       const undefinedFile = undefined as unknown as Express.Multer.File;
 
-      await expect(controller.uploadFile(undefinedFile)).rejects.toThrow(
-        "File is missing",
-      );
+      await expect(controller.uploadFile(undefinedFile)).rejects.toThrow("File is missing");
     });
 
     it("should handle wrong type file", async () => {
@@ -206,13 +174,9 @@ describe("FileUploadController", () => {
         mimetype: "text/plain",
       } as Express.Multer.File;
 
-      jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockRejectedValue(new Error("Invalid file type"));
+      jest.spyOn(mockFileUploadService, "uploadFile").mockRejectedValue(new Error("Invalid file type"));
 
-      await expect(controller.uploadFile(emptyFile)).rejects.toThrow(
-        "Invalid file type",
-      );
+      await expect(controller.uploadFile(emptyFile)).rejects.toThrow("Invalid file type");
     });
 
     it("should handle empty file buffer", async () => {
@@ -222,13 +186,9 @@ describe("FileUploadController", () => {
         mimetype: "text/plain",
       } as Express.Multer.File;
 
-      jest
-        .spyOn(mockFileUploadService, "uploadFile")
-        .mockRejectedValue(new Error("Empty file not allowed"));
+      jest.spyOn(mockFileUploadService, "uploadFile").mockRejectedValue(new Error("Empty file not allowed"));
 
-      await expect(controller.uploadFile(emptyFile)).rejects.toThrow(
-        "Empty file not allowed",
-      );
+      await expect(controller.uploadFile(emptyFile)).rejects.toThrow("Empty file not allowed");
     });
 
     it("should reject file without buffer", async () => {
@@ -237,9 +197,7 @@ describe("FileUploadController", () => {
         mimetype: "text/plain",
       } as Express.Multer.File;
 
-      await expect(controller.uploadFile(invalidFile)).rejects.toThrow(
-        "File buffer is required",
-      );
+      await expect(controller.uploadFile(invalidFile)).rejects.toThrow("File buffer is required");
     });
   });
 });

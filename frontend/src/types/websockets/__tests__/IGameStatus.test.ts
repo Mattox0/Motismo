@@ -30,4 +30,4 @@ describe('IGameStatus', () => {
     expect(IGameStatus.DISPLAY_QUESTION === 'DISPLAY_QUESTION').toBe(true);
     expect(IGameStatus.FINISHED === 'FINISHED').toBe(true);
   });
-}); 
+});

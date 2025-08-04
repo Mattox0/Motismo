@@ -1,6 +1,6 @@
 jest.mock('next-auth/middleware', () => {
   const withAuth = jest.fn((handler, options) => {
-    ;(handler as any).authOptions = options;
+    (handler as any).authOptions = options;
     return handler;
   });
   return {
@@ -17,8 +17,9 @@ jest.mock('next/server', () => ({
 }));
 
 import { NextResponse } from 'next/server';
-import middleware, { config } from '../middleware';
 import { withAuth } from 'next-auth/middleware';
+
+import middleware, { config } from '../middleware';
 
 describe('middleware', () => {
   beforeEach(() => {
@@ -35,23 +36,20 @@ describe('middleware', () => {
 
   describe('authorized callback', () => {
     const options = (middleware as any).authOptions;
-    const authorized: (
-      args: { token: unknown; req: { nextUrl: { pathname: string } } }
-    ) => boolean = options.callbacks.authorized;
+    const authorized: (args: {
+      token: unknown;
+      req: { nextUrl: { pathname: string } };
+    }) => boolean = options.callbacks.authorized;
 
     it('allows public paths without token', () => {
       const publicPaths = ['/auth/login', '/', '/game/abc', '/game'];
       publicPaths.forEach(path => {
-        expect(
-          authorized({ token: null, req: { nextUrl: { pathname: path } } })
-        ).toBe(true);
+        expect(authorized({ token: null, req: { nextUrl: { pathname: path } } })).toBe(true);
       });
     });
 
     it('denies protected paths when token is missing', () => {
-      expect(
-        authorized({ token: null, req: { nextUrl: { pathname: '/dashboard' } } })
-      ).toBe(false);
+      expect(authorized({ token: null, req: { nextUrl: { pathname: '/dashboard' } } })).toBe(false);
     });
 
     it('allows protected paths when token is present', () => {

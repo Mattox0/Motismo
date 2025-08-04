@@ -4,7 +4,11 @@ import { SessionProvider } from '../SessionProvider';
 
 jest.mock('next-auth/react', () => ({
   SessionProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="session-provider" data-refetch-interval="0" data-refetch-on-window-focus="false">
+    <div
+      data-testid="session-provider"
+      data-refetch-interval="0"
+      data-refetch-on-window-focus="false"
+    >
       {children}
     </div>
   ),
@@ -56,4 +60,4 @@ describe('SessionProvider', () => {
     expect(screen.getByTestId('child1')).toBeInTheDocument();
     expect(screen.getByTestId('child2')).toBeInTheDocument();
   });
-}); 
+});

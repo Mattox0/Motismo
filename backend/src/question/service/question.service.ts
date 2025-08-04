@@ -51,17 +51,14 @@ export class QuestionService {
 
     for (let i = 0; i < questions.length; i++) {
       const question = questions[i];
+
       if (question.order !== i + 1) {
         await this.questionRepository.update(question.id, { order: i + 1 });
       }
     }
   }
 
-  private async reorderQuestions(
-    quizzId: string,
-    newOrder: number,
-    oldOrder?: number,
-  ): Promise<void> {
+  private async reorderQuestions(quizzId: string, newOrder: number, oldOrder?: number): Promise<void> {
     const questions = await this.questionRepository.find({
       where: { quizz: { id: quizzId } },
       order: { order: "ASC" },
@@ -98,10 +95,10 @@ export class QuestionService {
     switch (questionType) {
       case QuestionType.MULTIPLE_CHOICES:
       case QuestionType.UNIQUE_CHOICES:
-      case QuestionType.BOOLEAN_CHOICES:
+      case QuestionType.BOOLEAN_CHOICES: {
         if (!choices || choices.length === 0) {
           throw new BadRequestException(
-            await this.translationService.translate("error.CHOICES_REQUIRED_FOR_CHOICE_QUESTIONS")
+            await this.translationService.translate("error.CHOICES_REQUIRED_FOR_CHOICE_QUESTIONS"),
           );
         }
         const choiceQuestionDto: CreateChoiceQuestionDto = {
@@ -109,10 +106,12 @@ export class QuestionService {
           questionType,
           choices,
         };
+
         return this.createChoiceQuestion(quizz, choiceQuestionDto);
+      }
 
       case QuestionType.WORD_CLOUD:
-      case QuestionType.MATCHING:
+      case QuestionType.MATCHING: {
         const maxOrder = await this.getMaxOrder(quizz.id);
         const order = createQuestionDto.order ?? maxOrder + 1;
 
@@ -134,11 +133,10 @@ export class QuestionService {
         await this.questionRepository.save(question);
         await this.normalizeOrders(quizz.id);
         break;
+      }
 
       default:
-        throw new BadRequestException(
-          await this.translationService.translate("error.UNSUPPORTED_QUESTION_TYPE")
-        );
+        throw new BadRequestException(await this.translationService.translate("error.UNSUPPORTED_QUESTION_TYPE"));
     }
   }
 
@@ -159,12 +157,13 @@ export class QuestionService {
             questionType: questionType || question.questionType,
             choices,
           };
+
           return this.updateChoiceQuestion(quizz, question, choiceUpdateDto);
         }
         break;
 
       case QuestionType.WORD_CLOUD:
-      case QuestionType.MATCHING:
+      case QuestionType.MATCHING: {
         const maxOrder = await this.getMaxOrder(quizz.id);
 
         if (updateQuestionDto.order !== undefined) {
@@ -181,11 +180,10 @@ export class QuestionService {
         await this.questionRepository.update(question.id, updateData);
         await this.normalizeOrders(quizz.id);
         break;
+      }
 
       default:
-        throw new BadRequestException(
-          await this.translationService.translate("error.UNSUPPORTED_QUESTION_TYPE")
-        );
+        throw new BadRequestException(await this.translationService.translate("error.UNSUPPORTED_QUESTION_TYPE"));
     }
   }
 

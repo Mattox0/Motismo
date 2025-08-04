@@ -1,18 +1,16 @@
-import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+
+import QuestionForm from '@/components/forms/QuestionForm';
+import { CustomErrorPage } from '@/containers/CustomErrorPage';
+import { QuestionSide } from '@/containers/QuestionSide';
 import { useQuizz } from '@/providers/QuizzProvider';
-import {
-  useDeleteQuestionMutation,
-  useUpdateQuestionMutation,
-} from '@/services/question.service';
+import { useDeleteQuestionMutation, useUpdateQuestionMutation } from '@/services/question.service';
 import { showToast } from '@/utils/toast';
 
 import { QuizzPage } from '../QuizzPage';
-import { CustomErrorPage } from '@/containers/CustomErrorPage';
-import { QuestionSide } from '@/containers/QuestionSide';
-import QuestionForm from '@/components/forms/QuestionForm';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -38,11 +36,11 @@ jest.mock('@/components/SplashScreen', () => ({
 }));
 jest.mock('@/containers/CustomErrorPage', () => ({
   __esModule: true,
-  CustomErrorPage: jest.fn((props) => <div data-testid="custom-error-page" {...props} />),
+  CustomErrorPage: jest.fn(props => <div data-testid="custom-error-page" {...props} />),
 }));
 jest.mock('@/containers/QuestionSide', () => ({
   __esModule: true,
-  QuestionSide: jest.fn((props) => <div data-testid="question-side" {...props} />),
+  QuestionSide: jest.fn(props => <div data-testid="question-side" {...props} />),
 }));
 jest.mock('@/components/forms/QuestionForm', () => ({
   __esModule: true,
@@ -145,7 +143,7 @@ describe('QuizzPage', () => {
 
     it('passes submit & delete handlers to QuestionForm', () => {
       render(<QuizzPage quizzId="quiz-1" />);
-      const mockForm = (QuestionForm as unknown) as jest.Mock;
+      const mockForm = QuestionForm as unknown as jest.Mock;
       const formProps = mockForm.mock.calls[0][0];
 
       expect(formProps.onSubmit).toEqual(expect.any(Function));
@@ -157,7 +155,7 @@ describe('QuizzPage', () => {
       mockUpdateQ.mockReturnValue([upd, { isLoading: false, error: null }] as any);
 
       render(<QuizzPage quizzId="quiz-1" />);
-      const mockForm = (QuestionForm as unknown) as jest.Mock;
+      const mockForm = QuestionForm as unknown as jest.Mock;
       const { onSubmit } = mockForm.mock.calls[0][0];
 
       await act(() => onSubmit({ title: 'New' }));
@@ -174,7 +172,7 @@ describe('QuizzPage', () => {
       mockUpdateQ.mockReturnValue([upd, { isLoading: false, error: null }] as any);
 
       render(<QuizzPage quizzId="quiz-1" />);
-      const mockForm = (QuestionForm as unknown) as jest.Mock;
+      const mockForm = QuestionForm as unknown as jest.Mock;
       const { onSubmit } = mockForm.mock.calls[0][0];
 
       await act(() => onSubmit({ title: 'Fail' }));
@@ -193,7 +191,7 @@ describe('QuizzPage', () => {
       } as any);
 
       render(<QuizzPage quizzId="quiz-1" />);
-      const mockForm = (QuestionForm as unknown) as jest.Mock;
+      const mockForm = QuestionForm as unknown as jest.Mock;
       const { onDelete } = mockForm.mock.calls[0][0];
 
       await act(() => onDelete());

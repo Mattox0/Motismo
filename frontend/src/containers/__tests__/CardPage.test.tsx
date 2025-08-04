@@ -1,7 +1,9 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
+
 import { useCard } from '@/providers/CardProvider';
 import { useCreateCardMutation, useUpdateCardMutation } from '@/services/card.service';
+
 import { CardPage } from '../CardPage';
 
 jest.mock('@/providers/CardProvider', () => ({
@@ -15,7 +17,10 @@ jest.mock('@/components/forms/CardForm', () => ({
   CardForm: ({ index, onSubmit }: any) => (
     <div data-testid={`card-form-${index}`}>
       {/* onSubmit simule la soumission de la carte */}
-      <button data-testid={`submit-${index}`} onClick={() => onSubmit({ term: 'test', definition: 'test' }, 'card-id')}>
+      <button
+        data-testid={`submit-${index}`}
+        onClick={() => onSubmit({ term: 'test', definition: 'test' }, 'card-id')}
+      >
         Submit
       </button>
     </div>
@@ -26,14 +31,14 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('CardPage', () => {
-  const mockUseCard     = useCard as jest.MockedFunction<typeof useCard>;
-  const mockCreateCard  = jest.fn();
-  const mockUpdateCard  = jest.fn();
+  const mockUseCard = useCard as jest.MockedFunction<typeof useCard>;
+  const mockCreateCard = jest.fn();
+  const mockUpdateCard = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (useCreateCardMutation  as jest.Mock).mockReturnValue([mockCreateCard]);
-    (useUpdateCardMutation  as jest.Mock).mockReturnValue([mockUpdateCard]);
+    (useCreateCardMutation as jest.Mock).mockReturnValue([mockCreateCard]);
+    (useUpdateCardMutation as jest.Mock).mockReturnValue([mockUpdateCard]);
   });
 
   it('affiche le loader quand isLoading est vrai', () => {

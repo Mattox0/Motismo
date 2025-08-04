@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { QuestionChoicePlayer } from '../QuestionChoicePlayer';
 import { IQuestion } from '@/types/model/IQuestion';
 import { IQuestionType } from '@/types/QuestionType';
+
+import { QuestionChoicePlayer } from '../QuestionChoicePlayer';
 
 jest.mock('next/image', () => ({
   __esModule: true,
@@ -76,26 +77,26 @@ describe('QuestionChoicePlayer', () => {
 
   it('should render the question title', () => {
     renderComponent();
-    
+
     expect(screen.getByText('Test Question')).toBeInTheDocument();
   });
 
   it('should render question counter when provided', () => {
     renderComponent({ currentQuestionNumber: 2, totalQuestions: 5 });
-    
+
     expect(screen.getByText('2 / 5')).toBeInTheDocument();
   });
 
   it('should render timer when timeLeft is provided', () => {
     renderComponent({ timeLeft: 30 });
-    
+
     expect(screen.getByTestId('timer')).toBeInTheDocument();
     expect(screen.getByText('Time: 30')).toBeInTheDocument();
   });
 
   it('should render choice buttons', () => {
     renderComponent();
-    
+
     expect(screen.getByTestId('choice-1')).toBeInTheDocument();
     expect(screen.getByTestId('choice-2')).toBeInTheDocument();
     expect(screen.getByText('Choice 1')).toBeInTheDocument();
@@ -104,7 +105,7 @@ describe('QuestionChoicePlayer', () => {
 
   it('should render submit button', () => {
     renderComponent();
-    
+
     expect(screen.getByTestId('submit-button')).toBeInTheDocument();
   });
 
@@ -113,9 +114,9 @@ describe('QuestionChoicePlayer', () => {
       ...mockQuestion,
       image: 'test-image.jpg',
     };
-    
+
     renderComponent({ question: questionWithImage });
-    
+
     expect(screen.getByTestId('question-image')).toBeInTheDocument();
   });
 
@@ -124,21 +125,21 @@ describe('QuestionChoicePlayer', () => {
       ...mockQuestion,
       choices: undefined,
     };
-    
+
     renderComponent({ question: questionWithoutChoices });
-    
+
     expect(screen.getByPlaceholderText('Votre réponse...')).toBeInTheDocument();
   });
 
   it('should have correct CSS classes', () => {
     renderComponent();
-    
+
     const container = document.querySelector('.question-player');
     const header = document.querySelector('.question-player__header');
     const content = document.querySelector('.question-player__content');
-    
+
     expect(container).toBeInTheDocument();
     expect(header).toBeInTheDocument();
     expect(content).toBeInTheDocument();
   });
-}); 
+});

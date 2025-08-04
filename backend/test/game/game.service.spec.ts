@@ -88,18 +88,21 @@ describe("GameService", () => {
   describe("generateCode", () => {
     it("should generate a code with default length 6", () => {
       const code = generateCode();
+
       expect(code).toHaveLength(6);
       expect(code).toMatch(/^[A-Z]{6}$/);
     });
 
     it("should generate a code with specified length", () => {
       const code = generateCode(4);
+
       expect(code).toHaveLength(4);
       expect(code).toMatch(/^[A-Z]{4}$/);
     });
 
     it("should generate different codes on multiple calls", () => {
       const codes = new Set();
+
       for (let i = 0; i < 100; i++) {
         codes.add(generateCode());
       }
@@ -135,9 +138,7 @@ describe("GameService", () => {
       const mockUser = { id: "user-id" };
       const mockGame = { id: "game-id", code: "ABCDEF" };
 
-      mockGameRepository.exists
-        .mockResolvedValueOnce(true)
-        .mockResolvedValueOnce(false);
+      mockGameRepository.exists.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
       mockGameRepository.create.mockReturnValue(mockGame);
       mockGameRepository.save.mockResolvedValue(mockGame);
 
@@ -193,10 +194,7 @@ describe("GameService", () => {
 
       const result = await service.getGame(mockSocket as any);
 
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        "game.code = :code",
-        { code: "ABCDEF" }
-      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith("game.code = :code", { code: "ABCDEF" });
       expect(result).toEqual(mockGame);
     });
 
@@ -218,14 +216,14 @@ describe("GameService", () => {
 
   describe("start", () => {
     const mockSocket = {
-      data: { 
+      data: {
         code: "ABCDEF",
-        user: { externalId: "author-id" }
+        user: { externalId: "author-id" },
       },
     };
 
     beforeEach(() => {
-      jest.spyOn(service, 'getGame').mockResolvedValue({
+      jest.spyOn(service, "getGame").mockResolvedValue({
         id: "game-id",
         author: { id: "author-id" },
         status: IGameStatus.NOT_STARTED,
@@ -237,15 +235,15 @@ describe("GameService", () => {
 
       expect(mockGameRepository.update).toHaveBeenCalledWith(
         { code: "ABCDEF" },
-        { status: IGameStatus.DISPLAY_QUESTION }
+        { status: IGameStatus.DISPLAY_QUESTION },
       );
     });
 
     it("should throw error if user is not author", async () => {
       const unauthorizedSocket = {
-        data: { 
+        data: {
           code: "ABCDEF",
-          user: { externalId: "other-user-id" }
+          user: { externalId: "other-user-id" },
         },
       };
 
@@ -260,7 +258,7 @@ describe("GameService", () => {
     };
 
     it("should return null if no current question", async () => {
-      jest.spyOn(service, 'getGame').mockResolvedValue({
+      jest.spyOn(service, "getGame").mockResolvedValue({
         currentQuestion: null,
       } as any);
 
@@ -271,6 +269,7 @@ describe("GameService", () => {
 
     it("should return choice question with only id and text", async () => {
       const mockChoiceQuestion = new ChoiceQuestion();
+
       Object.assign(mockChoiceQuestion, {
         id: "question-id",
         title: "Test Question",
@@ -281,7 +280,7 @@ describe("GameService", () => {
         ],
       });
 
-      jest.spyOn(service, 'getGame').mockResolvedValue({
+      jest.spyOn(service, "getGame").mockResolvedValue({
         currentQuestion: mockChoiceQuestion,
       } as any);
 
@@ -301,7 +300,7 @@ describe("GameService", () => {
         questionType: "WORD_CLOUD",
       };
 
-      jest.spyOn(service, 'getGame').mockResolvedValue({
+      jest.spyOn(service, "getGame").mockResolvedValue({
         currentQuestion: mockQuestion,
       } as any);
 
@@ -317,7 +316,7 @@ describe("GameService", () => {
     };
 
     it("should return game status", async () => {
-      jest.spyOn(service, 'getGame').mockResolvedValue({
+      jest.spyOn(service, "getGame").mockResolvedValue({
         status: IGameStatus.DISPLAY_QUESTION,
       } as any);
 
@@ -329,9 +328,9 @@ describe("GameService", () => {
 
   describe("submitAnswer", () => {
     const mockSocket = {
-      data: { 
+      data: {
         code: "ABCDEF",
-        user: { userId: "user-id" }
+        user: { userId: "user-id" },
       },
     };
 
@@ -352,38 +351,41 @@ describe("GameService", () => {
     };
 
     beforeEach(() => {
-      jest.spyOn(service, 'getGame').mockResolvedValue(mockGame as any);
+      jest.spyOn(service, "getGame").mockResolvedValue(mockGame as any);
       mockGameUserService.getOneUser.mockResolvedValue(mockGameUser);
       mockGameResponseService.hasUserAnswered.mockResolvedValue(false);
     });
 
     it("should throw error if user not found", async () => {
       const socketWithoutUser = {
-        data: { 
+        data: {
           code: "ABCDEF",
-          user: { userId: null }
+          user: { userId: null },
         },
       };
 
-      await expect(service.submitAnswer(socketWithoutUser as any, { type: QuestionType.UNIQUE_CHOICES, answer: 'choice-1' }))
-        .rejects.toThrow();
+      await expect(
+        service.submitAnswer(socketWithoutUser as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+      ).rejects.toThrow();
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.USER_NOT_FOUND");
     });
 
     it("should throw error if game user not found", async () => {
       mockGameUserService.getOneUser.mockResolvedValue(null);
 
-      await expect(service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: 'choice-1' }))
-        .rejects.toThrow();
+      await expect(
+        service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+      ).rejects.toThrow();
     });
 
     it("should throw error if no current question", async () => {
-      jest.spyOn(service, 'getGame').mockResolvedValue({
+      jest.spyOn(service, "getGame").mockResolvedValue({
         currentQuestion: null,
       } as any);
 
-      await expect(service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: 'choice-1' }))
-        .rejects.toThrow();
+      await expect(
+        service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+      ).rejects.toThrow();
     });
 
     it("should throw error if user is author", async () => {
@@ -392,40 +394,49 @@ describe("GameService", () => {
         isAuthor: true,
       });
 
-      await expect(service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: 'choice-1' }))
-        .rejects.toThrow();
+      await expect(
+        service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+      ).rejects.toThrow();
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.AUTHOR_CANNOT_ANSWER");
     });
 
     it("should throw error if user already answered", async () => {
       mockGameResponseService.hasUserAnswered.mockResolvedValue(true);
 
-      await expect(service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: 'choice-1' }))
-        .rejects.toThrow();
+      await expect(
+        service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+      ).rejects.toThrow();
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.ALREADY_ANSWERED");
     });
 
     it("should submit unique choice answer", async () => {
-      jest.spyOn(service as any, 'submitUniqueChoiceAnswer').mockResolvedValue({ allAnswered: false });
+      jest.spyOn(service as any, "submitUniqueChoiceAnswer").mockResolvedValue({ allAnswered: false });
 
-      const result = await service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: 'choice-1' });
+      const result = await service.submitAnswer(mockSocket as any, {
+        type: QuestionType.UNIQUE_CHOICES,
+        answer: "choice-1",
+      });
 
-      expect(service['submitUniqueChoiceAnswer']).toHaveBeenCalledWith(mockGame, mockGameUser, 'choice-1');
+      expect(service["submitUniqueChoiceAnswer"]).toHaveBeenCalledWith(mockGame, mockGameUser, "choice-1");
       expect(result).toEqual({ allAnswered: false });
     });
 
     it("should submit multiple choice answer", async () => {
-      jest.spyOn(service as any, 'submitMultipleChoiceAnswer').mockResolvedValue({ allAnswered: true });
+      jest.spyOn(service as any, "submitMultipleChoiceAnswer").mockResolvedValue({ allAnswered: true });
 
-      const result = await service.submitAnswer(mockSocket as any, { type: QuestionType.MULTIPLE_CHOICES, answer: ['choice-1'] });
+      const result = await service.submitAnswer(mockSocket as any, {
+        type: QuestionType.MULTIPLE_CHOICES,
+        answer: ["choice-1"],
+      });
 
-      expect(service['submitMultipleChoiceAnswer']).toHaveBeenCalledWith(mockGame, mockGameUser, ['choice-1']);
+      expect(service["submitMultipleChoiceAnswer"]).toHaveBeenCalledWith(mockGame, mockGameUser, ["choice-1"]);
       expect(result).toEqual({ allAnswered: true });
     });
 
     it("should throw error for invalid question type", async () => {
-      await expect(service.submitAnswer(mockSocket as any, { type: 'INVALID_TYPE' as any, answer: 'choice-1' }))
-        .rejects.toThrow();
+      await expect(
+        service.submitAnswer(mockSocket as any, { type: "INVALID_TYPE" as any, answer: "choice-1" }),
+      ).rejects.toThrow();
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.INVALID_QUESTION_TYPE");
     });
   });
@@ -444,6 +455,7 @@ describe("GameService", () => {
         where: jest.fn().mockReturnThis(),
         getOne: jest.fn().mockResolvedValue(mockGame),
       };
+
       mockGameRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
     });
 
@@ -466,7 +478,7 @@ describe("GameService", () => {
 
       expect(mockGameUserService.create).toHaveBeenCalledWith({
         game: mockGame,
-        socketId: '',
+        socketId: "",
         name: "Test User",
         isAuthor: false,
         avatar: "avatar-url",
@@ -478,11 +490,13 @@ describe("GameService", () => {
     it("should return existing user if found", async () => {
       const gameWithUsers = {
         ...mockGame,
-        users: [{
-          id: "existing-user-id",
-          user: { id: "external-id" },
-          name: "Test User",
-        }],
+        users: [
+          {
+            id: "existing-user-id",
+            user: { id: "external-id" },
+            name: "Test User",
+          },
+        ],
       };
 
       const mockQueryBuilder = {
@@ -490,6 +504,7 @@ describe("GameService", () => {
         where: jest.fn().mockReturnThis(),
         getOne: jest.fn().mockResolvedValue(gameWithUsers),
       };
+
       mockGameRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
       const createGameUserDto = {
@@ -509,10 +524,10 @@ describe("GameService", () => {
         where: jest.fn().mockReturnThis(),
         getOne: jest.fn().mockResolvedValue(null),
       };
+
       mockGameRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
-      await expect(service.createGameUser("INVALID", {} as any))
-        .rejects.toThrow(NotFoundException);
+      await expect(service.createGameUser("INVALID", {} as any)).rejects.toThrow(NotFoundException);
     });
   });
 });

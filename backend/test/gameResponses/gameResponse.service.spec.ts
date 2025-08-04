@@ -60,12 +60,7 @@ describe("GameResponseService", () => {
       mockGameResponseRepository.create.mockReturnValue(mockGameResponse);
       mockGameResponseRepository.save.mockResolvedValue(mockGameResponse);
 
-      const result = await service.createResponse(
-        mockUser as any,
-        mockQuestion as any,
-        mockGame as any,
-        answer
-      );
+      const result = await service.createResponse(mockUser as any, mockQuestion as any, mockGame as any, answer);
 
       expect(mockGameResponseRepository.create).toHaveBeenCalledWith({
         user: mockUser,
@@ -94,12 +89,7 @@ describe("GameResponseService", () => {
       mockGameResponseRepository.create.mockReturnValue(mockGameResponse);
       mockGameResponseRepository.save.mockResolvedValue(mockGameResponse);
 
-      const result = await service.createResponse(
-        mockUser as any,
-        mockQuestion as any,
-        mockGame as any,
-        answer
-      );
+      const result = await service.createResponse(mockUser as any, mockQuestion as any, mockGame as any, answer);
 
       expect(mockGameResponseRepository.create).toHaveBeenCalledWith({
         user: mockUser,
@@ -127,12 +117,7 @@ describe("GameResponseService", () => {
       mockGameResponseRepository.create.mockReturnValue(mockGameResponse);
       mockGameResponseRepository.save.mockResolvedValue(mockGameResponse);
 
-      const result = await service.createResponse(
-        mockUser as any,
-        mockQuestion as any,
-        mockGame as any,
-        answer
-      );
+      const result = await service.createResponse(mockUser as any, mockQuestion as any, mockGame as any, answer);
 
       expect(result.answer).toEqual(answer);
     });
@@ -293,11 +278,11 @@ describe("GameResponseService", () => {
         {
           id: "response-1",
           answer: ["choice-1", "choice-2"],
-          user: { 
-            id: "user-1", 
-            name: "User 1", 
+          user: {
+            id: "user-1",
+            name: "User 1",
             avatar: "avatar-1",
-            points: 100 
+            points: 100,
           },
         },
       ];

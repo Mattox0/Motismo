@@ -21,37 +21,37 @@ describe('I18nProvider', () => {
 
   it('shows splash screen when i18n is not initialized', () => {
     (i18n as any).isInitialized = false;
-    
+
     render(
       <I18nProvider>
         <TestComponent />
       </I18nProvider>
     );
-    
+
     expect(screen.getByTestId('splash-screen')).toBeInTheDocument();
   });
 
   it('initializes i18n when not already initialized', async () => {
     (i18n as any).isInitialized = false;
-    
+
     render(
       <I18nProvider>
         <TestComponent />
       </I18nProvider>
     );
-    
+
     expect(i18n.init).toHaveBeenCalled();
   });
 
   it('renders children when i18n is already initialized', () => {
     (i18n as any).isInitialized = true;
-    
+
     render(
       <I18nProvider>
         <TestComponent />
       </I18nProvider>
     );
-    
+
     expect(screen.getByTestId('test-component')).toBeInTheDocument();
   });
-}); 
+});

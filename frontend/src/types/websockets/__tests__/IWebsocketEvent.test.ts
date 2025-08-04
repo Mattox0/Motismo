@@ -45,8 +45,8 @@ describe('IWebsocketEvent', () => {
     const eventValues = Object.values(IWebsocketEvent);
     const upperCaseEvents = eventValues.filter(event => event === event.toUpperCase());
     const lowerCaseEvents = eventValues.filter(event => event === event.toLowerCase());
-    
+
     expect(upperCaseEvents.length).toBeGreaterThan(lowerCaseEvents.length);
     expect(IWebsocketEvent.CONNECT).toBe('connect');
   });
-}); 
+});

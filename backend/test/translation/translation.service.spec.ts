@@ -45,13 +45,9 @@ describe("TranslationService", () => {
       const key = "test.key";
       const options = { lang: "fr" };
 
-      mockI18nService.translate.mockRejectedValue(
-        new Error("Translation failed"),
-      );
+      mockI18nService.translate.mockRejectedValue(new Error("Translation failed"));
 
-      await expect(service.translate(key, options)).rejects.toThrow(
-        "Erreur de traduction",
-      );
+      await expect(service.translate(key, options)).rejects.toThrow("Erreur de traduction");
       expect(mockI18nService.translate).toHaveBeenCalledWith(key, options);
     });
 

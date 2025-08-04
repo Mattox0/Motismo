@@ -3,8 +3,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useTranslation } from 'react-i18next';
 
-import { CreateQuizForm } from '../CreateQuizForm';
 import { IQuizzType } from '@/types/model/IQuizzType';
+
+import { CreateQuizForm } from '../CreateQuizForm';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -86,4 +87,4 @@ describe('CreateQuizForm component', () => {
     expect(fileInput).toHaveAttribute('type', 'file');
     expect(fileInput).toHaveAttribute('accept', 'image/jpeg,image/png,image/gif,image/jpg');
   });
-}); 
+});

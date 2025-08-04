@@ -1,3 +1,5 @@
+import { TFunction } from 'i18next';
+
 import { IQuestionType } from '@/types/QuestionType';
 
 import {
@@ -7,7 +9,6 @@ import {
   isBooleanQuestion,
   getQuestionTypeOptions,
 } from '../questionTypes';
-import { TFunction } from 'i18next';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -89,4 +90,4 @@ describe('questionTypes', () => {
       expect(values).toContain(IQuestionType.MATCHING);
     });
   });
-}); 
+});

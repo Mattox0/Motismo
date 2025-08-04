@@ -98,9 +98,7 @@ describe("ParseFilesPipe", () => {
     } as Express.Multer.File;
 
     await expect(pipe.transform(mockFile)).rejects.toThrow(HttpException);
-    expect(mockTranslationService.translate).toHaveBeenCalledWith(
-      "error.EXTENSION_NOT_ALLOWED",
-    );
+    expect(mockTranslationService.translate).toHaveBeenCalledWith("error.EXTENSION_NOT_ALLOWED");
   });
 
   it("should handle uppercase extensions", async () => {
@@ -129,8 +127,6 @@ describe("ParseFilesPipe", () => {
     } as Express.Multer.File;
 
     await expect(pipe.transform(mockFile)).rejects.toThrow(HttpException);
-    expect(mockTranslationService.translate).toHaveBeenCalledWith(
-      "error.EXTENSION_NOT_ALLOWED",
-    );
+    expect(mockTranslationService.translate).toHaveBeenCalledWith("error.EXTENSION_NOT_ALLOWED");
   });
 });

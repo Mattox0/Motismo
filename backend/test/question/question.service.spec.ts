@@ -106,7 +106,7 @@ describe("QuestionService", () => {
 
       mockQuestionRepository.find.mockResolvedValue(mockQuestions);
 
-      const result = await service['getMaxOrder']("quizz-id");
+      const result = await service["getMaxOrder"]("quizz-id");
 
       expect(mockQuestionRepository.find).toHaveBeenCalledWith({
         where: { quizz: { id: "quizz-id" } },
@@ -118,7 +118,7 @@ describe("QuestionService", () => {
     it("should return 0 if no questions", async () => {
       mockQuestionRepository.find.mockResolvedValue([]);
 
-      const result = await service['getMaxOrder']("quizz-id");
+      const result = await service["getMaxOrder"]("quizz-id");
 
       expect(result).toBe(0);
     });
@@ -134,7 +134,7 @@ describe("QuestionService", () => {
 
       mockQuestionRepository.find.mockResolvedValue(mockQuestions);
 
-      await service['normalizeOrders']("quizz-id");
+      await service["normalizeOrders"]("quizz-id");
 
       expect(mockQuestionRepository.update).toHaveBeenCalledWith("q2", { order: 2 });
       expect(mockQuestionRepository.update).toHaveBeenCalledWith("q3", { order: 3 });
@@ -149,7 +149,7 @@ describe("QuestionService", () => {
 
       mockQuestionRepository.find.mockResolvedValue(mockQuestions);
 
-      await service['normalizeOrders']("quizz-id");
+      await service["normalizeOrders"]("quizz-id");
 
       expect(mockQuestionRepository.update).not.toHaveBeenCalled();
     });
@@ -159,10 +159,10 @@ describe("QuestionService", () => {
     const mockQuizz = { id: "quizz-id" };
 
     beforeEach(() => {
-      jest.spyOn(service as any, 'getMaxOrder').mockResolvedValue(2);
-      jest.spyOn(service as any, 'reorderQuestions').mockResolvedValue(undefined);
-      jest.spyOn(service as any, 'normalizeOrders').mockResolvedValue(undefined);
-      jest.spyOn(service as any, 'createChoiceQuestion').mockResolvedValue(undefined);
+      jest.spyOn(service as any, "getMaxOrder").mockResolvedValue(2);
+      jest.spyOn(service as any, "reorderQuestions").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "normalizeOrders").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "createChoiceQuestion").mockResolvedValue(undefined);
     });
 
     it("should create choice question", async () => {
@@ -178,7 +178,7 @@ describe("QuestionService", () => {
 
       await service.createQuestion(mockQuizz as any, createQuestionDto as any);
 
-      expect(service['createChoiceQuestion']).toHaveBeenCalledWith(mockQuizz, {
+      expect(service["createChoiceQuestion"]).toHaveBeenCalledWith(mockQuizz, {
         title: "Test Question",
         questionType: QuestionType.MULTIPLE_CHOICES,
         choices: createQuestionDto.choices,
@@ -193,12 +193,11 @@ describe("QuestionService", () => {
         choices: [],
       };
 
-      await expect(service.createQuestion(mockQuizz as any, createQuestionDto as any))
-        .rejects.toThrow(BadRequestException);
-
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "error.CHOICES_REQUIRED_FOR_CHOICE_QUESTIONS"
+      await expect(service.createQuestion(mockQuizz as any, createQuestionDto as any)).rejects.toThrow(
+        BadRequestException,
       );
+
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.CHOICES_REQUIRED_FOR_CHOICE_QUESTIONS");
     });
 
     it("should create word cloud question", async () => {
@@ -209,6 +208,7 @@ describe("QuestionService", () => {
       };
 
       const mockQuestion = { id: "new-question-id" };
+
       mockQuestionRepository.create.mockReturnValue(mockQuestion);
 
       await service.createQuestion(mockQuizz as any, createQuestionDto as any);
@@ -229,6 +229,7 @@ describe("QuestionService", () => {
       };
 
       const mockQuestion = { id: "new-question-id" };
+
       mockQuestionRepository.create.mockReturnValue(mockQuestion);
 
       await service.createQuestion(mockQuizz as any, createQuestionDto as any);
@@ -248,8 +249,9 @@ describe("QuestionService", () => {
         order: 0,
       };
 
-      await expect(service.createQuestion(mockQuizz as any, createQuestionDto as any))
-        .rejects.toThrow(BadRequestException);
+      await expect(service.createQuestion(mockQuizz as any, createQuestionDto as any)).rejects.toThrow(
+        BadRequestException,
+      );
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.INVALID_ORDER_VALUE");
     });
@@ -260,8 +262,9 @@ describe("QuestionService", () => {
         questionType: "UNSUPPORTED_TYPE" as any,
       };
 
-      await expect(service.createQuestion(mockQuizz as any, createQuestionDto as any))
-        .rejects.toThrow(BadRequestException);
+      await expect(service.createQuestion(mockQuizz as any, createQuestionDto as any)).rejects.toThrow(
+        BadRequestException,
+      );
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.UNSUPPORTED_QUESTION_TYPE");
     });
@@ -271,9 +274,9 @@ describe("QuestionService", () => {
     const mockQuizz = { id: "quizz-id" };
 
     beforeEach(() => {
-      jest.spyOn(service as any, 'getMaxOrder').mockResolvedValue(2);
-      jest.spyOn(service as any, 'reorderQuestions').mockResolvedValue(undefined);
-      jest.spyOn(service as any, 'normalizeOrders').mockResolvedValue(undefined);
+      jest.spyOn(service as any, "getMaxOrder").mockResolvedValue(2);
+      jest.spyOn(service as any, "reorderQuestions").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "normalizeOrders").mockResolvedValue(undefined);
     });
 
     it("should create choice question with choices", async () => {
@@ -288,6 +291,7 @@ describe("QuestionService", () => {
       };
 
       const mockQuestion = { id: "new-question-id" };
+
       mockChoiceQuestionRepository.create.mockReturnValue(mockQuestion);
       mockChoiceQuestionRepository.save.mockResolvedValue(mockQuestion);
 
@@ -304,7 +308,7 @@ describe("QuestionService", () => {
         order: 2,
       });
       expect(mockChoiceService.createChoice).toHaveBeenCalledTimes(2);
-      expect(service['normalizeOrders']).toHaveBeenCalledWith("quizz-id");
+      expect(service["normalizeOrders"]).toHaveBeenCalledWith("quizz-id");
     });
 
     it("should throw error for invalid order", async () => {
@@ -315,8 +319,9 @@ describe("QuestionService", () => {
         order: 5,
       };
 
-      await expect(service.createChoiceQuestion(mockQuizz as any, createChoiceQuestionDto as any))
-        .rejects.toThrow(BadRequestException);
+      await expect(service.createChoiceQuestion(mockQuizz as any, createChoiceQuestionDto as any)).rejects.toThrow(
+        BadRequestException,
+      );
 
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.INVALID_ORDER_VALUE");
     });
@@ -331,16 +336,16 @@ describe("QuestionService", () => {
     };
 
     beforeEach(() => {
-      jest.spyOn(service as any, 'getMaxOrder').mockResolvedValue(3);
-      jest.spyOn(service as any, 'reorderQuestions').mockResolvedValue(undefined);
-      jest.spyOn(service as any, 'normalizeOrders').mockResolvedValue(undefined);
-      jest.spyOn(service as any, 'updateChoiceQuestion').mockResolvedValue(undefined);
-      jest.spyOn(service as any, 'deleteUnusedImages').mockResolvedValue(undefined);
+      jest.spyOn(service as any, "getMaxOrder").mockResolvedValue(3);
+      jest.spyOn(service as any, "reorderQuestions").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "normalizeOrders").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "updateChoiceQuestion").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "deleteUnusedImages").mockResolvedValue(undefined);
     });
 
     it("should update choice question", async () => {
       const choiceQuestion = Object.assign(new ChoiceQuestion(), mockQuestion);
-      
+
       const updateQuestionDto = {
         title: "Updated Question",
         choices: [{ text: "New Choice", isCorrect: true }],
@@ -348,15 +353,11 @@ describe("QuestionService", () => {
 
       await service.updateQuestion(mockQuizz as any, choiceQuestion as any, updateQuestionDto as any);
 
-      expect(service['updateChoiceQuestion']).toHaveBeenCalledWith(
-        mockQuizz,
-        choiceQuestion,
-        {
-          title: "Updated Question",
-          questionType: QuestionType.MULTIPLE_CHOICES,
-          choices: updateQuestionDto.choices,
-        }
-      );
+      expect(service["updateChoiceQuestion"]).toHaveBeenCalledWith(mockQuizz, choiceQuestion, {
+        title: "Updated Question",
+        questionType: QuestionType.MULTIPLE_CHOICES,
+        choices: updateQuestionDto.choices,
+      });
     });
 
     it("should update non-choice question", async () => {
@@ -373,7 +374,7 @@ describe("QuestionService", () => {
 
       await service.updateQuestion(mockQuizz as any, nonChoiceQuestion as any, updateQuestionDto as any);
 
-      expect(service['reorderQuestions']).toHaveBeenCalledWith("quizz-id", 1, 2);
+      expect(service["reorderQuestions"]).toHaveBeenCalledWith("quizz-id", 1, 2);
       expect(mockQuestionRepository.update).toHaveBeenCalledWith("question-id", {
         title: "Updated Question",
         order: 1,
@@ -381,20 +382,21 @@ describe("QuestionService", () => {
     });
 
     it("should throw error for invalid order", async () => {
-      jest.spyOn(service as any, 'getMaxOrder').mockResolvedValue(3);
-      
+      jest.spyOn(service as any, "getMaxOrder").mockResolvedValue(3);
+
       const nonChoiceQuestion = {
         id: "question-id",
         questionType: QuestionType.WORD_CLOUD,
         order: 2,
       };
-      
+
       const updateQuestionDto = {
         order: 5,
       };
 
-      await expect(service.updateQuestion(mockQuizz as any, nonChoiceQuestion as any, updateQuestionDto as any))
-        .rejects.toThrow(BadRequestException);
+      await expect(
+        service.updateQuestion(mockQuizz as any, nonChoiceQuestion as any, updateQuestionDto as any),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it("should throw error for unsupported question type", async () => {
@@ -404,8 +406,9 @@ describe("QuestionService", () => {
         order: 2,
       };
 
-      await expect(service.updateQuestion(mockQuizz as any, unsupportedQuestion as any, {} as any))
-        .rejects.toThrow(BadRequestException);
+      await expect(service.updateQuestion(mockQuizz as any, unsupportedQuestion as any, {} as any)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -418,10 +421,10 @@ describe("QuestionService", () => {
     };
 
     beforeEach(() => {
-      jest.spyOn(service as any, 'getMaxOrder').mockResolvedValue(3);
-      jest.spyOn(service as any, 'reorderQuestions').mockResolvedValue(undefined);
-      jest.spyOn(service as any, 'normalizeOrders').mockResolvedValue(undefined);
-      jest.spyOn(service as any, 'deleteUnusedImages').mockResolvedValue(undefined);
+      jest.spyOn(service as any, "getMaxOrder").mockResolvedValue(3);
+      jest.spyOn(service as any, "reorderQuestions").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "normalizeOrders").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "deleteUnusedImages").mockResolvedValue(undefined);
     });
 
     it("should update choice question", async () => {
@@ -445,13 +448,13 @@ describe("QuestionService", () => {
 
       await service.updateChoiceQuestion(mockQuizz as any, mockQuestion as any, updateChoiceQuestionDto as any);
 
-      expect(service['reorderQuestions']).toHaveBeenCalledWith("quizz-id", 1, 2);
+      expect(service["reorderQuestions"]).toHaveBeenCalledWith("quizz-id", 1, 2);
     });
   });
 
   describe("deleteQuestion", () => {
     beforeEach(() => {
-      jest.spyOn(service as any, 'normalizeOrders').mockResolvedValue(undefined);
+      jest.spyOn(service as any, "normalizeOrders").mockResolvedValue(undefined);
     });
 
     it("should delete question and normalize orders", async () => {
@@ -465,7 +468,7 @@ describe("QuestionService", () => {
 
       expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith("image-url");
       expect(mockQuestionRepository.delete).toHaveBeenCalledWith("question-id");
-      expect(service['normalizeOrders']).toHaveBeenCalledWith("quizz-id");
+      expect(service["normalizeOrders"]).toHaveBeenCalledWith("quizz-id");
     });
 
     it("should not delete image if question has no image", async () => {
@@ -479,7 +482,7 @@ describe("QuestionService", () => {
 
       expect(mockFileUploadService.deleteFile).not.toHaveBeenCalled();
       expect(mockQuestionRepository.delete).toHaveBeenCalledWith("question-id");
-      expect(service['normalizeOrders']).toHaveBeenCalledWith("quizz-id");
+      expect(service["normalizeOrders"]).toHaveBeenCalledWith("quizz-id");
     });
   });
 
@@ -493,7 +496,7 @@ describe("QuestionService", () => {
         image: "new-image-url",
       };
 
-      await service['deleteUnusedImages'](mockQuestion as any, updateDto as any);
+      await service["deleteUnusedImages"](mockQuestion as any, updateDto as any);
 
       expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith("old-image-url");
     });
@@ -507,7 +510,7 @@ describe("QuestionService", () => {
         image: "same-image-url",
       };
 
-      await service['deleteUnusedImages'](mockQuestion as any, updateDto as any);
+      await service["deleteUnusedImages"](mockQuestion as any, updateDto as any);
 
       expect(mockFileUploadService.deleteFile).not.toHaveBeenCalled();
     });
@@ -519,7 +522,7 @@ describe("QuestionService", () => {
 
       const updateDto = {};
 
-      await service['deleteUnusedImages'](mockQuestion as any, updateDto as any);
+      await service["deleteUnusedImages"](mockQuestion as any, updateDto as any);
 
       expect(mockFileUploadService.deleteFile).not.toHaveBeenCalled();
     });

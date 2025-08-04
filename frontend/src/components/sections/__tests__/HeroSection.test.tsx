@@ -22,9 +22,7 @@ jest.mock('@/components/CallToAction', () => ({
       <h3>{title}</h3>
       <p>{description}</p>
       {input && <div data-testid="input-container">{input}</div>}
-      <div data-testid="button-container">
-        {button}
-      </div>
+      <div data-testid="button-container">{button}</div>
     </div>
   ),
 }));
@@ -43,7 +41,14 @@ jest.mock('@/components/forms/Button', () => ({
 }));
 
 jest.mock('@/components/forms/Input', () => {
-  return function MockInput({ label, placeholder, error, registration, maxLength, autoComplete }: any) {
+  return function MockInput({
+    label,
+    placeholder,
+    error,
+    registration,
+    maxLength,
+    autoComplete,
+  }: any) {
     return (
       <div>
         <label>{label}</label>
@@ -147,9 +152,9 @@ describe('HeroSection component', () => {
 
     const heroSection = screen.getByText('hero.title').closest('.hero');
     const ctaContainer = heroSection?.querySelector('.hero-ctas');
-    
+
     expect(ctaContainer).toBeInTheDocument();
     expect(screen.getByTestId('call-to-action-primary')).toBeInTheDocument();
     expect(screen.getByTestId('call-to-action-secondary')).toBeInTheDocument();
   });
-}); 
+});

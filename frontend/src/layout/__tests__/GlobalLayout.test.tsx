@@ -62,4 +62,4 @@ describe('GlobalLayout', () => {
     expect(screen.getByTestId('child1')).toBeInTheDocument();
     expect(screen.getByTestId('child2')).toBeInTheDocument();
   });
-}); 
+});

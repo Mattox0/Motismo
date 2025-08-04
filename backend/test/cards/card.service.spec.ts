@@ -33,11 +33,7 @@ interface IMockQueryBuilder {
 }
 
 interface ICardServicePrivate {
-  reorderCards: (
-    quizzId: string,
-    newOrder: number,
-    oldOrder?: number,
-  ) => Promise<void>;
+  reorderCards: (quizzId: string, newOrder: number, oldOrder?: number) => Promise<void>;
   getMaxOrder: (quizzId: string) => Promise<number>;
 }
 
@@ -152,12 +148,8 @@ describe("CardService", () => {
     it("should throw NotFoundException when card is not found", async () => {
       mockCardRepository.findOne = jest.fn().mockResolvedValue(null);
 
-      await expect(
-        service.getCard("quizz-id", "non-existent-id"),
-      ).rejects.toThrow(NotFoundException);
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "error.CARD_NOT_FOUND",
-      );
+      await expect(service.getCard("quizz-id", "non-existent-id")).rejects.toThrow(NotFoundException);
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.CARD_NOT_FOUND");
     });
   });
 
@@ -206,9 +198,7 @@ describe("CardService", () => {
       };
 
       mockCardRepository.find = jest.fn().mockResolvedValue(existingCards);
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
       await service.createCard(mockQuizz, createCardDto);
 
@@ -218,14 +208,8 @@ describe("CardService", () => {
           order: expect.any(Function) as () => string,
         }),
       );
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        '"card"."quizzId" = :quizzId',
-        { quizzId: mockQuizz.id },
-      );
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        "card.order >= :newOrder",
-        { newOrder: 1 },
-      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith('"card"."quizzId" = :quizzId', { quizzId: mockQuizz.id });
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("card.order >= :newOrder", { newOrder: 1 });
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
     });
 
@@ -236,12 +220,8 @@ describe("CardService", () => {
         order: -1,
       };
 
-      await expect(
-        service.createCard(mockQuizz, createCardDto),
-      ).rejects.toThrow(BadRequestException);
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "error.INVALID_ORDER_VALUE",
-      );
+      await expect(service.createCard(mockQuizz, createCardDto)).rejects.toThrow(BadRequestException);
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.INVALID_ORDER_VALUE");
     });
 
     it("should automatically set order to maxOrder + 1 when order is not specified", async () => {
@@ -263,9 +243,7 @@ describe("CardService", () => {
         },
       };
 
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
       const result = await service.createCard(mockQuizz, createCardDto);
 
@@ -286,11 +264,7 @@ describe("CardService", () => {
         versoText: "Updated Verso Text",
       };
 
-      const result = await service.updateCard(
-        mockQuizz,
-        mockCard,
-        updateCardDto,
-      );
+      const result = await service.updateCard(mockQuizz, mockCard, updateCardDto);
 
       expect(result).toEqual(mockCard);
       expect(mockCardRepository.createQueryBuilder).toHaveBeenCalled();
@@ -323,15 +297,9 @@ describe("CardService", () => {
       };
 
       mockCardRepository.find = jest.fn().mockResolvedValue(existingCards);
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
-      await service.updateCard(
-        mockQuizz,
-        { ...mockCard, order: 1 },
-        updateCardDto,
-      );
+      await service.updateCard(mockQuizz, { ...mockCard, order: 1 }, updateCardDto);
 
       expect(mockQueryBuilder.update).toHaveBeenCalled();
       expect(mockQueryBuilder.set).toHaveBeenCalledWith(
@@ -339,14 +307,11 @@ describe("CardService", () => {
           order: expect.any(Function) as () => string,
         }),
       );
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        '"card"."quizzId" = :quizzId',
-        { quizzId: mockQuizz.id },
-      );
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        "card.order > :oldOrder AND card.order <= :newOrder",
-        { oldOrder: 1, newOrder: 3 },
-      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith('"card"."quizzId" = :quizzId', { quizzId: mockQuizz.id });
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("card.order > :oldOrder AND card.order <= :newOrder", {
+        oldOrder: 1,
+        newOrder: 3,
+      });
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
     });
 
@@ -377,15 +342,9 @@ describe("CardService", () => {
       };
 
       mockCardRepository.find = jest.fn().mockResolvedValue(existingCards);
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
-      await service.updateCard(
-        mockQuizz,
-        { ...mockCard, order: 3 },
-        updateCardDto,
-      );
+      await service.updateCard(mockQuizz, { ...mockCard, order: 3 }, updateCardDto);
 
       expect(mockQueryBuilder.update).toHaveBeenCalled();
       expect(mockQueryBuilder.set).toHaveBeenCalledWith(
@@ -393,14 +352,11 @@ describe("CardService", () => {
           order: expect.any(Function) as () => string,
         }),
       );
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        '"card"."quizzId" = :quizzId',
-        { quizzId: mockQuizz.id },
-      );
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        "card.order >= :newOrder AND card.order < :oldOrder",
-        { oldOrder: 3, newOrder: 1 },
-      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith('"card"."quizzId" = :quizzId', { quizzId: mockQuizz.id });
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("card.order >= :newOrder AND card.order < :oldOrder", {
+        oldOrder: 3,
+        newOrder: 1,
+      });
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
     });
 
@@ -411,12 +367,8 @@ describe("CardService", () => {
         order: -1,
       };
 
-      await expect(
-        service.updateCard(mockQuizz, mockCard, updateCardDto),
-      ).rejects.toThrow(BadRequestException);
-      expect(mockTranslationService.translate).toHaveBeenCalledWith(
-        "error.INVALID_ORDER_VALUE",
-      );
+      await expect(service.updateCard(mockQuizz, mockCard, updateCardDto)).rejects.toThrow(BadRequestException);
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.INVALID_ORDER_VALUE");
     });
 
     it("should delete unused images when updating", async () => {
@@ -433,12 +385,8 @@ describe("CardService", () => {
 
       await service.updateCard(mockQuizz, cardWithImages, updateCardDto);
 
-      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(
-        "old-recto.jpg",
-      );
-      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(
-        "old-verso.jpg",
-      );
+      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith("old-recto.jpg");
+      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith("old-verso.jpg");
     });
   });
 
@@ -452,12 +400,8 @@ describe("CardService", () => {
 
       await service.delete(mockQuizz, cardWithImages);
 
-      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(
-        "recto.jpg",
-      );
-      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(
-        "verso.jpg",
-      );
+      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith("recto.jpg");
+      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith("verso.jpg");
       expect(mockCardRepository.delete).toHaveBeenCalledWith(cardWithImages.id);
     });
   });
@@ -481,39 +425,30 @@ describe("CardService", () => {
         },
       };
 
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
       const privateService = service as unknown as ICardServicePrivate;
 
       await privateService.reorderCards("quizz-id", 3, 1);
 
-      expect(mockCardRepository.createQueryBuilder).toHaveBeenCalledWith(
-        "card",
-      );
+      expect(mockCardRepository.createQueryBuilder).toHaveBeenCalledWith("card");
       expect(mockQueryBuilder.update).toHaveBeenCalledWith(Card);
 
       expect(mockQueryBuilder.set).toHaveBeenCalledWith({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         order: expect.any(Function),
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const setCallArgs = mockQueryBuilder.set.mock.calls[0][0] as ISetCallArgs;
       const orderFunction = setCallArgs.order;
 
       expect(orderFunction()).toBe("card.order + 1");
 
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        '"card"."quizzId" = :quizzId',
-        { quizzId: "quizz-id" },
-      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith('"card"."quizzId" = :quizzId', { quizzId: "quizz-id" });
 
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        "card.order > :oldOrder AND card.order <= :newOrder",
-        { oldOrder: 1, newOrder: 3 },
-      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("card.order > :oldOrder AND card.order <= :newOrder", {
+        oldOrder: 1,
+        newOrder: 3,
+      });
 
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
     });
@@ -536,23 +471,20 @@ describe("CardService", () => {
         },
       };
 
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
       const privateService = service as unknown as ICardServicePrivate;
 
       await privateService.reorderCards("quizz-id", 1, 3);
 
       expect(mockQueryBuilder.set).toHaveBeenCalledWith({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         order: expect.any(Function),
       });
 
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        "card.order >= :newOrder AND card.order < :oldOrder",
-        { oldOrder: 3, newOrder: 1 },
-      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("card.order >= :newOrder AND card.order < :oldOrder", {
+        oldOrder: 3,
+        newOrder: 1,
+      });
 
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
     });
@@ -575,18 +507,13 @@ describe("CardService", () => {
         },
       };
 
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
       const privateService = service as unknown as ICardServicePrivate;
 
       await privateService.reorderCards("quizz-id", 2);
 
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        "card.order >= :newOrder",
-        { newOrder: 2 },
-      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith("card.order >= :newOrder", { newOrder: 2 });
 
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
     });
@@ -600,26 +527,16 @@ describe("CardService", () => {
         getRawOne: jest.fn().mockResolvedValue({ maxOrder: 5 }),
       };
 
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
       const privateService = service as unknown as ICardServicePrivate;
       const result = await privateService.getMaxOrder("quizz-id");
 
       expect(result).toBe(5);
 
-      expect(mockCardRepository.createQueryBuilder).toHaveBeenCalledWith(
-        "card",
-      );
-      expect(mockQueryBuilder.select).toHaveBeenCalledWith(
-        "MAX(card.order)",
-        "maxOrder",
-      );
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        "card.quizz.id = :quizzId",
-        { quizzId: "quizz-id" },
-      );
+      expect(mockCardRepository.createQueryBuilder).toHaveBeenCalledWith("card");
+      expect(mockQueryBuilder.select).toHaveBeenCalledWith("MAX(card.order)", "maxOrder");
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith("card.quizz.id = :quizzId", { quizzId: "quizz-id" });
       expect(mockQueryBuilder.getRawOne).toHaveBeenCalled();
     });
 
@@ -630,9 +547,7 @@ describe("CardService", () => {
         getRawOne: jest.fn().mockResolvedValue(null),
       };
 
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
       const privateService = service as unknown as ICardServicePrivate;
       const result = await privateService.getMaxOrder("empty-quizz-id");
@@ -647,9 +562,7 @@ describe("CardService", () => {
         getRawOne: jest.fn().mockResolvedValue({ maxOrder: null }),
       };
 
-      mockCardRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
+      mockCardRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQueryBuilder);
 
       const privateService = service as unknown as ICardServicePrivate;
       const result = await privateService.getMaxOrder("quizz-id");

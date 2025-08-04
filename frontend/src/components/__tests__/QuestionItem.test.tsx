@@ -53,24 +53,24 @@ describe('QuestionItem', () => {
 
   it('renders question with correct title and order', () => {
     render(<QuestionItem question={mockQuestion} active={false} />);
-    
+
     expect(screen.getByText('Test Question')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
   });
 
   it('applies active class when active prop is true', () => {
     const { container } = render(<QuestionItem question={mockQuestion} active={true} />);
-    
+
     const questionItem = container.querySelector('.question-item');
     expect(questionItem).toHaveClass('question-item--active');
   });
 
   it('calls selectCurrentQuestion when clicked', () => {
     render(<QuestionItem question={mockQuestion} active={false} />);
-    
+
     const questionItem = screen.getByText('Test Question').closest('.question-item');
     fireEvent.click(questionItem!);
-    
+
     expect(mockSelectCurrentQuestion).toHaveBeenCalledWith('1');
   });
 });

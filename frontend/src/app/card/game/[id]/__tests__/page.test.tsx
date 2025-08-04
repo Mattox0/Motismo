@@ -23,28 +23,28 @@ jest.mock('@/providers/CardProvider', () => ({
 describe('CardGame', () => {
   it('renders the page with correct quiz ID', async () => {
     const params = { id: 'test-quiz-id' };
-    
+
     render(await CardGame({ params }));
-    
+
     expect(screen.getByTestId('card-game-page')).toBeInTheDocument();
     expect(screen.getByTestId('card-provider')).toHaveAttribute('data-quiz-id', 'test-quiz-id');
   });
 
   it('renders global layout', async () => {
     const params = { id: 'test-quiz-id' };
-    
+
     render(await CardGame({ params }));
-    
+
     expect(screen.getByTestId('global-layout')).toBeInTheDocument();
   });
 
   it('renders card provider with quiz ID', async () => {
     const params = { id: 'another-quiz-id' };
-    
+
     render(await CardGame({ params }));
-    
+
     const cardProvider = screen.getByTestId('card-provider');
     expect(cardProvider).toBeInTheDocument();
     expect(cardProvider).toHaveAttribute('data-quiz-id', 'another-quiz-id');
   });
-}); 
+});

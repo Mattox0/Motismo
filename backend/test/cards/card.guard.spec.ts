@@ -110,9 +110,7 @@ describe("CardGuard", () => {
     } as ExecutionContext;
 
     await expect(guard.canActivate(context)).rejects.toThrow(HttpException);
-    expect(mockTranslationService.translate).toHaveBeenCalledWith(
-      "error.ID_INVALID",
-    );
+    expect(mockTranslationService.translate).toHaveBeenCalledWith("error.ID_INVALID");
   });
 
   it("should throw HttpException when card is not found", async () => {
@@ -129,9 +127,7 @@ describe("CardGuard", () => {
     } as ExecutionContext;
 
     await expect(guard.canActivate(context)).rejects.toThrow(HttpException);
-    expect(mockTranslationService.translate).toHaveBeenCalledWith(
-      "error.CARD_NOT_FOUND",
-    );
+    expect(mockTranslationService.translate).toHaveBeenCalledWith("error.CARD_NOT_FOUND");
   });
 
   it("should throw HttpException when cardId is missing", async () => {
@@ -144,8 +140,6 @@ describe("CardGuard", () => {
     } as ExecutionContext;
 
     await expect(guard.canActivate(context)).rejects.toThrow(HttpException);
-    expect(mockTranslationService.translate).toHaveBeenCalledWith(
-      "error.ID_INVALID",
-    );
+    expect(mockTranslationService.translate).toHaveBeenCalledWith("error.ID_INVALID");
   });
 });

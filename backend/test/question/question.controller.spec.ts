@@ -20,7 +20,7 @@ describe("QuestionController", () => {
 
     controller = new QuestionController(
       mockQuestionService as QuestionService,
-      mockFileUploadService as FileUploadService
+      mockFileUploadService as FileUploadService,
     );
   });
 
@@ -62,21 +62,14 @@ describe("QuestionController", () => {
     it("should create a question without file", async () => {
       await controller.createQuestion(mockQuizz as any, mockCreateQuestionDto as any);
 
-      expect(mockQuestionService.createQuestion).toHaveBeenCalledWith(
-        mockQuizz,
-        mockCreateQuestionDto
-      );
+      expect(mockQuestionService.createQuestion).toHaveBeenCalledWith(mockQuizz, mockCreateQuestionDto);
       expect(mockFileUploadService.uploadFile).not.toHaveBeenCalled();
     });
 
     it("should create a question with file", async () => {
       const mockFile = { originalname: "test.jpg" } as Express.Multer.File;
 
-      await controller.createQuestion(
-        mockQuizz as any,
-        mockCreateQuestionDto as any,
-        mockFile
-      );
+      await controller.createQuestion(mockQuizz as any, mockCreateQuestionDto as any, mockFile);
 
       expect(mockFileUploadService.uploadFile).toHaveBeenCalledWith(mockFile);
       expect(mockFileUploadService.getFileUrl).toHaveBeenCalledWith("uploaded-file.jpg");
@@ -85,7 +78,7 @@ describe("QuestionController", () => {
         expect.objectContaining({
           ...mockCreateQuestionDto,
           image: "http://localhost/files/uploaded-file.jpg",
-        })
+        }),
       );
     });
   });

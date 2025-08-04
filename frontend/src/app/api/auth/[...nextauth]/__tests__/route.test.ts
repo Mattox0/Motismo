@@ -25,9 +25,9 @@ describe('NextAuth API Route', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Ensure required env vars are set
-    process.env.GOOGLE_CLIENT_ID     = 'test-google-client-id';
+    process.env.GOOGLE_CLIENT_ID = 'test-google-client-id';
     process.env.GOOGLE_CLIENT_SECRET = 'test-google-client-secret';
-    process.env.NEXT_PUBLIC_API_URL  = 'http://localhost:3001';
+    process.env.NEXT_PUBLIC_API_URL = 'http://localhost:3001';
   });
 
   it('exports GET and POST handlers as functions', () => {

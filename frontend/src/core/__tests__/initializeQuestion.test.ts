@@ -1,5 +1,6 @@
-import { initializeQuestion } from '../initializeQuestion';
 import { IQuestionType } from '@/types/QuestionType';
+
+import { initializeQuestion } from '../initializeQuestion';
 
 describe('initializeQuestion', () => {
   it('should return a FormData object', () => {
@@ -26,7 +27,7 @@ describe('initializeQuestion', () => {
     const result = initializeQuestion(IQuestionType.MULTIPLE_CHOICES);
     const choices = result.get('choices');
     expect(choices).toBeDefined();
-    
+
     if (choices) {
       const parsedChoices = JSON.parse(choices as string);
       expect(parsedChoices).toHaveLength(2);
@@ -70,4 +71,4 @@ describe('initializeQuestion', () => {
     const result2 = initializeQuestion();
     expect(result1).not.toBe(result2);
   });
-}); 
+});

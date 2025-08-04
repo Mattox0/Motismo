@@ -168,10 +168,10 @@ describe("GameUserService", () => {
 
       expect(mockQueryBuilder.update).toHaveBeenCalledWith(GameUser);
       expect(mockQueryBuilder.set).toHaveBeenCalledWith({ socketId: "new-socket-123" });
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        "id = :id and game.id = :game",
-        { id: "user-id", game: "game-id" }
-      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id and game.id = :game", {
+        id: "user-id",
+        game: "game-id",
+      });
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
     });
   });

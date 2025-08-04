@@ -137,9 +137,7 @@ describe("QuizzService", () => {
 
       mockUserService.findOneUser.mockResolvedValue(null);
 
-      await expect(service.create(createQuizzDto, "1")).rejects.toThrow(
-        HttpException,
-      );
+      await expect(service.create(createQuizzDto, "1")).rejects.toThrow(HttpException);
     });
   });
 
@@ -179,7 +177,7 @@ describe("QuizzService", () => {
       mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
       jest
         .spyOn(quizzRepo, "createQueryBuilder")
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+
         .mockImplementation(() => mockQueryBuilder as any);
 
       await service.update(existingQuizz, updatedQuizzDto);
@@ -230,7 +228,7 @@ describe("QuizzService", () => {
       mockQuizzRepository.findOne.mockResolvedValue(existingQuizz);
       jest
         .spyOn(quizzRepo, "createQueryBuilder")
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+
         .mockImplementation(() => mockQueryBuilder as any);
 
       mockFileUploadService.deleteFile.mockClear();
@@ -280,12 +278,10 @@ describe("QuizzService", () => {
       mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
       jest
         .spyOn(quizzRepo, "createQueryBuilder")
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+
         .mockImplementation(() => mockQueryBuilder as any);
 
-      await expect(
-        service.update(existingQuizz, updatedQuizzDto),
-      ).rejects.toThrow("error.QUIZZ_NOT_FOUND");
+      await expect(service.update(existingQuizz, updatedQuizzDto)).rejects.toThrow("error.QUIZZ_NOT_FOUND");
     });
   });
 
@@ -314,9 +310,7 @@ describe("QuizzService", () => {
 
       await service.delete(quizzId);
 
-      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(
-        existingQuizz.image,
-      );
+      expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(existingQuizz.image);
       expect(mockQuizzRepository.delete).toHaveBeenCalledWith(quizzId);
     });
 
@@ -354,9 +348,7 @@ describe("QuizzService", () => {
       mockQuizzRepository.findOne = jest.fn().mockResolvedValue(null);
       mockQuizzRepository.delete.mockClear();
 
-      await expect(service.delete(quizzId)).rejects.toThrow(
-        "error.QUIZZ_NOT_FOUND",
-      );
+      await expect(service.delete(quizzId)).rejects.toThrow("error.QUIZZ_NOT_FOUND");
       expect(mockQuizzRepository.delete).not.toHaveBeenCalled();
     });
   });

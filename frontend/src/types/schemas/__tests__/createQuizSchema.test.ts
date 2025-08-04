@@ -36,4 +36,4 @@ describe('createQuizSchema', () => {
       expect(result.error.issues[0].message).toBe('create_quiz.validation.image_type');
     }
   });
-}); 
+});

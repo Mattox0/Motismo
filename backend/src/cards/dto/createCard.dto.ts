@@ -20,8 +20,6 @@ export class CreateCardDto {
 
   @IsOptional()
   @IsNumber()
-  @Transform(({ value }: TransformFnParams) =>
-    value ? parseInt(value as string, 10) : undefined,
-  )
+  @Transform(({ value }: TransformFnParams) => (value ? parseInt(value as string, 10) : undefined))
   order?: number;
 }

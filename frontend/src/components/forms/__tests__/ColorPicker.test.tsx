@@ -2,8 +2,9 @@
 
 import { render, screen, fireEvent } from '@testing-library/react';
 
-import { ColorPicker } from '../ColorPicker';
 import { showToast } from '@/utils/toast';
+
+import { ColorPicker } from '../ColorPicker';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -52,9 +53,9 @@ describe('ColorPicker component', () => {
   it('should render color palette buttons', () => {
     render(<ColorPicker {...defaultProps} />);
 
-    const colorButtons = screen.getAllByRole('button').filter(button => 
-      button.style.backgroundColor
-    );
+    const colorButtons = screen
+      .getAllByRole('button')
+      .filter(button => button.style.backgroundColor);
     expect(colorButtons).toHaveLength(16);
   });
 
@@ -133,12 +134,12 @@ describe('ColorPicker component', () => {
   it('should update hex input when palette color is selected', () => {
     render(<ColorPicker {...defaultProps} />);
 
-    const colorButtons = screen.getAllByRole('button').filter(button => 
-      button.style.backgroundColor
-    );
-    
+    const colorButtons = screen
+      .getAllByRole('button')
+      .filter(button => button.style.backgroundColor);
+
     fireEvent.click(colorButtons[2]);
-    
+
     expect(defaultProps.setColor).toHaveBeenCalledWith('#9c27b0');
   });
-}); 
+});

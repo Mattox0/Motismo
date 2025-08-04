@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+
 import HowItWorks from '../HowItWorks';
 
 jest.mock('framer-motion', () => ({
@@ -35,18 +36,14 @@ describe('HowItWorks', () => {
 
   it('displays the main title and subtitle as headings', () => {
     render(<HowItWorks />);
-    expect(
-      screen.getByRole('heading', { level: 2 })
-    ).toHaveTextContent('howItWorks.title');
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('howItWorks.title');
 
-    expect(
-      screen.getByRole('heading', { level: 3 })
-    ).toHaveTextContent('howItWorks.subtitle');
+    expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('howItWorks.subtitle');
   });
 
   it('renders all three steps', () => {
     render(<HowItWorks />);
-    [1, 2, 3].forEach((n) => {
+    [1, 2, 3].forEach(n => {
       expect(screen.getByTestId(`step-${n}`)).toBeInTheDocument();
     });
   });

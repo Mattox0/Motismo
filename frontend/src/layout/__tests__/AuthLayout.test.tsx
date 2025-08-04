@@ -61,4 +61,4 @@ describe('AuthLayout', () => {
     expect(screen.getByText('Description')).toBeInTheDocument();
     expect(screen.getByText('Click me')).toBeInTheDocument();
   });
-}); 
+});

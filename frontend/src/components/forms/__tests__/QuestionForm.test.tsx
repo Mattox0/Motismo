@@ -1,6 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import QuestionForm from '../QuestionForm';
+
 import { IQuestionType } from '@/types/QuestionType';
+
+import QuestionForm from '../QuestionForm';
 
 jest.mock('react-hook-form', () => ({
   useForm: () => ({
@@ -11,10 +13,11 @@ jest.mock('react-hook-form', () => ({
     reset: jest.fn(),
     watch: jest.fn((field?: string) => {
       if (field === 'questionType') return IQuestionType.MULTIPLE_CHOICES;
-      if (field === 'choices') return [
-        { text: 'Choice 1', isCorrect: true },
-        { text: 'Choice 2', isCorrect: false },
-      ];
+      if (field === 'choices')
+        return [
+          { text: 'Choice 1', isCorrect: true },
+          { text: 'Choice 2', isCorrect: false },
+        ];
       return undefined;
     }),
     formState: { errors: {}, isSubmitting: false },
@@ -65,13 +68,8 @@ describe('QuestionForm', () => {
   });
 
   it('should render empty state when no initial data', () => {
-    render(
-      <QuestionForm 
-        onSubmit={mockOnSubmit} 
-        onDelete={mockOnDelete} 
-      />
-    );
-    
+    render(<QuestionForm onSubmit={mockOnSubmit} onDelete={mockOnDelete} />);
+
     expect(screen.getByText('Aucune question')).toBeInTheDocument();
     expect(screen.getByText('Ajoutez une question pour commencer')).toBeInTheDocument();
   });
@@ -81,37 +79,23 @@ describe('QuestionForm', () => {
       title: 'Test Question',
       questionType: IQuestionType.MULTIPLE_CHOICES,
     };
-    
+
     render(
-      <QuestionForm 
-        onSubmit={mockOnSubmit} 
-        onDelete={mockOnDelete}
-        initialData={initialData}
-      />
+      <QuestionForm onSubmit={mockOnSubmit} onDelete={mockOnDelete} initialData={initialData} />
     );
-    
+
     expect(screen.getByText('Aucune question')).toBeInTheDocument();
   });
 
   it('should handle form submission', async () => {
-    render(
-      <QuestionForm 
-        onSubmit={mockOnSubmit} 
-        onDelete={mockOnDelete} 
-      />
-    );
-    
+    render(<QuestionForm onSubmit={mockOnSubmit} onDelete={mockOnDelete} />);
+
     expect(screen.getByText('Aucune question')).toBeInTheDocument();
   });
 
   it('should handle delete action', () => {
-    render(
-      <QuestionForm 
-        onSubmit={mockOnSubmit} 
-        onDelete={mockOnDelete} 
-      />
-    );
-    
+    render(<QuestionForm onSubmit={mockOnSubmit} onDelete={mockOnDelete} />);
+
     expect(screen.getByText('Aucune question')).toBeInTheDocument();
   });
-}); 
+});

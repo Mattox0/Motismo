@@ -38,10 +38,7 @@ describe("AuthExceptionFilter", () => {
 
     const exception = new UnauthorizedException();
 
-    await authExceptionFilter.catch(
-      exception,
-      mockArgumentsHost as ArgumentsHost,
-    );
+    await authExceptionFilter.catch(exception, mockArgumentsHost as ArgumentsHost);
 
     expect(mockResponse.status).toHaveBeenCalledWith(401);
     expect(mockResponse.json).toHaveBeenCalledWith({

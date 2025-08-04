@@ -78,9 +78,7 @@ describe("AuthController", () => {
       };
 
       jest.spyOn(mockUserService, "findOneEmail").mockResolvedValue(mockUser);
-      jest
-        .spyOn(mockAuthService, "login")
-        .mockReturnValue({ accessToken: "test-token" });
+      jest.spyOn(mockAuthService, "login").mockReturnValue({ accessToken: "test-token" });
 
       const mockSend = jest.fn();
       const response: Partial<Response> = {
@@ -96,7 +94,7 @@ describe("AuthController", () => {
         "test-token",
         expect.objectContaining({ httpOnly: true }),
       );
-      expect(mockSend).toHaveBeenCalledWith({ accessToken: "test-token", id: mockUser.id, });
+      expect(mockSend).toHaveBeenCalledWith({ accessToken: "test-token", id: mockUser.id });
     });
 
     it("should throw NotFoundExeption for non-existent user", async () => {
@@ -112,12 +110,8 @@ describe("AuthController", () => {
         send: jest.fn(),
       } as unknown as Response;
 
-      await expect(authController.login(loginDto, response)).rejects.toThrow(
-        HttpException,
-      );
-      await expect(
-        authController.login(loginDto, response),
-      ).rejects.toMatchObject({
+      await expect(authController.login(loginDto, response)).rejects.toThrow(HttpException);
+      await expect(authController.login(loginDto, response)).rejects.toMatchObject({
         status: HttpStatus.BAD_REQUEST,
       });
     });
@@ -145,12 +139,8 @@ describe("AuthController", () => {
         send: jest.fn(),
       } as unknown as Response;
 
-      await expect(authController.login(loginDto, response)).rejects.toThrow(
-        HttpException,
-      );
-      await expect(
-        authController.login(loginDto, response),
-      ).rejects.toMatchObject({
+      await expect(authController.login(loginDto, response)).rejects.toThrow(HttpException);
+      await expect(authController.login(loginDto, response)).rejects.toMatchObject({
         status: HttpStatus.BAD_REQUEST,
       });
     });
@@ -172,12 +162,8 @@ describe("AuthController", () => {
         send: mockSend,
       } as unknown as Response;
 
-      await expect(
-        authController.register(registerDto, response),
-      ).rejects.toThrow(HttpException);
-      await expect(
-        authController.register(registerDto, response),
-      ).rejects.toMatchObject({
+      await expect(authController.register(registerDto, response)).rejects.toThrow(HttpException);
+      await expect(authController.register(registerDto, response)).rejects.toMatchObject({
         status: HttpStatus.CONFLICT,
       });
     });
@@ -198,12 +184,8 @@ describe("AuthController", () => {
         send: mockSend,
       } as unknown as Response;
 
-      await expect(
-        authController.register(registerDto, response),
-      ).rejects.toThrow(HttpException);
-      await expect(
-        authController.register(registerDto, response),
-      ).rejects.toMatchObject({
+      await expect(authController.register(registerDto, response)).rejects.toThrow(HttpException);
+      await expect(authController.register(registerDto, response)).rejects.toMatchObject({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
       });
     });

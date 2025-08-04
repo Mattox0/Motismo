@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-empty-function, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable no-empty-function */
 import { ExecutionContext } from "@nestjs/common";
 import { UserRequest } from "@/user/decorators/user.decorator";
 import { ROUTE_ARGS_METADATA } from "@nestjs/common/constants";

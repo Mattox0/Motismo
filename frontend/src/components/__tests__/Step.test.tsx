@@ -1,12 +1,13 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import Step, { IStep } from '../Step';
 
 jest.mock('framer-motion', () => ({
   motion: {
     div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    h4:  ({ children, ...props }: any) => <h4  {...props}>{children}</h4>,
-    p:   ({ children, ...props }: any) => <p   {...props}>{children}</p>,
+    h4: ({ children, ...props }: any) => <h4 {...props}>{children}</h4>,
+    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
   },
   useInView: () => true,
 }));
@@ -29,9 +30,7 @@ describe('Step', () => {
   it('applies correct CSS classes for even index', () => {
     render(<Step step={mockStep} index={0} />);
 
-    const stepElement = screen
-      .getByText('Test Step Title')
-      .closest('.step');
+    const stepElement = screen.getByText('Test Step Title').closest('.step');
     expect(stepElement).toBeInTheDocument();
     expect(stepElement).not.toHaveClass('step--reverse');
   });
@@ -39,9 +38,7 @@ describe('Step', () => {
   it('applies correct CSS classes for odd index', () => {
     render(<Step step={mockStep} index={1} />);
 
-    const stepElement = screen
-      .getByText('Test Step Title')
-      .closest('.step');
+    const stepElement = screen.getByText('Test Step Title').closest('.step');
     expect(stepElement).toBeInTheDocument();
     expect(stepElement).toHaveClass('step--reverse');
   });

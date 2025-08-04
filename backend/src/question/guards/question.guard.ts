@@ -1,10 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from "@nestjs/common";
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -22,16 +16,11 @@ export class QuestionGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context
-      .switchToHttp()
-      .getRequest<IRequestWithParamQuestion>();
+    const request = context.switchToHttp().getRequest<IRequestWithParamQuestion>();
     const { questionId } = request.params;
 
     if (!questionId || !uuidRegex.test(questionId)) {
-      throw new HttpException(
-        await this.translationsService.translate("error.ID_INVALID"),
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(await this.translationsService.translate("error.ID_INVALID"), HttpStatus.BAD_REQUEST);
     }
 
     const question = await this.questionRepository.findOne({

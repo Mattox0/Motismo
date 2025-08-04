@@ -63,9 +63,7 @@ describe("FileUploadService", () => {
 
       mockSend.mockRejectedValueOnce(new Error("Upload failed"));
 
-      await expect(service.uploadFile(mockFile)).rejects.toThrow(
-        "Upload failed",
-      );
+      await expect(service.uploadFile(mockFile)).rejects.toThrow("Upload failed");
     });
   });
 
@@ -100,9 +98,7 @@ describe("FileUploadService", () => {
     it("should throw an error if delete fails", async () => {
       mockSend.mockRejectedValueOnce(new Error("Delete failed"));
 
-      await expect(service.deleteFile("test-key")).rejects.toThrow(
-        "Delete failed",
-      );
+      await expect(service.deleteFile("test-key")).rejects.toThrow("Delete failed");
     });
   });
 

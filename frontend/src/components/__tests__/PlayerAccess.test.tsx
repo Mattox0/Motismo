@@ -1,7 +1,7 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import React from 'react';
 
 import { PlayerAccess } from '../PlayerAccess';
 

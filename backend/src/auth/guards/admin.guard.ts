@@ -1,8 +1,4 @@
-import {
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-} from "@nestjs/common";
+import { ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 
 import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
 import { TranslationService } from "@/translation/translation.service";
@@ -29,9 +25,7 @@ export class AdminGuard extends UserAuthGuard {
     const user = request.user;
 
     if (!user || user.role !== Role.Admin) {
-      throw new ForbiddenException(
-        await this.translationsService.translate("error.PERMISSION_DENIED"),
-      );
+      throw new ForbiddenException(await this.translationsService.translate("error.PERMISSION_DENIED"));
     }
 
     return true;
