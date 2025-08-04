@@ -2,7 +2,7 @@ import { CardPage } from '@/containers/CardPage';
 import { GlobalLayout } from '@/layout/GlobalLayout';
 import { CardProvider } from '@/providers/CardProvider';
 
-export default async function CardEditionPage({ params }: { params: { id: string } }) {
+export default async function CardEditionPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
     <GlobalLayout screened>

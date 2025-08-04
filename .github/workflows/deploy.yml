@@ -1,0 +1,101 @@
+name: CI & CD – Motismo
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  backend-tests:
+    name: 🧪 Tests Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache backend deps
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.json') }}
+
+      - name: Install, build & lint
+        working-directory: backend
+        run: |
+          npm ci
+          npm run build
+          npm run lint
+
+      - name: Run tests
+        working-directory: backend
+        run: npm run test -- --runInBand
+
+  frontend-tests:
+    name: 🧪 Tests Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache frontend deps
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-frontend-${{ hashFiles('frontend/package-lock.json') }}
+
+      - name: Install & lint
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run lint
+
+      - name: Run tests
+        working-directory: frontend
+        run: npm run test -- --ci --coverage=false
+
+  deploy:
+    name: 🚀 Deploy Préprod/Prod
+    runs-on: ubuntu-latest
+    needs:
+      - backend-tests
+      - frontend-tests
+    environment: production
+    if: >
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') &&
+      needs.backend-tests.result == 'success' &&
+      needs.frontend-tests.result == 'success'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host:     ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key:      ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "🚀 Branche: ${{ github.ref_name }}"
+            if [ "${{ github.ref_name }}" = "main" ]; then
+              bash /var/www/motismo/deploy.sh prod
+            elif [ "${{ github.ref_name }}" = "dev" ]; then
+              bash /var/www/motismo/deploy.sh preprod
+            else
+              echo "❌ Branche non configurée : ${{ github.ref_name }}"
+              exit 1
+            fi
