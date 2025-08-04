@@ -13,16 +13,6 @@ services:
     networks:
       - motismo
 
-  redis:
-    image: redis:6.0.5
-    restart: unless-stopped
-    ports:
-      - ${REDIS_PORT}:6379
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-    networks:
-      - motismo
-
   minio:
     image: minio/minio
     ports:
