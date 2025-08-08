@@ -36,7 +36,14 @@ jobs:
 
       - name: Run tests
         working-directory: backend
-        run: npm run test -- --runInBand
+        run: npm run test -- --runInBand --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: backend/coverage/lcov.info
+          flags: backend
+          name: backend-coverage
 
   frontend-tests:
     name: 🧪 Tests Frontend
@@ -64,7 +71,14 @@ jobs:
 
       - name: Run tests
         working-directory: frontend
-        run: npm run test -- --ci --coverage=false
+        run: npm run test -- --ci --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
 
   deploy:
     name: 🚀 Deploy Préprod/Prod
