@@ -18,7 +18,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/jest/bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org matteo-ferreira --project motismo-backend ./dist && SENTRY_AUTH_TOKEN=$SENTRY_BACKEND_AUTH_TOKEN sentry-cli sourcemaps upload --org matteo-ferreira --project motismo-backend ./dist"
   },
   "engines": {
     "npm": ">=10.0.0",
@@ -37,6 +38,8 @@
     "@nestjs/swagger": "^11.0.4",
     "@nestjs/typeorm": "^11.0.0",
     "@nestjs/websockets": "^11.1.5",
+    "@sentry/cli": "^2.51.1",
+    "@sentry/nestjs": "^10.3.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",

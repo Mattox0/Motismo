@@ -17,9 +17,12 @@ import { ChoiceModule } from "./choice/choice.module";
 import { GameModule } from "./game/game.module";
 import { GameUserModule } from "./gameUser/gameUser.module";
 import { RoomWebsocketGateway } from "./game/websocket/game.websocket";
+import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
+import { APP_FILTER } from "@nestjs/core";
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [".env.local", ".env"],
@@ -66,6 +69,13 @@ import { RoomWebsocketGateway } from "./game/websocket/game.websocket";
     GameUserModule,
   ],
   controllers: [],
-  providers: [TranslationService, RoomWebsocketGateway],
+  providers: [
+    TranslationService,
+    RoomWebsocketGateway,
+    {
+      provide: APP_FILTER,
+      useClass: SentryGlobalFilter,
+    },
+  ],
 })
 export class AppModule {}

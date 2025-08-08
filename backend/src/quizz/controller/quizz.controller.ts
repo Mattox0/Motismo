@@ -47,6 +47,11 @@ export class QuizzController {
     @Inject(ParseFilesPipe) private readonly parseFilesPipe: ParseFilesPipe,
   ) {}
 
+  @Get("/debug-sentry")
+  getError() {
+    throw new Error("My first Sentry error!");
+  }
+
   @Get("")
   @UseGuards(UserAuthGuard)
   @ApiOperation({ summary: "Returns all user quizzies" })
