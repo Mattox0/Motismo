@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from "@nestjs/typeorm";
-import { AcceptLanguageResolver, I18nModule, QueryResolver } from "nestjs-i18n";
+import { AcceptLanguageResolver, I18nModule, I18nValidationExceptionFilter, QueryResolver } from "nestjs-i18n";
 import * as path from "node:path";
 import { UsersModule } from "@/user/user.module";
 import { AuthModule } from "@/auth/auth.module";
@@ -17,9 +17,13 @@ import { ChoiceModule } from "./choice/choice.module";
 import { GameModule } from "./game/game.module";
 import { GameUserModule } from "./gameUser/gameUser.module";
 import { RoomWebsocketGateway } from "./game/websocket/game.websocket";
+import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
+import { APP_FILTER } from "@nestjs/core";
+import { HealthModule } from "./health/health.module";
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [".env.local", ".env"],
@@ -64,8 +68,17 @@ import { RoomWebsocketGateway } from "./game/websocket/game.websocket";
     ChoiceModule,
     GameModule,
     GameUserModule,
+    HealthModule,
   ],
   controllers: [],
-  providers: [TranslationService, RoomWebsocketGateway],
+  providers: [
+    TranslationService,
+    RoomWebsocketGateway,
+    { provide: APP_FILTER, useClass: SentryGlobalFilter },
+    {
+      provide: APP_FILTER,
+      useFactory: () => new I18nValidationExceptionFilter({ detailedErrors: false }),
+    },
+  ],
 })
 export class AppModule {}
