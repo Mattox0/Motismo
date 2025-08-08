@@ -1,8 +1,9 @@
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as cookieParser from "cookie-parser";
-import { I18nValidationExceptionFilter, I18nValidationPipe } from "nestjs-i18n";
+import { I18nValidationPipe } from "nestjs-i18n";
 import { AppModule } from "@/app.module";
+import "./instrument";
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -27,11 +28,6 @@ export async function bootstrap() {
   app.useGlobalPipes(
     new I18nValidationPipe({
       whitelist: true,
-    }),
-  );
-  app.useGlobalFilters(
-    new I18nValidationExceptionFilter({
-      detailedErrors: false,
     }),
   );
 

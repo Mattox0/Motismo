@@ -12,6 +12,8 @@ jobs:
   backend-tests:
     name: 🧪 Tests Backend
     runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_BACKEND_AUTH_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
