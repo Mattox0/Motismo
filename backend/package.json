@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/jest/bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org matteo-ferreira --project motismo-backend ./dist && sentry-cli sourcemaps upload --org matteo-ferreira --project motismo-backend ./dist --auth-token $SENTRY_AUTH_TOKEN"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org matteo-ferreira --project motismo-backend ./dist && sentry-cli sourcemaps upload --org matteo-ferreira --project motismo-backend ./dist"
   },
   "engines": {
     "npm": ">=10.0.0",
