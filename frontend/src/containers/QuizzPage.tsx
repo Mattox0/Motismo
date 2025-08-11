@@ -1,7 +1,8 @@
 'use client';
 
+import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from 'next/navigation';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import QuestionForm, { QuestionFormData } from '@/components/forms/QuestionForm';
@@ -22,6 +23,7 @@ export const QuizzPage: FC<IQuizzPageProps> = ({ quizzId }) => {
   const { isLoading, isAuthor, currentQuestion, setCurrentQuestion } = useQuizz();
   const [updateQuestion] = useUpdateQuestionMutation();
   const [deleteQuestion] = useDeleteQuestionMutation();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const router = useRouter();
 
   const submit = async (data: QuestionFormData) => {
@@ -65,6 +67,10 @@ export const QuizzPage: FC<IQuizzPageProps> = ({ quizzId }) => {
     await deleteQuestion({ quizzId: quizzId, questionId: currentQuestion?.id });
   };
 
+  const toggleMobileSidebar = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+  };
+
   if (isLoading) {
     return <SplashScreen />;
   }
@@ -82,7 +88,24 @@ export const QuizzPage: FC<IQuizzPageProps> = ({ quizzId }) => {
 
   return (
     <div className="quizz-page">
-      <QuestionSide quizzId={quizzId} />
+      <button
+        className="quizz-page__mobile-toggle"
+        onClick={toggleMobileSidebar}
+        aria-label={t('quiz.toggleSidebar')}
+      >
+        <MenuIcon />
+      </button>
+
+      {isMobileSidebarOpen && (
+        <div className="quizz-page__mobile-overlay" onClick={toggleMobileSidebar} />
+      )}
+
+      <QuestionSide
+        quizzId={quizzId}
+        onCloseMobile={toggleMobileSidebar}
+        isMobileOpen={isMobileSidebarOpen}
+      />
+
       <QuestionForm onSubmit={submit} onDelete={onDelete} />
     </div>
   );

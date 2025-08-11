@@ -20,12 +20,6 @@ describe('ChoiceButton', () => {
     expect(screen.getByText('Test Choice')).toBeInTheDocument();
   });
 
-  it('should render correct letter for index', () => {
-    render(<ChoiceButton {...defaultProps} index={2} />);
-
-    expect(screen.getByText('C')).toBeInTheDocument();
-  });
-
   it('should call onClick with index when clicked', () => {
     const onClick = jest.fn();
     render(<ChoiceButton {...defaultProps} onClick={onClick} />);

@@ -1,4 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import QuizIcon from '@mui/icons-material/Quiz';
 import { FC, useState } from 'react';
@@ -14,9 +15,11 @@ import { showToast } from '@/utils/toast';
 
 interface IQuestionSideProps {
   quizzId: string;
+  onCloseMobile?: () => void;
+  isMobileOpen?: boolean;
 }
 
-export const QuestionSide: FC<IQuestionSideProps> = ({ quizzId }) => {
+export const QuestionSide: FC<IQuestionSideProps> = ({ quizzId, onCloseMobile, isMobileOpen }) => {
   const { t } = useTranslation();
   const { quizz, currentQuestion } = useQuizz();
   const [addQuestion] = useAddQuestionMutation();
@@ -64,7 +67,17 @@ export const QuestionSide: FC<IQuestionSideProps> = ({ quizzId }) => {
   const canLaunchQuiz = quizz && quizz.questions && quizz.questions.length > 0;
 
   return (
-    <div className="question-side">
+    <div className={`question-side ${isMobileOpen ? 'question-side--mobile-open' : ''}`}>
+      {onCloseMobile && (
+        <button
+          className="question-side__mobile-close-btn"
+          onClick={onCloseMobile}
+          aria-label={t('quiz.closeSidebar')}
+        >
+          <CloseIcon />
+        </button>
+      )}
+
       <div className="question-side__content">
         <div className="question-side__questions">
           {quizz?.questions && quizz.questions.length > 0 ? (

@@ -221,6 +221,9 @@
     "noQuestionsDesc": "Ajoutez votre première question pour commencer",
     "launchButton": "Lancer le Quiz",
     "launching": "Lancement...",
+    "questions": "Questions",
+    "toggleSidebar": "Ouvrir la liste des questions",
+    "closeSidebar": "Fermer la liste des questions",
     "launch": {
       "success": "Quiz lancé avec succès !",
       "error": "Erreur lors du lancement du quiz",
