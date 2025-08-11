@@ -159,6 +159,9 @@
     "noQuestionsDesc": "Add your first question to get started",
     "launchButton": "Launch Quiz",
     "launching": "Launching...",
+    "questions": "Questions",
+    "toggleSidebar": "Open questions list",
+    "closeSidebar": "Close questions list",
     "launch": {
       "success": "Quiz launched successfully!",
       "error": "Error launching quiz",
