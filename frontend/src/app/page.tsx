@@ -7,7 +7,6 @@ import { GlobalLayout } from '@/layout/GlobalLayout';
 export default function Home() {
   return (
     <GlobalLayout>
-      <p>Hello World</p>
       <HeroSection />
       <FonctionalitySection />
       <HowItWorks />
