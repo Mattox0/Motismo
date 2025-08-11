@@ -52,8 +52,8 @@ export const QuestionChoicePlayer: FC<IQuestionChoicePlayerProps> = ({
       const choiceIds = selectedChoices.map(index => question.choices?.[index].id);
 
       const answerData = {
-        type: IQuestionType.UNIQUE_CHOICES,
-        answer: isMultipleChoice ? choiceIds[0] : choiceIds,
+        type: question.questionType,
+        answer: isMultipleChoice ? choiceIds : choiceIds[0],
       };
 
       socket?.emit(IWebsocketEvent.ANSWER, answerData);

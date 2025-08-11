@@ -237,7 +237,10 @@ export class GameService {
     const correctChoices = game.currentQuestion.choices.filter((choice) => choice.isCorrect);
     const correctChoiceIds = correctChoices.map((choice) => choice.id);
 
-    const isCorrect = answer.length === correctChoiceIds.length && answer.every((id) => correctChoiceIds.includes(id));
+    const isCorrect =
+      answer.length === correctChoiceIds.length &&
+      answer.every((id) => correctChoiceIds.includes(id)) &&
+      correctChoiceIds.every((id) => answer.includes(id));
 
     if (isCorrect) {
       const points = 100;
