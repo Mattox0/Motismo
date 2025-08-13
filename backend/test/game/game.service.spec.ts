@@ -194,7 +194,9 @@ describe("GameService", () => {
 
       const result = await service.getGame(mockSocket as any);
 
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith("game.code = :code", { code: "ABCDEF" });
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith("game.code = :code", {
+        code: "ABCDEF",
+      });
       expect(result).toEqual(mockGame);
     });
 
@@ -365,7 +367,10 @@ describe("GameService", () => {
       };
 
       await expect(
-        service.submitAnswer(socketWithoutUser as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+        service.submitAnswer(socketWithoutUser as any, {
+          type: QuestionType.UNIQUE_CHOICES,
+          answer: "choice-1",
+        }),
       ).rejects.toThrow();
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.USER_NOT_FOUND");
     });
@@ -374,7 +379,10 @@ describe("GameService", () => {
       mockGameUserService.getOneUser.mockResolvedValue(null);
 
       await expect(
-        service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+        service.submitAnswer(mockSocket as any, {
+          type: QuestionType.UNIQUE_CHOICES,
+          answer: "choice-1",
+        }),
       ).rejects.toThrow();
     });
 
@@ -384,7 +392,10 @@ describe("GameService", () => {
       } as any);
 
       await expect(
-        service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+        service.submitAnswer(mockSocket as any, {
+          type: QuestionType.UNIQUE_CHOICES,
+          answer: "choice-1",
+        }),
       ).rejects.toThrow();
     });
 
@@ -395,7 +406,10 @@ describe("GameService", () => {
       });
 
       await expect(
-        service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+        service.submitAnswer(mockSocket as any, {
+          type: QuestionType.UNIQUE_CHOICES,
+          answer: "choice-1",
+        }),
       ).rejects.toThrow();
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.AUTHOR_CANNOT_ANSWER");
     });
@@ -404,7 +418,10 @@ describe("GameService", () => {
       mockGameResponseService.hasUserAnswered.mockResolvedValue(true);
 
       await expect(
-        service.submitAnswer(mockSocket as any, { type: QuestionType.UNIQUE_CHOICES, answer: "choice-1" }),
+        service.submitAnswer(mockSocket as any, {
+          type: QuestionType.UNIQUE_CHOICES,
+          answer: "choice-1",
+        }),
       ).rejects.toThrow();
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.ALREADY_ANSWERED");
     });
@@ -435,7 +452,10 @@ describe("GameService", () => {
 
     it("should throw error for invalid question type", async () => {
       await expect(
-        service.submitAnswer(mockSocket as any, { type: "INVALID_TYPE" as any, answer: "choice-1" }),
+        service.submitAnswer(mockSocket as any, {
+          type: "INVALID_TYPE" as any,
+          answer: "choice-1",
+        }),
       ).rejects.toThrow();
       expect(mockTranslationService.translate).toHaveBeenCalledWith("error.INVALID_QUESTION_TYPE");
     });

@@ -136,8 +136,12 @@ describe("QuestionService", () => {
 
       await service["normalizeOrders"]("quizz-id");
 
-      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q2", { order: 2 });
-      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q3", { order: 3 });
+      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q2", {
+        order: 2,
+      });
+      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q3", {
+        order: 3,
+      });
     });
 
     it("should not update if orders are already normalized", async () => {
