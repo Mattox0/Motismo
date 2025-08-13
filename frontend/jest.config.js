@@ -17,6 +17,8 @@ const customJestConfig = {
     '!src/**/*.stories.{ts,tsx}',
     '!src/**/*.test.{ts,tsx}',
     '!src/**/*.spec.{ts,tsx}',
+    '!src/instrumentation.ts',
+    '!src/instrumentation-client.ts',
   ],
   coverageThreshold: {
     global: {

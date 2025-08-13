@@ -167,7 +167,9 @@ describe("GameUserService", () => {
       await service.updateSocketId(mockSocket as any, mockGame as any);
 
       expect(mockQueryBuilder.update).toHaveBeenCalledWith(GameUser);
-      expect(mockQueryBuilder.set).toHaveBeenCalledWith({ socketId: "new-socket-123" });
+      expect(mockQueryBuilder.set).toHaveBeenCalledWith({
+        socketId: "new-socket-123",
+      });
       expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id and game.id = :game", {
         id: "user-id",
         game: "game-id",
@@ -218,8 +220,12 @@ describe("GameUserService", () => {
       await service.addPoints("user-id", 100);
 
       expect(mockQueryBuilder.update).toHaveBeenCalledWith(GameUser);
-      expect(mockQueryBuilder.set).toHaveBeenCalledWith({ points: expect.any(Function) });
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id", { id: "user-id" });
+      expect(mockQueryBuilder.set).toHaveBeenCalledWith({
+        points: expect.any(Function),
+      });
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id", {
+        id: "user-id",
+      });
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
     });
 
@@ -235,7 +241,9 @@ describe("GameUserService", () => {
 
       await service.addPoints("user-id", -50);
 
-      expect(mockQueryBuilder.set).toHaveBeenCalledWith({ points: expect.any(Function) });
+      expect(mockQueryBuilder.set).toHaveBeenCalledWith({
+        points: expect.any(Function),
+      });
     });
   });
 

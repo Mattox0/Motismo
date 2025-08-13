@@ -68,20 +68,26 @@ export class QuestionService {
       if (newOrder > oldOrder) {
         for (const question of questions) {
           if (question.order > oldOrder && question.order <= newOrder) {
-            await this.questionRepository.update(question.id, { order: question.order - 1 });
+            await this.questionRepository.update(question.id, {
+              order: question.order - 1,
+            });
           }
         }
       } else {
         for (const question of questions) {
           if (question.order >= newOrder && question.order < oldOrder) {
-            await this.questionRepository.update(question.id, { order: question.order + 1 });
+            await this.questionRepository.update(question.id, {
+              order: question.order + 1,
+            });
           }
         }
       }
     } else {
       for (const question of questions) {
         if (question.order >= newOrder) {
-          await this.questionRepository.update(question.id, { order: question.order + 1 });
+          await this.questionRepository.update(question.id, {
+            order: question.order + 1,
+          });
         }
       }
     }

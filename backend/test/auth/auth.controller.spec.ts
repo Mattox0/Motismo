@@ -94,7 +94,10 @@ describe("AuthController", () => {
         "test-token",
         expect.objectContaining({ httpOnly: true }),
       );
-      expect(mockSend).toHaveBeenCalledWith({ accessToken: "test-token", id: mockUser.id });
+      expect(mockSend).toHaveBeenCalledWith({
+        accessToken: "test-token",
+        id: mockUser.id,
+      });
     });
 
     it("should throw NotFoundExeption for non-existent user", async () => {

@@ -48,7 +48,10 @@ export class GameUserService {
       .createQueryBuilder()
       .update(GameUser)
       .set({ socketId: socket.data.user.socketId })
-      .where("id = :id and game.id = :game", { id: socket.data.user.userId, game: game.id })
+      .where("id = :id and game.id = :game", {
+        id: socket.data.user.userId,
+        game: game.id,
+      })
       .execute();
   }
 

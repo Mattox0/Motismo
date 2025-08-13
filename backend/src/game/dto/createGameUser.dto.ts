@@ -7,7 +7,10 @@ export class CreateGameUserDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ description: "Avatar URL of the player", example: "https://api.dicebear.com/..." })
+  @ApiProperty({
+    description: "Avatar URL of the player",
+    example: "https://api.dicebear.com/...",
+  })
   @IsNotEmpty()
   @IsString()
   avatar: string;

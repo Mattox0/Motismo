@@ -6,7 +6,14 @@ module.exports = {
   transform: {
     "^.+\\.(t|j)s$": "ts-jest",
   },
-  collectCoverageFrom: ["src/**/*.{js,ts}", "!src/main.ts", "!src/app.module.ts", "!src/**/*.module.ts"],
+  collectCoverageFrom: [
+    "src/**/*.{js,ts}",
+    "!src/main.ts",
+    "!src/app.module.ts",
+    "!src/**/*.module.ts",
+    "!src/instrument.ts",
+    "!src/s3.config.ts",
+  ],
   testTimeout: 10000,
   forceExit: true,
   rootDir: ".",
