@@ -11,6 +11,8 @@ module.exports = {
     "!src/main.ts",
     "!src/app.module.ts",
     "!src/**/*.module.ts",
+    "!src/**/*.entity.ts",
+    "!src/**/**/*.entity.ts",
     "!src/instrument.ts",
     "!src/s3.config.ts",
   ],

@@ -230,4 +230,22 @@ describe('Navbar component', () => {
       .filter(el => el.className.includes('hamburger-line'));
     expect(hamburgerLines).toHaveLength(3);
   });
+
+  it('should close mobile menu when Dashboard link is clicked', () => {
+    (useAuth as jest.Mock).mockReturnValue({
+      session: null,
+      logout: mockLogout,
+    });
+
+    render(<Navbar />);
+
+    const hamburgerButton = screen.getByLabelText('Toggle menu');
+    const dashboardLink = screen.getByText('Dashboard');
+
+    fireEvent.click(hamburgerButton);
+    expect(screen.getByText('Accueil').closest('.navigation')).toHaveClass('open');
+
+    fireEvent.click(dashboardLink);
+    expect(screen.getByText('Accueil').closest('.navigation')).not.toHaveClass('open');
+  });
 });

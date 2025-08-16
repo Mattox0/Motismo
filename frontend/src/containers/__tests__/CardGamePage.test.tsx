@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -24,13 +24,15 @@ jest.mock('@/providers/CardProvider', () => ({
 
 jest.mock('@/components/CardFlip', () => ({
   __esModule: true,
-  default: ({ frontContent, backContent }: any) => (
-    <div data-testid="card-flip">
+  default: ({ frontContent, backContent, flipped, setFlipped }: any) => (
+    <div data-testid="card-flip" onClick={() => setFlipped(!flipped)}>
       <div>Front: {frontContent}</div>
       <div>Back: {backContent}</div>
+      <div>Flipped: {flipped ? 'Yes' : 'No'}</div>
     </div>
   ),
 }));
+
 jest.mock('@/components/forms/Button', () => ({
   Button: ({ children, onClick, disabled }: any) => (
     <button onClick={onClick} disabled={disabled}>
@@ -38,22 +40,30 @@ jest.mock('@/components/forms/Button', () => ({
     </button>
   ),
 }));
+
 jest.mock('../CustomErrorPage', () => ({
-  CustomErrorPage: ({ title }: any) => <div data-testid="error-page">{title}</div>,
+  CustomErrorPage: ({ title, onClick }: any) => (
+    <div data-testid="error-page">
+      <span>{title}</span>
+      <button onClick={onClick}>Error Button</button>
+    </div>
+  ),
 }));
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => key,
+    t: (key: string, fallback?: string) => fallback || key,
   }),
 }));
 
 describe('CardGamePage', () => {
   const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
   const mockUseCard = useCard as jest.MockedFunction<typeof useCard>;
+  const mockPush = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseRouter.mockReturnValue({ push: jest.fn() } as any);
+    mockUseRouter.mockReturnValue({ push: mockPush } as any);
   });
 
   it('shows loading state when isLoading is true', () => {
@@ -63,7 +73,6 @@ describe('CardGamePage', () => {
     } as any);
 
     const { container } = render(<CardGamePage />);
-    // .parent-loader should exist while loading
     expect(container.querySelector('.parent-loader')).toBeInTheDocument();
   });
 
@@ -76,6 +85,17 @@ describe('CardGamePage', () => {
     render(<CardGamePage />);
     expect(screen.getByTestId('error-page')).toBeInTheDocument();
     expect(screen.getByText('error.unauthorized.quizz')).toBeInTheDocument();
+  });
+
+  it('redirects home when error page button is clicked for non-card quiz', () => {
+    mockUseCard.mockReturnValue({
+      quizz: { quizzType: IQuizzType.QUESTIONS, title: 'Test Quiz' },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+    fireEvent.click(screen.getByText('Error Button'));
+    expect(mockPush).toHaveBeenCalledWith('/');
   });
 
   it('shows error page when no cards are available', () => {
@@ -91,6 +111,21 @@ describe('CardGamePage', () => {
     render(<CardGamePage />);
     expect(screen.getByTestId('error-page')).toBeInTheDocument();
     expect(screen.getByText('error.no.cards')).toBeInTheDocument();
+  });
+
+  it('redirects to profile when error page button is clicked for no cards', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+    fireEvent.click(screen.getByText('Error Button'));
+    expect(mockPush).toHaveBeenCalledWith('/profile');
   });
 
   it('renders card game with navigation when cards are available', () => {
@@ -110,8 +145,330 @@ describe('CardGamePage', () => {
 
     expect(screen.getByText('Test Cards')).toBeInTheDocument();
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Précédent' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Suivant' })).toBeInTheDocument();
+  });
 
-    expect(screen.getByRole('button', { name: 'previous' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'next' })).toBeInTheDocument();
+  it('handles navigation with previous and next buttons', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          { rectoText: 'Front 1', versoText: 'Back 1' },
+          { rectoText: 'Front 2', versoText: 'Back 2' },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    expect(screen.getByText('1 / 2')).toBeInTheDocument();
+    expect(screen.getByText('Front: Front 1')).toBeInTheDocument();
+
+    // Navigate to next card
+    fireEvent.click(screen.getByRole('button', { name: 'Suivant' }));
+    expect(screen.getByText('2 / 2')).toBeInTheDocument();
+    expect(screen.getByText('Front: Front 2')).toBeInTheDocument();
+
+    // Navigate back to previous card
+    fireEvent.click(screen.getByRole('button', { name: 'Précédent' }));
+    expect(screen.getByText('1 / 2')).toBeInTheDocument();
+    expect(screen.getByText('Front: Front 1')).toBeInTheDocument();
+  });
+
+  it('disables previous button on first card', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          { rectoText: 'Front 1', versoText: 'Back 1' },
+          { rectoText: 'Front 2', versoText: 'Back 2' },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    const prevButton = screen.getByRole('button', { name: 'Précédent' });
+    expect(prevButton).toBeDisabled();
+  });
+
+  it('disables next button on last card', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          { rectoText: 'Front 1', versoText: 'Back 1' },
+          { rectoText: 'Front 2', versoText: 'Back 2' },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Suivant' }));
+
+    const nextButton = screen.getByRole('button', { name: 'Suivant' });
+    expect(nextButton).toBeDisabled();
+  });
+
+  it('handles card flipping', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [{ rectoText: 'Front 1', versoText: 'Back 1' }],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    const cardFlip = screen.getByTestId('card-flip');
+    expect(screen.getByText('Flipped: No')).toBeInTheDocument();
+
+    fireEvent.click(cardFlip);
+    expect(screen.getByText('Flipped: Yes')).toBeInTheDocument();
+
+    fireEvent.click(cardFlip);
+    expect(screen.getByText('Flipped: No')).toBeInTheDocument();
+  });
+
+  it('handles keyboard navigation', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          { rectoText: 'Front 1', versoText: 'Back 1' },
+          { rectoText: 'Front 2', versoText: 'Back 2' },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    // Test ArrowRight navigation
+    fireEvent.keyDown(window, { key: 'ArrowRight' });
+    expect(screen.getByText('2 / 2')).toBeInTheDocument();
+
+    // Test ArrowLeft navigation
+    fireEvent.keyDown(window, { key: 'ArrowLeft' });
+    expect(screen.getByText('1 / 2')).toBeInTheDocument();
+
+    // Test 'd' key navigation
+    fireEvent.keyDown(window, { key: 'd' });
+    expect(screen.getByText('2 / 2')).toBeInTheDocument();
+
+    // Test 'q' key navigation
+    fireEvent.keyDown(window, { key: 'q' });
+    expect(screen.getByText('1 / 2')).toBeInTheDocument();
+
+    // Test space key for flipping
+    fireEvent.keyDown(window, { key: ' ' });
+    expect(screen.getByText('Flipped: Yes')).toBeInTheDocument();
+
+    // Test Enter key for flipping
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(screen.getByText('Flipped: No')).toBeInTheDocument();
+  });
+
+  it('handles image content correctly', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          {
+            rectoImage: 'http://example.com/front.jpg',
+            versoImage: 'http://example.com/back.jpg',
+          },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    expect(screen.getByText('Front: http://example.com/front.jpg')).toBeInTheDocument();
+    expect(screen.getByText('Back: http://example.com/back.jpg')).toBeInTheDocument();
+  });
+
+  it('handles mixed content (image and text)', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          {
+            rectoImage: 'http://example.com/front.jpg',
+            versoText: 'Back Text',
+          },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    expect(screen.getByText('Front: http://example.com/front.jpg')).toBeInTheDocument();
+    expect(screen.getByText('Back: Back Text')).toBeInTheDocument();
+  });
+
+  it('handles image content with different file extensions', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          {
+            rectoImage: 'image.jpeg',
+            versoImage: 'image.png',
+          },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    expect(screen.getByText('Front: image.jpeg')).toBeInTheDocument();
+    expect(screen.getByText('Back: image.png')).toBeInTheDocument();
+  });
+
+  it('handles image content with webp extension', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          {
+            rectoImage: 'image.webp',
+            versoImage: 'image.gif',
+          },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    expect(screen.getByText('Front: image.webp')).toBeInTheDocument();
+    expect(screen.getByText('Back: image.gif')).toBeInTheDocument();
+  });
+
+  it('handles non-image content correctly', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          {
+            rectoImage: 'document.pdf',
+            versoImage: 'file.txt',
+          },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    expect(screen.getByText('Front: document.pdf')).toBeInTheDocument();
+    expect(screen.getByText('Back: file.txt')).toBeInTheDocument();
+  });
+
+  it('handles animation variants correctly', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          { rectoText: 'Front 1', versoText: 'Back 1' },
+          { rectoText: 'Front 2', versoText: 'Back 2' },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    expect(screen.getByText('Front: Front 1')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Suivant' }));
+    expect(screen.getByText('Front: Front 2')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Précédent' }));
+    expect(screen.getByText('Front: Front 1')).toBeInTheDocument();
+  });
+
+  it('handles empty content gracefully', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [{ rectoText: '', versoText: '' }],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    expect(screen.getByTestId('card-flip')).toBeInTheDocument();
+    expect(screen.getByText('Flipped: No')).toBeInTheDocument();
+  });
+
+  it('resets flip state when navigating to new card', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          { rectoText: 'Front 1', versoText: 'Back 1' },
+          { rectoText: 'Front 2', versoText: 'Back 2' },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    // Flip the card
+    const cardFlip = screen.getByTestId('card-flip');
+    fireEvent.click(cardFlip);
+    expect(screen.getByText('Flipped: Yes')).toBeInTheDocument();
+
+    // Navigate to next card
+    fireEvent.click(screen.getByRole('button', { name: 'Suivant' }));
+    expect(screen.getByText('Flipped: No')).toBeInTheDocument();
+  });
+
+  it('ignores repeated key presses', () => {
+    mockUseCard.mockReturnValue({
+      quizz: {
+        quizzType: IQuizzType.CARDS,
+        title: 'Test Cards',
+        cards: [
+          { rectoText: 'Front 1', versoText: 'Back 1' },
+          { rectoText: 'Front 2', versoText: 'Back 2' },
+        ],
+      },
+      isLoading: false,
+    } as any);
+
+    render(<CardGamePage />);
+
+    const event = new KeyboardEvent('keydown', { key: 'ArrowRight' });
+    Object.defineProperty(event, 'repeat', { value: true });
+
+    fireEvent(window, event);
+    expect(screen.getByText('1 / 2')).toBeInTheDocument(); // Should not navigate
   });
 });

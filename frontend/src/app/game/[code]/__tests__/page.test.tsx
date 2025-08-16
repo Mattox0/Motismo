@@ -1,4 +1,3 @@
-// src/app/game/[code]/page.test.tsx
 import { render, screen } from '@testing-library/react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -22,7 +21,6 @@ jest.mock('@/services/quiz.service', () => ({
   useGetQuizByCodeQuery: jest.fn(),
 }));
 
-// ESM mocks for all rendered components/providers
 jest.mock('@/components/PlayerAccess', () => ({
   __esModule: true,
   PlayerAccess: () => <div data-testid="player-access" />,
@@ -39,15 +37,18 @@ jest.mock('@/providers/GameProvider', () => ({
   __esModule: true,
   GameProvider: ({ children }: any) => <div data-testid="game-provider">{children}</div>,
 }));
+
+let lastPlayerProp: any = null;
 jest.mock('@/providers/SocketProvider', () => ({
   __esModule: true,
-  SocketProvider: ({ children }: any) => <div data-testid="socket-provider">{children}</div>,
+  SocketProvider: ({ children, player }: any) => {
+    lastPlayerProp = player;
+    return <div data-testid="socket-provider">{children}</div>;
+  },
 }));
 
-// Import after mocks
 import GamePageWrapper, { IPlayerData } from '../page';
 
-// Type assertion to fix JSX component error
 const GamePageWrapperComponent = GamePageWrapper as React.ComponentType<any>;
 
 describe('GamePageWrapper', () => {
@@ -59,6 +60,7 @@ describe('GamePageWrapper', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    lastPlayerProp = null;
     mockUseRouter.mockReturnValue({ push: mockPush } as any);
   });
 
@@ -129,7 +131,6 @@ describe('GamePageWrapper', () => {
     } as any);
     window.localStorage.getItem = jest.fn(() => null);
     render(<GamePageWrapperComponent />);
-    // author should be treated as player
     expect(screen.getByTestId('socket-provider')).toBeInTheDocument();
     expect(screen.getByTestId('game-page')).toHaveTextContent('abc:q1');
   });
@@ -164,5 +165,28 @@ describe('GamePageWrapper', () => {
     } as any);
     render(<GamePageWrapperComponent />);
     expect(screen.getByTestId('splash-screen')).toBeInTheDocument();
+  });
+
+  it('when user is the author and localStorage has a player, it uses session identity (name/externalId) and stored id/avatar', () => {
+    const quiz = { id: 'q1', author: { id: 'auth1' } };
+    const stored: IPlayerData = { id: 'pStored', avatar: 'storedAvatar', name: 'ShouldNotUseThis' };
+    mockUseParams.mockReturnValue({ code: 'roomcode' });
+    mockUseGetQuiz.mockReturnValue({ data: quiz, isLoading: false, error: null } as any);
+    mockUseSession.mockReturnValue({
+      data: { user: { id: 'auth1', name: 'AuthorName' } },
+      status: 'authenticated',
+    } as any);
+    window.localStorage.getItem = jest.fn(() => JSON.stringify(stored));
+
+    render(<GamePageWrapperComponent />);
+
+    expect(screen.getByTestId('socket-provider')).toBeInTheDocument();
+    expect(screen.getByTestId('game-page')).toHaveTextContent('roomcode:q1');
+    expect(lastPlayerProp).toEqual({
+      id: 'pStored',
+      avatar: 'storedAvatar',
+      name: 'AuthorName',
+      externalId: 'auth1',
+    });
   });
 });

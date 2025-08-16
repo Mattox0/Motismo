@@ -82,4 +82,49 @@ describe("QuestionController", () => {
       );
     });
   });
+
+  describe("updateQuestion", () => {
+    const mockQuizz = { id: "quizz-id" };
+    const mockQuestion = { id: "question-id" };
+    const mockUpdateQuestionDto = { title: "Updated Question" };
+
+    it("should update question without file", async () => {
+      (mockQuestionService as any).updateQuestion = jest.fn().mockResolvedValue(undefined);
+
+      await controller.updateQuestion(mockQuizz as any, mockQuestion as any, mockUpdateQuestionDto as any);
+
+      expect(mockQuestionService.updateQuestion).toHaveBeenCalledWith(mockQuizz, mockQuestion, mockUpdateQuestionDto);
+      expect(mockFileUploadService.uploadFile).not.toHaveBeenCalled();
+    });
+
+    it("should update question with file", async () => {
+      (mockQuestionService as any).updateQuestion = jest.fn().mockResolvedValue(undefined);
+      const mockFile = { originalname: "update.jpg" } as Express.Multer.File;
+
+      await controller.updateQuestion(mockQuizz as any, mockQuestion as any, mockUpdateQuestionDto as any, mockFile);
+
+      expect(mockFileUploadService.uploadFile).toHaveBeenCalledWith(mockFile);
+      expect(mockFileUploadService.getFileUrl).toHaveBeenCalledWith("uploaded-file.jpg");
+      expect(mockQuestionService.updateQuestion).toHaveBeenCalledWith(
+        mockQuizz,
+        mockQuestion,
+        expect.objectContaining({
+          ...mockUpdateQuestionDto,
+          image: "http://localhost/files/uploaded-file.jpg",
+        }),
+      );
+    });
+  });
+
+  describe("deleteQuestion", () => {
+    it("should delete question", async () => {
+      const mockQuestion = { id: "question-id" };
+
+      (mockQuestionService as any).deleteQuestion = jest.fn().mockResolvedValue(undefined);
+
+      await controller.deleteQuestion(mockQuestion as any);
+
+      expect(mockQuestionService.deleteQuestion).toHaveBeenCalledWith(mockQuestion);
+    });
+  });
 });

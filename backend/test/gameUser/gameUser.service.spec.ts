@@ -220,12 +220,11 @@ describe("GameUserService", () => {
       await service.addPoints("user-id", 100);
 
       expect(mockQueryBuilder.update).toHaveBeenCalledWith(GameUser);
-      expect(mockQueryBuilder.set).toHaveBeenCalledWith({
-        points: expect.any(Function),
-      });
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id", {
-        id: "user-id",
-      });
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id", { id: "user-id" });
+      const setArg = mockQueryBuilder.set.mock.calls[0][0];
+
+      expect(typeof setArg.points).toBe("function");
+      expect(setArg.points()).toBe("points + 100");
       expect(mockQueryBuilder.execute).toHaveBeenCalled();
     });
 
@@ -241,9 +240,10 @@ describe("GameUserService", () => {
 
       await service.addPoints("user-id", -50);
 
-      expect(mockQueryBuilder.set).toHaveBeenCalledWith({
-        points: expect.any(Function),
-      });
+      const setArg = mockQueryBuilder.set.mock.calls[0][0];
+
+      expect(typeof setArg.points).toBe("function");
+      expect(setArg.points()).toBe("points + -50");
     });
   });
 

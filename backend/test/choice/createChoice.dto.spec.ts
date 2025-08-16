@@ -1,34 +1,58 @@
+import { validate } from "class-validator";
+import { plainToInstance } from "class-transformer";
 import { CreateChoiceDto } from "@/choice/dto/createChoice.dto";
 
-describe("CreateChoiceDto", () => {
-  let dto: CreateChoiceDto;
-
-  beforeEach(() => {
-    dto = new CreateChoiceDto();
-  });
-
+describe("CreateChoiceDto validation", () => {
   it("should be defined", () => {
-    expect(dto).toBeDefined();
+    expect(new CreateChoiceDto()).toBeDefined();
   });
 
-  it("should have text property", () => {
-    dto.text = "Test choice";
-    expect(dto.text).toBe("Test choice");
+  it("valid payload passes", async () => {
+    const payload = { text: "Option A", isCorrect: true };
+    const dto = plainToInstance(CreateChoiceDto, payload);
+    const errors = await validate(dto);
+
+    expect(errors.length).toBe(0);
   });
 
-  it("should have isCorrect property", () => {
-    dto.isCorrect = true;
-    expect(dto.isCorrect).toBe(true);
+  it("text must be a string", async () => {
+    const payload = { text: 123 as any, isCorrect: false };
+    const dto = plainToInstance(CreateChoiceDto, payload);
+    const errors = await validate(dto);
 
-    dto.isCorrect = false;
-    expect(dto.isCorrect).toBe(false);
+    expect(errors.length).toBeGreaterThan(0);
+    const textErr = errors.find((e) => e.property === "text");
+
+    expect(textErr).toBeDefined();
   });
 
-  it("should be able to create with valid data", () => {
-    dto.text = "Valid choice text";
-    dto.isCorrect = true;
+  it("isCorrect is required", async () => {
+    const payload = { text: "Missing correctness" } as any;
+    const dto = plainToInstance(CreateChoiceDto, payload);
+    const errors = await validate(dto);
 
-    expect(dto.text).toBe("Valid choice text");
-    expect(dto.isCorrect).toBe(true);
+    expect(errors.length).toBeGreaterThan(0);
+    const corrErr = errors.find((e) => e.property === "isCorrect");
+
+    expect(corrErr).toBeDefined();
+  });
+
+  it("isCorrect must be boolean", async () => {
+    const payload = { text: "Bad type", isCorrect: "true" as any };
+    const dto = plainToInstance(CreateChoiceDto, payload);
+    const errors = await validate(dto);
+
+    expect(errors.length).toBeGreaterThan(0);
+    const corrErr = errors.find((e) => e.property === "isCorrect");
+
+    expect(corrErr).toBeDefined();
+  });
+
+  it("accepts false for isCorrect", async () => {
+    const payload = { text: "Option B", isCorrect: false };
+    const dto = plainToInstance(CreateChoiceDto, payload);
+    const errors = await validate(dto);
+
+    expect(errors.length).toBe(0);
   });
 });

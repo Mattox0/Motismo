@@ -6,7 +6,20 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string, params?: any) => {
+      if (key === 'card.questions' && params?.nbQuestions) {
+        return `${params.nbQuestions} questions`;
+      }
+      if (key === 'card.cards' && params?.nbCards) {
+        return `${params.nbCards} cards`;
+      }
+      if (key === 'error.no.cards') {
+        return 'No cards available';
+      }
+      return key;
+    },
+  }),
 }));
 
 jest.mock('@/services/quiz.service', () => ({
@@ -21,10 +34,12 @@ jest.mock('@/components/sections/AskCreateSection', () => ({
   AskCreateSection: () => <div data-testid="ask-create">AskCreateSection</div>,
 }));
 jest.mock('@/components/Card', () => ({
-  Card: ({ title, badge, onPresentationClick }: any) => (
+  Card: ({ title, badge, onPresentationClick, onEditClick }: any) => (
     <div data-testid="card">
       <span>{title}</span>
-      <button onClick={() => onPresentationClick('foo')}>{badge}</button>
+      <span>{badge}</span>
+      <button onClick={() => onPresentationClick('foo')}>presentation</button>
+      <button onClick={onEditClick}>edit</button>
     </div>
   ),
 }));
@@ -50,11 +65,14 @@ import Profile from '../page';
 describe('Profile page', () => {
   const mockGetQuiz = useGetQuizQuery as jest.MockedFunction<typeof useGetQuizQuery>;
   let mockCreate: jest.Mock;
+  let mockPush: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockCreate = jest.fn();
+    mockPush = jest.fn();
     (useCreateGameMutation as jest.Mock).mockReturnValue([mockCreate, { isLoading: false }]);
+    (require('next/navigation').useRouter as jest.Mock).mockReturnValue({ push: mockPush });
   });
 
   it('shows loader when data is still loading', () => {
@@ -71,7 +89,7 @@ describe('Profile page', () => {
     expect(screen.queryAllByTestId('card')).toHaveLength(0);
   });
 
-  it('renders question and card quizzes and allows creating a game', () => {
+  it('renders question and card quizzes and allows creating a game', async () => {
     const fakeData = [
       {
         id: 'q1',
@@ -91,6 +109,7 @@ describe('Profile page', () => {
       },
     ];
     mockGetQuiz.mockReturnValue({ data: fakeData, isLoading: false } as any);
+    mockCreate.mockReturnValue({ unwrap: jest.fn().mockResolvedValue({ code: 'ABC123' }) });
 
     render(<Profile />);
 
@@ -101,8 +120,13 @@ describe('Profile page', () => {
     expect(cards[0]).toHaveTextContent('Quiz One');
     expect(cards[1]).toHaveTextContent('Quiz Two');
 
-    fireEvent.click(cards[0].querySelector('button')!);
+    const presentationButtons = screen.getAllByText('presentation');
+    await act(async () => {
+      fireEvent.click(presentationButtons[0]);
+    });
+
     expect(mockCreate).toHaveBeenCalledWith('q1');
+    expect(mockPush).toHaveBeenCalledWith('/game/ABC123');
   });
 
   it('shows error toast when creating a game fails', async () => {
@@ -115,14 +139,160 @@ describe('Profile page', () => {
     } as any);
 
     render(<Profile />);
-    const button = screen.getByTestId('card').querySelector('button')!;
+    const button = screen.getByText('presentation');
 
     await act(async () => {
       fireEvent.click(button);
     });
 
-    // The error should be logged to console.error
     expect(consoleSpy).toHaveBeenCalled();
     consoleSpy.mockRestore();
+  });
+
+  it('handles card presentation with cards available', () => {
+    const fakeData = [
+      {
+        id: 'c1',
+        quizzType: IQuizzType.CARDS,
+        title: 'Card Quiz',
+        cards: [{ order: 1 }, { order: 2 }],
+        image: '/i.png',
+        creationDate: '2025-01-01',
+      },
+    ];
+    mockGetQuiz.mockReturnValue({ data: fakeData, isLoading: false } as any);
+
+    render(<Profile />);
+
+    const presentationButtons = screen.getAllByText('presentation');
+    fireEvent.click(presentationButtons[0]);
+
+    expect(mockPush).toHaveBeenCalledWith('/card/game/c1');
+  });
+
+  it('shows error toast when card has no cards', () => {
+    const fakeData = [
+      {
+        id: 'c1',
+        quizzType: IQuizzType.CARDS,
+        title: 'Card Quiz',
+        cards: [],
+        image: '/i.png',
+        creationDate: '2025-01-01',
+      },
+    ];
+    mockGetQuiz.mockReturnValue({ data: fakeData, isLoading: false } as any);
+
+    render(<Profile />);
+
+    const presentationButtons = screen.getAllByText('presentation');
+    fireEvent.click(presentationButtons[0]);
+
+    expect(showToast.error).toHaveBeenCalledWith('No cards available');
+  });
+
+  it('handles edit click for question quiz', () => {
+    const fakeData = [
+      {
+        id: 'q1',
+        quizzType: IQuizzType.QUESTIONS,
+        title: 'Quiz One',
+        questions: [1, 2],
+        image: '/i.png',
+        creationDate: '2025-01-01',
+      },
+    ];
+    mockGetQuiz.mockReturnValue({ data: fakeData, isLoading: false } as any);
+
+    render(<Profile />);
+
+    const editButtons = screen.getAllByText('edit');
+    fireEvent.click(editButtons[0]);
+
+    expect(mockPush).toHaveBeenCalledWith('/quiz/q1');
+  });
+
+  it('handles edit click for card quiz', () => {
+    const fakeData = [
+      {
+        id: 'c1',
+        quizzType: IQuizzType.CARDS,
+        title: 'Card Quiz',
+        cards: [{ order: 1 }],
+        image: '/i.png',
+        creationDate: '2025-01-01',
+      },
+    ];
+    mockGetQuiz.mockReturnValue({ data: fakeData, isLoading: false } as any);
+
+    render(<Profile />);
+
+    const editButtons = screen.getAllByText('edit');
+    fireEvent.click(editButtons[0]);
+
+    expect(mockPush).toHaveBeenCalledWith('/card/c1');
+  });
+
+  it('displays correct badge for questions quiz', () => {
+    const fakeData = [
+      {
+        id: 'q1',
+        quizzType: IQuizzType.QUESTIONS,
+        title: 'Quiz One',
+        questions: [1, 2, 3],
+        image: '/i.png',
+        creationDate: '2025-01-01',
+      },
+    ];
+    mockGetQuiz.mockReturnValue({ data: fakeData, isLoading: false } as any);
+
+    render(<Profile />);
+
+    expect(screen.getByText('3 questions')).toBeInTheDocument();
+  });
+
+  it('displays correct badge for cards quiz', () => {
+    const fakeData = [
+      {
+        id: 'c1',
+        quizzType: IQuizzType.CARDS,
+        title: 'Card Quiz',
+        cards: [{ order: 1 }, { order: 2 }],
+        image: '/i.png',
+        creationDate: '2025-01-01',
+      },
+    ];
+    mockGetQuiz.mockReturnValue({ data: fakeData, isLoading: false } as any);
+
+    render(<Profile />);
+
+    expect(screen.getByText('2 cards')).toBeInTheDocument();
+  });
+
+  it('handles undefined questions and cards arrays', () => {
+    const fakeData = [
+      {
+        id: 'q1',
+        quizzType: IQuizzType.QUESTIONS,
+        title: 'Quiz One',
+        questions: undefined,
+        image: '/i.png',
+        creationDate: '2025-01-01',
+      },
+      {
+        id: 'c1',
+        quizzType: IQuizzType.CARDS,
+        title: 'Card Quiz',
+        cards: undefined,
+        image: '/i.png',
+        creationDate: '2025-01-01',
+      },
+    ];
+    mockGetQuiz.mockReturnValue({ data: fakeData, isLoading: false } as any);
+
+    render(<Profile />);
+
+    expect(screen.getByText('card.questions')).toBeInTheDocument();
+    expect(screen.getByText('card.cards')).toBeInTheDocument();
   });
 });

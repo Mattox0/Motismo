@@ -22,7 +22,6 @@ jest.mock('next/image', () => ({
   },
 }));
 
-// Mock Material-UI components to avoid prop warnings
 jest.mock('@mui/material', () => ({
   TextField: ({ children, ...props }) => <input {...props}>{children}</input>,
   Button: ({ children, ...props }) => <button {...props}>{children}</button>,

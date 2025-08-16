@@ -22,10 +22,11 @@ describe("AuthController", () => {
   beforeEach(async () => {
     mockFileUploadService = {
       uploadFile: jest.fn(),
+      getFileUrl: jest.fn(),
     };
 
     mockAuthService = {
-      login: jest.fn().mockResolvedValue({ accessToken: "test-token" }),
+      login: jest.fn().mockReturnValue({ accessToken: "test-token" }),
     };
 
     mockUserService = {
@@ -89,6 +90,7 @@ describe("AuthController", () => {
       await authController.login(loginDto, response as Response);
 
       expect(mockUserService.findOneEmail).toHaveBeenCalledWith(loginDto.email);
+      expect(mockAuthService.login).toHaveBeenCalledWith(mockUser);
       expect(response.cookie).toHaveBeenCalledWith(
         "access_token",
         "test-token",
@@ -190,6 +192,129 @@ describe("AuthController", () => {
       await expect(authController.register(registerDto, response)).rejects.toThrow(HttpException);
       await expect(authController.register(registerDto, response)).rejects.toMatchObject({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    });
+
+    it("should register a new user WITHOUT file, set cookie and return token", async () => {
+      const registerDto: RegisterDto = {
+        email: "newuser@example.com",
+        password: "password123",
+        username: "John Doe",
+      };
+
+      const createdUser = {
+        id: "42",
+        email: registerDto.email,
+        username: registerDto.username,
+        role: Role.Customer,
+        password: "hashed",
+        creationDate: new Date(),
+      };
+
+      jest.spyOn(mockUserService, "checkUnknownUser").mockResolvedValue(false);
+      jest.spyOn(mockUserService, "create").mockResolvedValue(createdUser);
+      jest.spyOn(mockAuthService, "login").mockReturnValue({ accessToken: "test-token" });
+
+      const mockSend = jest.fn();
+      const response: Partial<Response> = {
+        cookie: jest.fn(),
+        send: mockSend,
+      };
+
+      await authController.register(registerDto, response as Response);
+
+      expect(mockFileUploadService.uploadFile).not.toHaveBeenCalled();
+      expect(mockFileUploadService.getFileUrl).not.toHaveBeenCalled();
+
+      expect(mockUserService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: registerDto.email,
+          username: registerDto.username,
+          password: expect.any(String),
+        }),
+      );
+
+      expect(response.cookie).toHaveBeenCalledWith(
+        "access_token",
+        "test-token",
+        expect.objectContaining({ httpOnly: true }),
+      );
+      expect(mockSend).toHaveBeenCalledWith({
+        accessToken: "test-token",
+        id: createdUser.id,
+      });
+    });
+
+    it("should register a new user WITH file, upload image, set image url, set cookie and return token", async () => {
+      const registerDto: RegisterDto = {
+        email: "newuser2@example.com",
+        password: "password123",
+        username: "Jane Doe",
+      };
+
+      const uploadedFileName = "avatar-123.png";
+      const publicUrl = "https://cdn.example.com/avatar-123.png";
+
+      (mockFileUploadService.uploadFile as jest.Mock).mockResolvedValue(uploadedFileName);
+      (mockFileUploadService.getFileUrl as jest.Mock).mockReturnValue(publicUrl);
+
+      jest.spyOn(mockUserService, "checkUnknownUser").mockResolvedValue(false);
+
+      const createdUser = {
+        id: "84",
+        email: registerDto.email,
+        username: registerDto.username,
+        role: Role.Customer,
+        password: "hashed",
+        image: publicUrl,
+      };
+
+      // capture l'argument passé à create pour vérifier qu'on a bien injecté image
+      (mockUserService.create as jest.Mock).mockImplementation((userBody) => {
+        expect(userBody.image).toBe(publicUrl);
+
+        return createdUser;
+      });
+
+      jest.spyOn(mockAuthService, "login").mockReturnValue({ accessToken: "test-token" });
+
+      const mockSend = jest.fn();
+      const response: Partial<Response> = {
+        cookie: jest.fn(),
+        send: mockSend,
+      };
+
+      // faux fichier multer minimal
+      const file = {
+        originalname: "avatar.png",
+        mimetype: "image/png",
+        buffer: Buffer.from("fakeimage"),
+        size: 9,
+      } as unknown as Express.Multer.File;
+
+      await authController.register(registerDto, response as Response, file);
+
+      expect(mockFileUploadService.uploadFile).toHaveBeenCalledWith(file);
+      expect(mockFileUploadService.getFileUrl).toHaveBeenCalledWith(uploadedFileName);
+
+      expect(mockUserService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: registerDto.email,
+          username: registerDto.username,
+          image: publicUrl,
+          password: expect.any(String),
+        }),
+      );
+
+      expect(mockAuthService.login).toHaveBeenCalledWith(createdUser);
+      expect(response.cookie).toHaveBeenCalledWith(
+        "access_token",
+        "test-token",
+        expect.objectContaining({ httpOnly: true }),
+      );
+      expect(mockSend).toHaveBeenCalledWith({
+        accessToken: "test-token",
+        id: createdUser.id,
       });
     });
   });

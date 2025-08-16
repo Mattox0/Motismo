@@ -22,9 +22,9 @@ jest.mock("bcrypt", () => ({
 
 describe("QuizzController", () => {
   let quizzController: QuizzController;
-  let mockQuizzService: Partial<QuizzService>;
-  let mockTranslationService: Partial<TranslationService>;
-  let mockFileUploadService: Partial<FileUploadService>;
+  let mockQuizzService: any;
+  let mockTranslationService: any;
+  let mockFileUploadService: any;
   let mockQuizzRepository: Partial<Repository<Quizz>>;
   let mockParseFilesPipe: Partial<ParseFilesPipe>;
 
@@ -61,6 +61,7 @@ describe("QuizzController", () => {
     mockQuizzService = {
       getAll: jest.fn().mockResolvedValue(mockQuizzs),
       getMyQuizz: jest.fn().mockResolvedValue(mockQuizzs),
+      getByCode: jest.fn(),
       create: jest.fn().mockResolvedValue(undefined),
       update: jest.fn().mockResolvedValue(undefined),
       delete: jest.fn().mockResolvedValue(undefined),
@@ -136,6 +137,24 @@ describe("QuizzController", () => {
     });
   });
 
+  describe("getByCode", () => {
+    it("returns the quizz when found", async () => {
+      mockQuizzService.getByCode.mockResolvedValue(mockQuizz);
+
+      const result = await quizzController.getByCode("ABC123");
+
+      expect(mockQuizzService.getByCode).toHaveBeenCalledWith("ABC123");
+      expect(result).toEqual(mockQuizz);
+    });
+
+    it("throws when quizz not found", async () => {
+      mockQuizzService.getByCode.mockResolvedValue(null);
+
+      await expect(quizzController.getByCode("MISSING")).rejects.toThrow(HttpException);
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.QUIZZ_NOT_FOUND");
+    });
+  });
+
   describe("createQuizz", () => {
     it("should create a new quizz", async () => {
       const createQuizzDto: CreateQuizzDto = {
@@ -196,7 +215,7 @@ describe("QuizzController", () => {
         title: "Updated Quizz",
       };
 
-      jest.spyOn(mockQuizzService, "update").mockResolvedValue();
+      jest.spyOn(mockQuizzService, "update").mockResolvedValue({ ...quizzExisting, ...updatedQuizzDto });
 
       await quizzController.update(mockUser, quizzExisting, updatedQuizzDto, undefined);
 
@@ -227,7 +246,9 @@ describe("QuizzController", () => {
 
       jest.spyOn(mockFileUploadService, "uploadFile").mockResolvedValue("test.jpg");
       jest.spyOn(mockFileUploadService, "getFileUrl").mockReturnValue(fileUrl);
-      jest.spyOn(mockQuizzService, "update").mockResolvedValue();
+      jest
+        .spyOn(mockQuizzService, "update")
+        .mockResolvedValue({ ...quizzExisting, ...updatedQuizzDto, image: fileUrl });
 
       await quizzController.update(mockUser, quizzExisting, updatedQuizzDto, file);
 

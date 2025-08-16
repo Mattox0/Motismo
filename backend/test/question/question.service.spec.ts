@@ -531,4 +531,114 @@ describe("QuestionService", () => {
       expect(mockFileUploadService.deleteFile).not.toHaveBeenCalled();
     });
   });
+
+  describe("reorderQuestions", () => {
+    beforeEach(() => {
+      jest.spyOn(service as any, "normalizeOrders").mockResolvedValue(undefined);
+      mockQuestionRepository.update.mockClear();
+    });
+
+    it("moves question down (newOrder > oldOrder) and decrements affected", async () => {
+      mockQuestionRepository.find.mockResolvedValue([
+        { id: "q1", order: 1 },
+        { id: "q2", order: 2 },
+        { id: "q3", order: 3 },
+        { id: "q4", order: 4 },
+      ]);
+
+      await (service as any).reorderQuestions("quizz-id", 4, 2);
+
+      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q3", { order: 2 });
+      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q4", { order: 3 });
+      expect(service["normalizeOrders"]).toHaveBeenCalledWith("quizz-id");
+    });
+
+    it("moves question up (newOrder < oldOrder) and increments affected", async () => {
+      mockQuestionRepository.find.mockResolvedValue([
+        { id: "q1", order: 1 },
+        { id: "q2", order: 2 },
+        { id: "q3", order: 3 },
+        { id: "q4", order: 4 },
+      ]);
+
+      await (service as any).reorderQuestions("quizz-id", 2, 4);
+
+      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q2", { order: 3 });
+      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q3", { order: 4 });
+      expect(service["normalizeOrders"]).toHaveBeenCalledWith("quizz-id");
+    });
+
+    it("inserts new question (no oldOrder) and increments >= newOrder", async () => {
+      mockQuestionRepository.find.mockResolvedValue([
+        { id: "q1", order: 1 },
+        { id: "q2", order: 2 },
+        { id: "q3", order: 3 },
+      ]);
+
+      await (service as any).reorderQuestions("quizz-id", 2);
+
+      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q2", { order: 3 });
+      expect(mockQuestionRepository.update).toHaveBeenCalledWith("q3", { order: 4 });
+      expect(service["normalizeOrders"]).toHaveBeenCalledWith("quizz-id");
+    });
+  });
+
+  describe("updateQuestion extras", () => {
+    const quizz = { id: "quizz-id" };
+
+    beforeEach(() => {
+      jest.spyOn(service as any, "getMaxOrder").mockResolvedValue(3);
+      jest.spyOn(service as any, "reorderQuestions").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "normalizeOrders").mockResolvedValue(undefined);
+      jest.spyOn(service as any, "deleteUnusedImages").mockResolvedValue(undefined);
+      mockQuestionRepository.update.mockClear();
+    });
+
+    it("sets questionType in updateData when changed", async () => {
+      const question = { id: "qid", questionType: QuestionType.WORD_CLOUD, order: 2 };
+      const dto = { title: "T", questionType: QuestionType.MATCHING, order: 2 };
+
+      await service.updateQuestion(quizz as any, question as any, dto as any);
+
+      expect(mockQuestionRepository.update).toHaveBeenCalledWith(
+        "qid",
+        expect.objectContaining({
+          title: "T",
+          questionType: QuestionType.MATCHING,
+        }),
+      );
+    });
+
+    it("breaks out for choice-type when not a ChoiceQuestion instance", async () => {
+      const question = { id: "qid", questionType: QuestionType.MULTIPLE_CHOICES, order: 2 };
+      const dto = { title: "No-op" };
+
+      const spyUpdateChoice = jest.spyOn(service as any, "updateChoiceQuestion");
+
+      await expect(service.updateQuestion(quizz as any, question as any, dto as any)).resolves.toBeUndefined();
+      expect(spyUpdateChoice).not.toHaveBeenCalled();
+      expect(mockQuestionRepository.update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("updateChoiceQuestion invalid order", () => {
+    const quizz = { id: "quizz-id" };
+    const question = { id: "qid", order: 2 };
+
+    beforeEach(() => {
+      jest.spyOn(service as any, "getMaxOrder").mockResolvedValue(3);
+    });
+
+    it("throws when order < 1", async () => {
+      await expect(service.updateChoiceQuestion(quizz as any, question as any, { order: 0 } as any)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it("throws when order > maxOrder", async () => {
+      await expect(service.updateChoiceQuestion(quizz as any, question as any, { order: 5 } as any)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+  });
 });

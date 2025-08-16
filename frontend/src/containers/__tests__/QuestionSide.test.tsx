@@ -137,4 +137,34 @@ describe('QuestionSide', () => {
       });
     });
   });
+
+  it('prevents launch when no questions', () => {
+    mockUseQuizz.mockReturnValue({
+      quizz: {
+        id: 'quiz-1',
+        title: 'Test Quiz',
+        questions: [],
+      },
+      currentQuestion: null,
+    } as any);
+
+    render(<QuestionSide quizzId="quiz-1" />);
+
+    const launchButton = screen.getByText('quiz.launchButton');
+    expect(launchButton).toBeDisabled();
+    expect(mockCreateGame).not.toHaveBeenCalled();
+  });
+
+  it('prevents launch when quizz is null', () => {
+    mockUseQuizz.mockReturnValue({
+      quizz: null,
+      currentQuestion: null,
+    } as any);
+
+    render(<QuestionSide quizzId="quiz-1" />);
+
+    const launchButton = screen.getByText('quiz.launchButton');
+    expect(launchButton).toBeDisabled();
+    expect(mockCreateGame).not.toHaveBeenCalled();
+  });
 });

@@ -19,6 +19,7 @@ const customJestConfig = {
     '!src/**/*.spec.{ts,tsx}',
     '!src/instrumentation.ts',
     '!src/instrumentation-client.ts',
+    '!src/i18n.ts',
   ],
   coverageThreshold: {
     global: {

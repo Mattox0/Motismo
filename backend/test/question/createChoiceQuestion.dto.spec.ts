@@ -58,6 +58,26 @@ describe("CreateChoiceQuestionDto", () => {
       ]);
     });
 
+    it("coerces non-string text and truthy/falsy isCorrect from JSON string", () => {
+      const rawData = {
+        title: "Test",
+        questionType: QuestionType.MULTIPLE_CHOICES,
+        choices: JSON.stringify([
+          { text: 123, isCorrect: "1" },
+          { text: null, isCorrect: 0 },
+          { text: true, isCorrect: "false" },
+        ]),
+      };
+
+      const dto = plainToClass(CreateChoiceQuestionDto, rawData);
+
+      expect(dto.choices).toEqual([
+        { text: "", isCorrect: true },
+        { text: "", isCorrect: false },
+        { text: "", isCorrect: true },
+      ]);
+    });
+
     it("should handle invalid JSON string in choices", () => {
       const rawData = {
         title: "Test Choice Question",
@@ -82,11 +102,29 @@ describe("CreateChoiceQuestionDto", () => {
       expect(dto.choices).toEqual([]);
     });
 
-    it("should handle non-array choices", () => {
+    it("should transform from array input with coercion", () => {
+      const rawData = {
+        title: "Test",
+        questionType: QuestionType.MULTIPLE_CHOICES,
+        choices: [
+          { text: "OK", isCorrect: 1 },
+          { text: 45, isCorrect: "" },
+        ],
+      };
+
+      const dto = plainToClass(CreateChoiceQuestionDto, rawData);
+
+      expect(dto.choices).toEqual([
+        { text: "OK", isCorrect: true },
+        { text: "", isCorrect: false },
+      ]);
+    });
+
+    it("should handle non-array choices (final fallback branch)", () => {
       const rawData = {
         title: "Test Choice Question",
         questionType: QuestionType.MULTIPLE_CHOICES,
-        choices: "not an array",
+        choices: 123 as any,
       };
 
       const dto = plainToClass(CreateChoiceQuestionDto, rawData);
@@ -170,6 +208,38 @@ describe("CreateChoiceQuestionDto", () => {
       expect(errors).toHaveLength(0);
       expect(dto.image).toBe("test-image.jpg");
       expect(dto.order).toBe(5);
+    });
+  });
+
+  describe("CreateChoiceQuestionDto transform final fallback", () => {
+    it("returns [] when choices is a number", () => {
+      const dto = plainToClass(CreateChoiceQuestionDto, {
+        title: "Q",
+        questionType: QuestionType.MULTIPLE_CHOICES,
+        choices: 123,
+      });
+
+      expect(dto.choices).toEqual([]);
+    });
+
+    it("returns [] when choices is an object", () => {
+      const dto = plainToClass(CreateChoiceQuestionDto, {
+        title: "Q",
+        questionType: QuestionType.MULTIPLE_CHOICES,
+        choices: { not: "array" },
+      });
+
+      expect(dto.choices).toEqual([]);
+    });
+
+    it("returns [] when choices is a boolean", () => {
+      const dto = plainToClass(CreateChoiceQuestionDto, {
+        title: "Q",
+        questionType: QuestionType.MULTIPLE_CHOICES,
+        choices: true,
+      });
+
+      expect(dto.choices).toEqual([]);
     });
   });
 });

@@ -352,4 +352,104 @@ describe("QuizzService", () => {
       expect(mockQuizzRepository.delete).not.toHaveBeenCalled();
     });
   });
+
+  describe("getMyQuizz", () => {
+    it("calls repository with code filter and relations, returns quizz", async () => {
+      const quizz: Quizz = {
+        id: "qz-1",
+        title: "Quiz",
+        quizzType: IQuizzType.QUESTIONS,
+        games: [],
+        image: "i.jpg",
+        questions: [],
+        cards: [],
+        author: {
+          id: "u1",
+          username: "u",
+          email: "u@e.c",
+          password: "p",
+          creationDate: new Date(),
+          role: Role.Customer,
+        },
+        creationDate: new Date(),
+      };
+
+      mockQuizzRepository.findOne.mockResolvedValue(quizz);
+
+      const res = await service.getByCode("ROOM123");
+
+      expect(mockQuizzRepository.findOne).toHaveBeenCalledWith({
+        where: { games: { code: "ROOM123" } },
+        relations: { cards: true, questions: true, games: true, author: true },
+      });
+      expect(res).toBe(quizz);
+    });
+
+    it("returns null when quizz not found", async () => {
+      mockQuizzRepository.findOne.mockResolvedValue(null);
+
+      const res = await service.getByCode("UNKNOWN");
+
+      expect(mockQuizzRepository.findOne).toHaveBeenCalledWith({
+        where: { games: { code: "UNKNOWN" } },
+        relations: { cards: true, questions: true, games: true, author: true },
+      });
+      expect(res).toBeNull();
+    });
+
+    it("returns quizzes for the given user with relations", async () => {
+      const user = { id: "user-42" } as any;
+      const rows = [{ id: "qz1" }, { id: "qz2" }] as any[];
+
+      mockQuizzRepository.find.mockResolvedValue(rows);
+
+      const res = await service.getMyQuizz(user);
+
+      expect(mockQuizzRepository.find).toHaveBeenCalledWith({
+        where: { author: { id: "user-42" } },
+        relations: { cards: true, questions: true },
+      });
+      expect(res).toBe(rows);
+    });
+  });
+
+  describe("findOne", () => {
+    it("returns the quizz with relations when found", async () => {
+      const quizz: Quizz = {
+        id: "abc",
+        title: "T",
+        quizzType: IQuizzType.QUESTIONS,
+        games: [],
+        image: "i.jpg",
+        questions: [],
+        cards: [],
+        author: {
+          id: "u1",
+          username: "x",
+          email: "x@y.z",
+          password: "p",
+          creationDate: new Date(),
+          role: Role.Customer,
+        },
+        creationDate: new Date(),
+      };
+
+      mockQuizzRepository.findOne.mockResolvedValue(quizz);
+
+      const res = await service.findOne("abc");
+
+      expect(mockQuizzRepository.findOne).toHaveBeenCalledWith({
+        where: { id: "abc" },
+        relations: { author: true, questions: true },
+      });
+      expect(res).toBe(quizz);
+    });
+
+    it("throws when quizz not found", async () => {
+      mockQuizzRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.findOne("missing")).rejects.toThrow("error.QUIZZ_NOT_FOUND");
+      expect(mockTranslationService.translate).toHaveBeenCalledWith("error.QUIZZ_NOT_FOUND");
+    });
+  });
 });

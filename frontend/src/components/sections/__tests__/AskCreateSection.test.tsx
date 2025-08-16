@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 
 import { AskCreateSection } from '../AskCreateSection';
 
-// Mock framer-motion
 jest.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: any) => children,
   motion: {
@@ -16,21 +15,18 @@ jest.mock('framer-motion', () => ({
   },
 }));
 
-// Mock next/navigation
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
   }),
 }));
 
-// Mock react-i18next
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
-// Mock Redux hooks
 jest.mock('@/services/quiz.service', () => ({
   useCreateQuizzMutation: () => [
     jest.fn().mockResolvedValue({ data: { id: 'test-id', quizzType: 'QUESTIONS' } }),
@@ -38,7 +34,6 @@ jest.mock('@/services/quiz.service', () => ({
   ],
 }));
 
-// Mock toast
 jest.mock('@/utils/toast', () => ({
   showToast: {
     success: jest.fn(),
@@ -46,19 +41,15 @@ jest.mock('@/utils/toast', () => ({
   },
 }));
 
-// Create a mock store
 const createMockStore = () =>
   configureStore({
-    reducer: {
-      // Add any reducers your component needs
-    },
+    reducer: {},
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         serializableCheck: false,
       }),
   });
 
-// Wrapper component for Redux
 const renderWithRedux = (component: React.ReactElement) => {
   const store = createMockStore();
   return render(<Provider store={store}>{component}</Provider>);
@@ -127,7 +118,6 @@ describe('AskCreateSection', () => {
       const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
       fireEvent.click(quizButton);
 
-      // Should open modal instead of pushing to router
       expect(mockPush).not.toHaveBeenCalled();
     });
 
@@ -142,7 +132,6 @@ describe('AskCreateSection', () => {
       const cardsButton = screen.getByText('profile.ask_create_section.create_cards');
       fireEvent.click(cardsButton);
 
-      // Should open modal instead of pushing to router
       expect(mockPush).not.toHaveBeenCalled();
     });
 
@@ -161,7 +150,6 @@ describe('AskCreateSection', () => {
       fireEvent.click(cardsButton);
       fireEvent.click(quizButton);
 
-      // Should open modals instead of pushing to router
       expect(mockPush).not.toHaveBeenCalled();
     });
   });
@@ -227,7 +215,6 @@ describe('AskCreateSection', () => {
 
       const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
 
-      // Should not throw error
       expect(() => {
         fireEvent.click(quizButton);
       }).not.toThrow();
@@ -242,7 +229,6 @@ describe('AskCreateSection', () => {
 
       const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
 
-      // Should not throw error
       expect(() => {
         fireEvent.click(quizButton);
       }).not.toThrow();
