@@ -11,7 +11,8 @@ export default withAuth(middleware, {
       const isPublicPath =
         req.nextUrl.pathname.startsWith('/auth') ||
         req.nextUrl.pathname === '/' ||
-        req.nextUrl.pathname.startsWith('/game');
+        req.nextUrl.pathname.startsWith('/game') ||
+        req.nextUrl.pathname === '/contact';
 
       if (isPublicPath) {
         return true;

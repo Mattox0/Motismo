@@ -8,6 +8,7 @@
 @use './page/card-game.scss';
 @use './page/quizz.scss';
 @use './page/profile.scss';
+@use './page/contact.scss';
 @use './components/navbar.scss';
 @use './components/card.scss';
 @use './components/empty-state.scss';
@@ -28,4 +29,5 @@
 @use './components/game-finished.scss';
 @use './components/question-type-selector.scss';
 @use './components/question-side.scss';
+@use './components/contact-form.scss';
 @use 'tailwindcss';

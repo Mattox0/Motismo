@@ -55,6 +55,13 @@ export const Navbar: React.FC = () => {
         >
           Dashboard
         </Link>
+        <Link
+          className={isHydrated && pathname === '/contact' ? 'active' : ''}
+          href="/contact"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Contact
+        </Link>
       </div>
 
       <div className="navbar-brand">
