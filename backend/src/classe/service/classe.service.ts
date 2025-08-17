@@ -27,7 +27,13 @@ export class ClasseService {
       );
     }
 
-    const code = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    let code: string;
+    let existingClasse: Classe | null;
+
+    do {
+      code = Math.random().toString(36).substring(2, 8).toUpperCase();
+      existingClasse = await this.classesRepository.findOne({ where: { code } });
+    } while (existingClasse);
 
     const classe = this.classesRepository.create({
       ...classeDto,
@@ -50,6 +56,22 @@ export class ClasseService {
   async findOne(id: string): Promise<Classe> {
     const classe = await this.classesRepository.findOne({
       where: { id },
+      relations: {
+        teachers: true,
+        students: true,
+      },
+    });
+
+    if (!classe) {
+      throw new HttpException(await this.translationService.translate("error.CLASSE_NOT_FOUND"), HttpStatus.NOT_FOUND);
+    }
+
+    return classe;
+  }
+
+  async findByCode(code: string): Promise<Classe> {
+    const classe = await this.classesRepository.findOne({
+      where: { code },
       relations: {
         teachers: true,
         students: true,

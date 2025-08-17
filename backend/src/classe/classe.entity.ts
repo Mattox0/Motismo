@@ -12,10 +12,31 @@ export class Classe {
   @Column({ type: "varchar", nullable: false, unique: true })
   code: string;
 
-  @ManyToMany(() => User)
-  @JoinTable()
+  @ManyToMany(() => User, (user) => user.studentClasses)
+  @JoinTable({
+    name: "classe_students",
+    joinColumn: {
+      name: "classe_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "user_id",
+      referencedColumnName: "id",
+    },
+  })
   students: User[];
 
   @ManyToMany(() => User, (user) => user.teacherClasses)
+  @JoinTable({
+    name: "classe_teachers",
+    joinColumn: {
+      name: "classe_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "user_id",
+      referencedColumnName: "id",
+    },
+  })
   teachers: User[];
 }

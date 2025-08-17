@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -64,6 +64,15 @@ export class ClasseController {
     }
 
     return await this.classeService.findByStudent(user.id);
+  }
+
+  @Get("code/:code")
+  @ApiOperation({ summary: "Get a class by code" })
+  @ApiParam({ name: "code", description: "Code of class", required: true })
+  @ApiOkResponse({ description: "Class found successfully", type: Classe })
+  @ApiNotFoundResponse({ description: "Class not found" })
+  async findByCode(@Param("code") code: string): Promise<Classe> {
+    return await this.classeService.findByCode(code);
   }
 
   @Get(":classeId")

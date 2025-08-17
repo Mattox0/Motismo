@@ -176,6 +176,40 @@ describe("ClasseService", () => {
     });
   });
 
+  describe("findByCode", () => {
+    it("should return a class by code", async () => {
+      const expectedClasse = {
+        id: "classe-id",
+        name: "Test Class",
+        code: "ABC123",
+        teachers: [],
+        students: [],
+      };
+
+      mockClasseRepository.findOne.mockResolvedValue(expectedClasse);
+
+      const result = await service.findByCode("ABC123");
+
+      expect(result).toEqual(expectedClasse);
+      expect(mockClasseRepository.findOne).toHaveBeenCalledWith({
+        where: { code: "ABC123" },
+        relations: {
+          teachers: true,
+          students: true,
+        },
+      });
+    });
+
+    it("should throw error if class not found by code", async () => {
+      mockClasseRepository.findOne.mockResolvedValue(null);
+      mockTranslationService.translate.mockResolvedValue("Class not found");
+
+      await expect(service.findByCode("INVALID")).rejects.toThrow(
+        new HttpException("Class not found", HttpStatus.NOT_FOUND),
+      );
+    });
+  });
+
   describe("findByTeacher", () => {
     it("should return classes by teacher id", async () => {
       const expectedClasses = [
