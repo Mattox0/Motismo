@@ -15,6 +15,6 @@ export const baseApi = createApi({
     },
     credentials: 'include',
   }),
-  tagTypes: [QueryTags.QUIZ, QueryTags.GAME],
+  tagTypes: [QueryTags.QUIZ, QueryTags.GAME, QueryTags.CLASSE],
   endpoints: () => ({}),
 });

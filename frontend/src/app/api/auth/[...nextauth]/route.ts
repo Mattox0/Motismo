@@ -91,6 +91,7 @@ declare module 'next-auth' {
       id: string;
       email?: string | null;
       name?: string | null;
+      role?: string;
     };
   }
 
@@ -99,6 +100,7 @@ declare module 'next-auth' {
     email: string;
     name?: string;
     accessToken?: string;
+    role?: string;
   }
 }
 
@@ -106,6 +108,7 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id: string;
     accessToken?: string;
+    role?: string;
   }
 }
 
@@ -143,11 +146,16 @@ const handler = NextAuth({
           }
 
           if (data.accessToken) {
+            const tokenPayload = JSON.parse(
+              Buffer.from(data.accessToken.split('.')[1], 'base64').toString()
+            );
+
             return {
               id: data.id,
               email: credentials.email,
               name: data.username || credentials.email,
               accessToken: data.accessToken,
+              role: tokenPayload.role,
             };
           }
 
@@ -164,6 +172,7 @@ const handler = NextAuth({
       if (user) {
         token.id = user.id;
         token.accessToken = user.accessToken;
+        token.role = user.role;
       }
       return token;
     },
@@ -172,6 +181,7 @@ const handler = NextAuth({
         session.accessToken = token.accessToken;
         if (session.user) {
           session.user.id = token.id;
+          session.user.role = token.role;
         }
       }
       return session;

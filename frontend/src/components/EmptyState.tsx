@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
 interface IEmptyStateProps {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
 }
 
 export const EmptyState = ({ title, description }: IEmptyStateProps) => {
@@ -14,9 +14,10 @@ export const EmptyState = ({ title, description }: IEmptyStateProps) => {
         width={200}
         height={200}
         className="empty-state__image"
+        priority
       />
-      <h3 className="empty-state__title">{title}</h3>
-      <p className="empty-state__description">{description}</p>
+      {title && <h3 className="empty-state__title">{title}</h3>}
+      {description && <p className="empty-state__description">{description}</p>}
     </div>
   );
 };

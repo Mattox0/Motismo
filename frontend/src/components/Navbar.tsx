@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/hooks/useAuth';
+import { IUserRole } from '@/types/IUserRole';
 import MotismoLogo from '@root/assets/images/motismo_logo.webp';
 
 export const Navbar: React.FC = () => {
@@ -62,6 +63,15 @@ export const Navbar: React.FC = () => {
         >
           Contact
         </Link>
+        {session?.user.role === IUserRole.Teacher && (
+          <Link
+            className={isHydrated && pathname === '/class' ? 'active' : ''}
+            href="/class"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Mes classes
+          </Link>
+        )}
       </div>
 
       <div className="navbar-brand">

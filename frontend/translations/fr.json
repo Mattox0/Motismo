@@ -126,7 +126,8 @@
     "confirm": "Confirmer",
     "loading": "Chargement...",
     "error": "Une erreur est survenue",
-    "saving": "Enregistrement..."
+    "saving": "Enregistrement...",
+    "back": "Retour"
   },
   "error": {
     "unauthorized": {
@@ -232,5 +233,32 @@
   },
   "create_card": {
     "updateSuccess": "Votre carte a été mise à jour"
+  },
+  "classe": {
+    "title": "Gérez vos classes et vos élèves",
+    "myClasses": "Mes Classes",
+    "name": "Nom de la classe",
+    "namePlaceholder": "Entrez le nom de votre classe",
+    "create": "Créer",
+    "createNew": "Créer une nouvelle classe",
+    "createTitle": "Créez une nouvelle classe",
+    "createDescription": "Organisez vos élèves en classes pour une meilleure gestion",
+    "createSuccess": "Classe créée avec succès",
+    "createError": "Erreur lors de la création de la classe",
+    "updateSuccess": "Classe mise à jour avec succès",
+    "updateError": "Erreur lors de la mise à jour de la classe",
+    "delete": "Supprimer",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette classe ? Cette action est irréversible.",
+    "deleteSuccess": "Classe supprimée avec succès",
+    "deleteError": "Erreur lors de la suppression de la classe",
+    "code": "Code",
+    "notFound": "Classe non trouvée",
+    "noStudents": "Aucun élève dans cette classe",
+    "noClasses": "Aucune classe trouvée",
+    "noClassesDescription": "Créez votre première classe pour commencer à organiser vos élèves",
+    "students": "Élèves",
+    "teachers": "Professeurs",
+    "view": "Voir",
+    "edit": "Modifier"
   }
 }

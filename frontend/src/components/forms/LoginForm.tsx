@@ -31,7 +31,7 @@ const LoginForm = () => {
   const onSubmit = async (data: FormData) => {
     try {
       const result = await login(data.email, data.password);
-      if (result) {
+      if (!result?.error) {
         showToast.success(t('auth.loginSuccess'));
         router.push('/');
       }

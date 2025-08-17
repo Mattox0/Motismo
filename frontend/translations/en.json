@@ -112,7 +112,8 @@
     "confirm": "Confirm",
     "saving": "Saving...",
     "loading": "Loading...",
-    "error": "An error occurred"
+    "error": "An error occurred",
+    "back": "Back"
   },
   "question": {
     "title": "Question title",
@@ -167,5 +168,33 @@
       "error": "Error launching quiz",
       "noQuestions": "Cannot launch: no questions in quiz"
     }
+  },
+  "classe": {
+    "title": "My Classes",
+    "description": "Manage your classes and students",
+    "myClasses": "My Classes",
+    "name": "Class name",
+    "namePlaceholder": "Enter your class name",
+    "create": "Create",
+    "createNew": "Create a new class",
+    "createTitle": "Create a new class",
+    "createDescription": "Organize your students in classes for better management",
+    "createSuccess": "Class created successfully",
+    "createError": "Error creating class",
+    "updateSuccess": "Class updated successfully",
+    "updateError": "Error updating class",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this class? This action is irreversible.",
+    "deleteSuccess": "Class deleted successfully",
+    "deleteError": "Error deleting class",
+    "code": "Code",
+    "notFound": "Class not found",
+    "noStudents": "No students in this class",
+    "noClasses": "No classes found",
+    "noClassesDescription": "Create your first class to start organizing your students",
+    "students": "Students",
+    "teachers": "Teachers",
+    "view": "View",
+    "edit": "Edit"
   }
 }
