@@ -8,6 +8,7 @@ import { TranslationService } from "@/translation/translation.service";
 import { User } from "@/user/user.entity";
 import { JwtPayload } from "@/auth/types/JwtPayload";
 import { UserUpdatedDto } from "../dto/userUpdated.dto";
+import { Role } from "../role.enum";
 
 @Injectable()
 export class UserService {
@@ -18,10 +19,19 @@ export class UserService {
   ) {}
 
   getAll(): Promise<User[]> {
-    return this.usersRepository.find({});
+    return this.usersRepository.find({
+      relations: {
+        studentClasses: true,
+        teacherClasses: true,
+      },
+    });
   }
 
-  create(user: RegisterDto): Promise<User | null> {
+  async create(user: RegisterDto): Promise<User | null> {
+    if (user.role === Role.Admin) {
+      throw new HttpException(await this.translationService.translate("error.ADMIN_NOT_ALLOWED"), HttpStatus.FORBIDDEN);
+    }
+
     const newUser = this.usersRepository.create(user);
 
     return this.usersRepository.save(newUser);
@@ -70,6 +80,8 @@ export class UserService {
       .createQueryBuilder("user")
       .where("user.id = :id", { id: id })
       .addSelect("user.password")
+      .leftJoinAndSelect("user.studentClasses", "studentClasses")
+      .leftJoinAndSelect("user.teacherClasses", "teacherClasses")
       .getOne();
 
     return user;

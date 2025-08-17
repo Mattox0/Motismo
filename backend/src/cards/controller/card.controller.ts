@@ -35,6 +35,7 @@ import { TranslationService } from "@/translation/translation.service";
 import { UpdateCardDto } from "../dto/updateCard.dto";
 import { CardRequest } from "../decorator/card.decorator";
 import { CardGuard } from "../guards/card.guard";
+import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
 
 @ApiTags("card")
 @ApiParam({ name: "quizzId" })
@@ -72,7 +73,7 @@ export class CardController {
   }
 
   @Post()
-  @UseGuards(QuizzGuard)
+  @UseGuards(UserAuthGuard, QuizzGuard)
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: "rectoImage", maxCount: 1 },
@@ -114,8 +115,7 @@ export class CardController {
   }
 
   @Put(":cardId")
-  @UseGuards(QuizzGuard)
-  @UseGuards(CardGuard)
+  @UseGuards(UserAuthGuard, QuizzGuard, CardGuard)
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: "rectoImage", maxCount: 1 },
@@ -156,8 +156,7 @@ export class CardController {
   }
 
   @Delete(":cardId")
-  @UseGuards(QuizzGuard)
-  @UseGuards(CardGuard)
+  @UseGuards(UserAuthGuard, QuizzGuard, CardGuard)
   @ApiParam({ name: "cardId" })
   @ApiOperation({ summary: "Delete a specific card by ID" })
   @ApiOkResponse({ description: "Returns the specified card" })

@@ -76,7 +76,7 @@ export class UserController {
   }
 
   @Put("/:userId")
-  @UseGuards(UserGuard)
+  @UseGuards(UserAuthGuard, UserGuard)
   @UseInterceptors(FileInterceptor("image"))
   @ApiOperation({ summary: "Update a user" })
   @ApiParam({ name: "userId", description: "ID of user", required: true })
@@ -123,7 +123,7 @@ export class UserController {
   }
 
   @Delete("/:userId")
-  @UseGuards(UserGuard)
+  @UseGuards(UserAuthGuard, UserGuard)
   @ApiOperation({ summary: "Delete a user" })
   @ApiParam({ name: "userId", description: "ID of user", required: true })
   @ApiOkResponse({ description: "User deleted succesfully" })

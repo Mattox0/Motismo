@@ -1,9 +1,10 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { Role } from "@/user/role.enum";
 import { Quizz } from "@/quizz/quizz.entity";
 import { Game } from "@/game/game.entity";
 import { GameUser } from "@/gameUser/gameUser.entity";
+import { Classe } from "@/classe/classe.entity";
 
 @Entity()
 export class User {
@@ -19,7 +20,7 @@ export class User {
   @Column({ type: "varchar", nullable: false, select: false })
   password: string;
 
-  @Column({ type: "varchar", default: Role.Customer })
+  @Column({ type: "varchar", default: Role.Student })
   role: Role;
 
   @Column({ type: "varchar", nullable: true })
@@ -36,4 +37,10 @@ export class User {
 
   @OneToMany(() => GameUser, (gameUser) => gameUser.user)
   gameUsers?: GameUser[];
+
+  @ManyToMany(() => Classe, (classe) => classe.students)
+  studentClasses?: Classe[];
+
+  @ManyToMany(() => Classe, (classe) => classe.teachers)
+  teacherClasses?: Classe[];
 }

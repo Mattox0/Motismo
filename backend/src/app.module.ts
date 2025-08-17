@@ -20,6 +20,7 @@ import { RoomWebsocketGateway } from "./game/websocket/game.websocket";
 import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
 import { APP_FILTER } from "@nestjs/core";
 import { HealthModule } from "./health/health.module";
+import { ClasseModule } from "./classe/classe.module";
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { HealthModule } from "./health/health.module";
     GameModule,
     GameUserModule,
     HealthModule,
+    ClasseModule,
   ],
   controllers: [],
   providers: [

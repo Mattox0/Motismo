@@ -1,48 +1,28 @@
-import { IsEmail, IsEmpty, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
-import { i18nValidationMessage } from "nestjs-i18n";
-
-import { I18nTranslations } from "@/generated/i18n.generated";
+import { Role } from "@/user/role.enum";
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from "@/utils/validation.decorators";
+import { IsEmpty } from "class-validator";
 
 export class RegisterDto {
-  @IsNotEmpty({
-    message: i18nValidationMessage<I18nTranslations>("validation.NOT_EMPTY"),
-  })
-  @IsString({
-    message: i18nValidationMessage<I18nTranslations>("validation.NOT_STRING"),
-  })
-  @MinLength(3, {
-    message: i18nValidationMessage<I18nTranslations>("validation.MIN"),
-  })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(3)
   username: string;
 
-  @IsNotEmpty({
-    message: i18nValidationMessage<I18nTranslations>("validation.NOT_EMPTY"),
-  })
-  @IsString({
-    message: i18nValidationMessage<I18nTranslations>("validation.NOT_STRING"),
-  })
-  @IsEmail(
-    {},
-    {
-      message: i18nValidationMessage<I18nTranslations>("validation.INVALID_EMAIL"),
-    },
-  )
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
   email: string;
 
-  @IsNotEmpty({
-    message: i18nValidationMessage<I18nTranslations>("validation.NOT_EMPTY"),
-  })
-  @IsString({
-    message: i18nValidationMessage<I18nTranslations>("validation.NOT_STRING"),
-  })
-  @MinLength(6, {
-    message: i18nValidationMessage<I18nTranslations>("validation.MIN"),
-  })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(6)
   password: string;
 
   @IsOptional()
-  @IsEmpty({
-    message: i18nValidationMessage<I18nTranslations>("validation.IS_EMPTY"),
-  })
+  @IsEnum(Role)
+  role?: Role;
+
+  @IsOptional()
+  @IsEmpty()
   image?: string;
 }

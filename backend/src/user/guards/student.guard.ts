@@ -4,17 +4,12 @@ import { Repository } from "typeorm";
 
 import { TranslationService } from "@/translation/translation.service";
 import { User } from "@/user/user.entity";
+import { Role } from "@/user/role.enum";
 import { uuidRegex } from "@/utils/regex.variable";
-
-interface IRequestWithParamUser extends Request {
-  params: {
-    userId: string;
-  };
-  paramUser?: User;
-}
+import { IRequestWithParamStudent } from "@/user/types/IRequestWithParamUser";
 
 @Injectable()
-export class UserGuard implements CanActivate {
+export class StudentGuard implements CanActivate {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -22,28 +17,28 @@ export class UserGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<IRequestWithParamUser>();
-    const userId = request.params.userId;
+    const request = context.switchToHttp().getRequest<IRequestWithParamStudent>();
+    const studentId = request.params.studentId;
 
-    if (!uuidRegex.test(userId)) {
+    if (!uuidRegex.test(studentId)) {
       throw new HttpException(await this.translationsService.translate("error.ID_INVALID"), HttpStatus.BAD_REQUEST);
     }
 
-    const user = await this.userRepository.findOne({
+    const student = await this.userRepository.findOne({
       where: {
-        id: userId,
-      },
-      relations: {
-        studentClasses: true,
-        teacherClasses: true,
+        id: studentId,
+        role: Role.Student,
       },
     });
 
-    if (!user) {
-      throw new HttpException(await this.translationsService.translate("error.USER_NOT_FOUND"), HttpStatus.NOT_FOUND);
+    if (!student) {
+      throw new HttpException(
+        await this.translationsService.translate("error.STUDENT_NOT_FOUND"),
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    request.paramUser = user;
+    request.paramStudent = student;
 
     return true;
   }

@@ -26,5 +26,6 @@
   "ALREADY_ANSWERED": "Vous avez déjà répondu à cette question.",
   "NOT_QUESTION_PHASE": "Ce n'est pas le moment de répondre aux questions.",
   "NO_CURRENT_QUESTION": "Il n'y a pas de question actuelle.",
-  "INVALID_PHASE_TRANSITION": "Transition de phase invalide."
+  "INVALID_PHASE_TRANSITION": "Transition de phase invalide.",
+  "ADMIN_NOT_ALLOWED": "Vous ne pouvez pas créer un administrateur"
 }

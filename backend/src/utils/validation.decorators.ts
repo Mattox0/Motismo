@@ -8,6 +8,8 @@ import {
   IsArray as OriginalIsArray,
   IsBoolean as OriginalIsBoolean,
   ValidateNested as OriginalValidateNested,
+  IsEmail as OriginalIsEmail,
+  IsUUID as OriginalIsUUID,
   ValidationOptions,
 } from "class-validator";
 import { i18nValidationMessage } from "nestjs-i18n";
@@ -66,4 +68,17 @@ export const ValidateNested = (options?: ValidationOptions) =>
 export const IsPassword = () =>
   OriginalIsString({
     message: i18nValidationMessage<I18nTranslations>("validation.NOT_PASSWORD"),
+  });
+
+export const IsEmail = () =>
+  OriginalIsEmail(
+    {},
+    {
+      message: i18nValidationMessage<I18nTranslations>("validation.INVALID_EMAIL"),
+    },
+  );
+
+export const IsUUID = () =>
+  OriginalIsUUID(4, {
+    message: i18nValidationMessage<I18nTranslations>("validation.IS_NOT_UUID"),
   });

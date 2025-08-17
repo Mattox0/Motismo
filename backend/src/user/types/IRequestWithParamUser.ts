@@ -6,3 +6,17 @@ export interface IRequestWithParamUser extends Request {
   };
   user?: User;
 }
+
+export interface IRequestWithParamTeacher extends Request {
+  params: {
+    teacherId: string;
+  };
+  paramTeacher?: User;
+}
+
+export interface IRequestWithParamStudent extends Request {
+  params: {
+    studentId: string;
+  };
+  paramStudent?: User;
+}
