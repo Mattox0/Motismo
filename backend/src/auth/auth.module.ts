@@ -9,10 +9,12 @@ import { JwtStrategy } from "@/auth/strategies/jwt.strategy";
 import { FileUploadService } from "@/files/files.service";
 import { TranslationService } from "@/translation/translation.service";
 import { UsersModule } from "@/user/user.module";
+import { ClasseModule } from "@/classe/classe.module";
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
+    ClasseModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,

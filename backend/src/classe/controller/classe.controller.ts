@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -18,6 +18,7 @@ import { CurrentUser } from "@/user/decorators/currentUser.decorator";
 import { TeacherRequest, StudentRequest } from "@/user/decorators/user.decorator";
 import { TeacherGuard } from "@/user/guards/teacher.guard";
 import { StudentGuard } from "@/user/guards/student.guard";
+import { StudentAuthGuard } from "@/user/guards/student-auth.guard";
 import { User } from "@/user/user.entity";
 import { Role } from "@/user/role.enum";
 import { Classe } from "@/classe/classe.entity";
@@ -64,6 +65,35 @@ export class ClasseController {
     }
 
     return await this.classeService.findByStudent(user.id);
+  }
+
+  @Get("me")
+  @UseGuards(StudentAuthGuard)
+  @ApiOperation({ summary: "Get current student's class" })
+  @ApiOkResponse({ description: "Student's class found successfully", type: Classe })
+  @ApiNotFoundResponse({ description: "Student not in any class" })
+  @ApiForbiddenResponse({ description: "Only students can access this endpoint" })
+  async findMyClass(@CurrentUser() student: User): Promise<Classe[]> {
+    const classes = await this.classeService.findByStudent(student.id);
+
+    if (classes.length === 0) {
+      throw new HttpException(
+        await this.translationService.translate("error.STUDENT_NOT_IN_CLASS"),
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return classes;
+  }
+
+  @Delete("leave")
+  @UseGuards(StudentAuthGuard)
+  @ApiOperation({ summary: "Leave current class (Students only)" })
+  @ApiOkResponse({ description: "Student left class successfully" })
+  @ApiForbiddenResponse({ description: "Only students can leave classes" })
+  @ApiNotFoundResponse({ description: "Student not in any class" })
+  async leaveClass(@CurrentUser() student: User): Promise<void> {
+    await this.classeService.leaveClass(student);
   }
 
   @Get("code/:code")
@@ -157,5 +187,17 @@ export class ClasseController {
   @ApiUnauthorizedResponse({ description: "User not admin" })
   async removeTeacher(@ClasseRequest() classe: Classe, @TeacherRequest() teacher: User): Promise<Classe> {
     return await this.classeService.removeTeacher(classe.id, teacher.id);
+  }
+
+  @Post("join/:code")
+  @UseGuards(StudentAuthGuard)
+  @ApiOperation({ summary: "Join a class by code (Students only)" })
+  @ApiParam({ name: "code", description: "Code of class", required: true })
+  @ApiCreatedResponse({ description: "Student joined class successfully", type: Classe })
+  @ApiNotFoundResponse({ description: "Class not found" })
+  @ApiForbiddenResponse({ description: "Only students can join classes" })
+  @ApiConflictResponse({ description: "Student already in class" })
+  async joinByCode(@Param("code") code: string, @CurrentUser() student: User): Promise<Classe> {
+    return await this.classeService.joinByCode(code, student);
   }
 }

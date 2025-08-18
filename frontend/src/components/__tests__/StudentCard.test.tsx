@@ -27,3 +27,6 @@ describe('StudentCard', () => {
     expect(info).toBeInTheDocument();
   });
 });
+
+
+

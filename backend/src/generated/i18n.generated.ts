@@ -35,6 +35,14 @@ export type I18nTranslations = {
         "NO_CURRENT_QUESTION": string;
         "INVALID_PHASE_TRANSITION": string;
         "ADMIN_NOT_ALLOWED": string;
+        "CLASSE_NOT_FOUND": string;
+        "ONLY_TEACHERS_CAN_CREATE_CLASSES": string;
+        "ONLY_STUDENTS_CAN_BE_ADDED": string;
+        "STUDENT_ALREADY_IN_CLASSE": string;
+        "ONLY_TEACHERS_CAN_BE_ADDED": string;
+        "TEACHER_ALREADY_IN_CLASSE": string;
+        "ONLY_STUDENTS_CAN_JOIN_CLASSES": string;
+        "STUDENT_NOT_IN_CLASS": string;
     };
     "user": {
         "HELLO": string;

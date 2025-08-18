@@ -11,6 +11,8 @@
 @use './page/contact.scss';
 @use './page/classe.scss';
 @use './page/classe-detail.scss';
+@use './page/classe-me.scss';
+@use './page/student-classe-page.scss';
 @use './components/navbar.scss';
 @use './components/card.scss';
 @use './components/empty-state.scss';
@@ -32,4 +34,6 @@
 @use './components/question-type-selector.scss';
 @use './components/question-side.scss';
 @use './components/contact-form.scss';
+@use './components/join-classe-form.scss';
+@use './components/join-classe-section.scss';
 @use 'tailwindcss';

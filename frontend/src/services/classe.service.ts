@@ -12,6 +12,10 @@ export const classeApi = baseApi.injectEndpoints({
       query: ({ code }) => `/classes/code/${code}`,
       providesTags: [QueryTags.CLASSE],
     }),
+    getMyClass: builder.query<IClasse[], void>({
+      query: () => '/classes/me',
+      providesTags: [QueryTags.CLASSE],
+    }),
     createClasse: builder.mutation<IClasse, { name: string }>({
       query: data => ({
         url: '/classes',
@@ -35,13 +39,29 @@ export const classeApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [QueryTags.CLASSE],
     }),
+    joinClasseByCode: builder.mutation<IClasse, { code: string }>({
+      query: ({ code }) => ({
+        url: `/classes/join/${code}`,
+        method: 'POST',
+      }),
+      invalidatesTags: [QueryTags.CLASSE],
+    }),
+    leaveClass: builder.mutation<void, void>({
+      query: () => ({
+        url: '/classes/leave',
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
 export const {
   useGetClassesQuery,
   useGetClasseByCodeQuery,
+  useGetMyClassQuery,
   useCreateClasseMutation,
   useUpdateClasseMutation,
   useDeleteClasseMutation,
+  useJoinClasseByCodeMutation,
+  useLeaveClassMutation,
 } = classeApi;

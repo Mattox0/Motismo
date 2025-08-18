@@ -25,4 +25,8 @@ export class RegisterDto {
   @IsOptional()
   @IsEmpty()
   image?: string;
+
+  @IsOptional()
+  @IsString()
+  classCode?: string;
 }

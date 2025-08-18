@@ -63,13 +63,13 @@ export const Navbar: React.FC = () => {
         >
           Contact
         </Link>
-        {session?.user.role === IUserRole.Teacher && (
+        {(session?.user.role === IUserRole.Teacher || session?.user.role === IUserRole.Student) && (
           <Link
             className={isHydrated && pathname === '/class' ? 'active' : ''}
             href="/class"
             onClick={() => setIsMenuOpen(false)}
           >
-            Mes classes
+            {session?.user.role === IUserRole.Teacher ? 'Mes classes' : 'Ma classe'}
           </Link>
         )}
       </div>

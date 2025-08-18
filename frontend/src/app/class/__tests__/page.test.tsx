@@ -20,3 +20,6 @@ describe('ClassPage', () => {
     expect(screen.getByTestId('classe-page')).toBeInTheDocument();
   });
 });
+
+
+

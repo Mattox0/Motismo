@@ -5,3 +5,6 @@ export const createClasseSchema = z.object({
 });
 
 export type CreateClasseFormData = z.infer<typeof createClasseSchema>;
+
+
+

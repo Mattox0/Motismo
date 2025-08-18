@@ -202,4 +202,51 @@ export class ClasseService {
 
     return await this.classesRepository.save(classe);
   }
+
+  async joinByCode(code: string, student: User): Promise<Classe> {
+    if (student.role !== Role.Student) {
+      throw new HttpException(
+        await this.translationService.translate("error.ONLY_STUDENTS_CAN_JOIN_CLASSES"),
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const classe = await this.findByCode(code);
+
+    const isAlreadyInClass = classe.students.some((existingStudent) => existingStudent.id === student.id);
+
+    if (isAlreadyInClass) {
+      throw new HttpException(
+        await this.translationService.translate("error.STUDENT_ALREADY_IN_CLASSE"),
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    classe.students.push(student);
+
+    return await this.classesRepository.save(classe);
+  }
+
+  async leaveClass(student: User): Promise<void> {
+    if (student.role !== Role.Student) {
+      throw new HttpException(
+        await this.translationService.translate("error.ONLY_STUDENTS_CAN_JOIN_CLASSES"),
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const classes = await this.findByStudent(student.id);
+
+    if (classes.length === 0) {
+      throw new HttpException(
+        await this.translationService.translate("error.STUDENT_NOT_IN_CLASS"),
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    for (const classe of classes) {
+      classe.students = classe.students.filter((existingStudent) => existingStudent.id !== student.id);
+      await this.classesRepository.save(classe);
+    }
+  }
 }

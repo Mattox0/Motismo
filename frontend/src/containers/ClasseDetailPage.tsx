@@ -10,6 +10,7 @@ import { ErrorState } from '@/components/ErrorState';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { StudentsList } from '@/components/StudentsList';
 import { useGetClasseByCodeQuery } from '@/services/classe.service';
+import { IUserRole } from '@/types/IUserRole';
 import { showToast } from '@/utils/toast';
 
 interface IClasseDetailPageProps {
@@ -26,7 +27,7 @@ export const ClasseDetailPage: FC<IClasseDetailPageProps> = ({ params }) => {
     data: classe,
     isLoading,
     error,
-  } = useGetClasseByCodeQuery({ code: code! }, { skip: !code || !session?.accessToken });
+  } = useGetClasseByCodeQuery({ code: code || '' }, { skip: !code || !session?.accessToken });
 
   useEffect(() => {
     const getCode = async () => {
@@ -62,6 +63,17 @@ export const ClasseDetailPage: FC<IClasseDetailPageProps> = ({ params }) => {
       router.push('/class');
     }
   }, [error, router, t]);
+
+  useEffect(() => {
+    if (
+      session?.user &&
+      session.user.role !== IUserRole.Teacher &&
+      session.user.role !== IUserRole.Admin
+    ) {
+      showToast.error(t('classe.accessDenied'));
+      router.push('/class');
+    }
+  }, [session, router, t]);
 
   const handleBackToClasses = () => {
     router.push('/class');

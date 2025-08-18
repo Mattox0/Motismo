@@ -46,6 +46,11 @@
     "confirmPasswordPlaceholder": "Confirm your password",
     "registerSuccess": "Registration successful",
     "loginSuccess": "Login successful",
+    "role": "Role",
+    "student": "Student",
+    "teacher": "Teacher",
+    "classCode": "Class code (optional)",
+    "classCodePlaceholder": "Ex: ABC123",
     "errors": {
       "invalidCredentials": "Incorrect email or password",
       "emailRequired": "Email is required",
@@ -195,6 +200,29 @@
     "students": "Students",
     "teachers": "Teachers",
     "view": "View",
-    "edit": "Edit"
+    "edit": "Edit",
+    "student": {
+      "title": "Join a Class"
+    },
+    "join": {
+      "title": "Join a Class",
+      "description": "Enter the class code provided by your teacher to join the class",
+      "codeLabel": "Class Code",
+      "codePlaceholder": "Ex: ABC123",
+      "codeRequired": "Class code is required",
+      "codeMinLength": "Code must be 6 characters long",
+      "codeMaxLength": "Code must be 6 characters long",
+      "submit": "Join Class",
+      "success": "You have successfully joined class {{name}}",
+      "error": "Error trying to join the class"
+    },
+    "myClass": "My Class",
+    "youAreInClass": "You are in class {{name}}",
+    "leaveClass": "Leave Class",
+    "leavingClass": "Leaving...",
+    "leaveClassSuccess": "You have successfully left the class",
+    "leaveClassError": "Error leaving the class",
+    "notInClass": "You are not in any class",
+    "accessDenied": "Access denied. This page is reserved for teachers."
   }
 }

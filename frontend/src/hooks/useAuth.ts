@@ -30,6 +30,8 @@ export const useAuth = () => {
     email: string;
     password: string;
     username: string;
+    role?: string;
+    classCode?: string;
     image?: File;
   }) => {
     try {

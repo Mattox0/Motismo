@@ -44,6 +44,11 @@
     "confirmPasswordPlaceholder": "Confirmez votre mot de passe",
     "registerSuccess": "Inscription réussie",
     "loginSuccess": "Connexion réussie",
+    "role": "Rôle",
+    "student": "Élève",
+    "teacher": "Professeur",
+    "classCode": "Code de classe (optionnel)",
+    "classCodePlaceholder": "Ex: ABC123",
     "errors": {
       "invalidCredentials": "Email ou mot de passe incorrect",
       "emailRequired": "L'email est requis",
@@ -259,6 +264,29 @@
     "students": "Élèves",
     "teachers": "Professeurs",
     "view": "Voir",
-    "edit": "Modifier"
+    "edit": "Modifier",
+    "student": {
+      "title": "Rejoindre une classe"
+    },
+    "join": {
+      "title": "Rejoindre une classe",
+      "description": "Entrez le code de la classe fourni par votre professeur pour rejoindre la classe",
+      "codeLabel": "Code de la classe",
+      "codePlaceholder": "Ex: ABC123",
+      "codeRequired": "Le code de la classe est requis",
+      "codeMinLength": "Le code doit contenir 6 caractères",
+      "codeMaxLength": "Le code doit contenir 6 caractères",
+      "submit": "Rejoindre la classe",
+      "success": "Vous avez rejoint la classe {{name}} avec succès",
+      "error": "Erreur lors de la tentative de rejoindre la classe"
+    },
+    "myClass": "Ma Classe",
+    "youAreInClass": "Vous êtes dans la classe {{name}}",
+    "leaveClass": "Quitter la classe",
+    "leavingClass": "Sortie en cours...",
+    "leaveClassSuccess": "Vous avez quitté la classe avec succès",
+    "leaveClassError": "Erreur lors de la sortie de la classe",
+    "notInClass": "Vous n'êtes dans aucune classe",
+    "accessDenied": "Accès refusé. Cette page est réservée aux professeurs."
   }
 }

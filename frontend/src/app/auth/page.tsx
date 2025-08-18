@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AuthNav from '@/components/auth/AuthNav';
-import SocialLogin from '@/components/auth/SocialLogin';
-import Divider from '@/components/Divider';
 import LoginForm from '@/components/forms/LoginForm';
 import RegisterForm from '@/components/forms/RegisterForm';
 import AuthLayout from '@/layout/AuthLayout';
@@ -35,10 +33,6 @@ export default function AuthPage() {
             <RegisterForm />
           </div>
         </div>
-
-        <Divider text={t('auth.orContinueWith')} />
-
-        <SocialLogin />
       </main>
     </AuthLayout>
   );

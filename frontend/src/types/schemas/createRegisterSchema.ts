@@ -8,6 +8,8 @@ export const createRegisterSchema = (t: TFunction) => {
       email: z.string().email(t('validation.invalidEmail')),
       password: z.string().min(8, t('validation.passwordMinLength')),
       confirmPassword: z.string(),
+      role: z.enum(['Student', 'Teacher']),
+      classCode: z.string().optional(),
     })
     .refine(data => data.password === data.confirmPassword, {
       message: t('validation.passwordsMustMatch'),

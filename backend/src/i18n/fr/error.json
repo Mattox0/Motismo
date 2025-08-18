@@ -27,5 +27,13 @@
   "NOT_QUESTION_PHASE": "Ce n'est pas le moment de répondre aux questions.",
   "NO_CURRENT_QUESTION": "Il n'y a pas de question actuelle.",
   "INVALID_PHASE_TRANSITION": "Transition de phase invalide.",
-  "ADMIN_NOT_ALLOWED": "Vous ne pouvez pas créer un administrateur"
+  "ADMIN_NOT_ALLOWED": "Vous ne pouvez pas créer un administrateur",
+  "CLASSE_NOT_FOUND": "La classe n'existe pas",
+  "ONLY_TEACHERS_CAN_CREATE_CLASSES": "Seuls les enseignants peuvent créer des classes",
+  "ONLY_STUDENTS_CAN_BE_ADDED": "Seuls les étudiants peuvent être ajoutés à une classe",
+  "STUDENT_ALREADY_IN_CLASSE": "L'étudiant est déjà dans cette classe",
+  "ONLY_TEACHERS_CAN_BE_ADDED": "Seuls les enseignants peuvent être ajoutés à une classe",
+  "TEACHER_ALREADY_IN_CLASSE": "L'enseignant est déjà dans cette classe",
+  "ONLY_STUDENTS_CAN_JOIN_CLASSES": "Seuls les étudiants peuvent rejoindre des classes",
+  "STUDENT_NOT_IN_CLASS": "L'étudiant n'est dans aucune classe"
 }

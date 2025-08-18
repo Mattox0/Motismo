@@ -20,6 +20,8 @@ import { FileUploadService } from "@/files/files.service";
 import { TranslationService } from "@/translation/translation.service";
 import { UserService } from "@/user/service/user.service";
 import { ParseFilesPipe } from "@/files/files.validator";
+import { ClasseService } from "@/classe/service/classe.service";
+import { Role } from "@/user/role.enum";
 
 const expirationTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
@@ -31,6 +33,7 @@ export class AuthController {
     private readonly userService: UserService,
     private readonly translationService: TranslationService,
     private readonly fileUploadService: FileUploadService,
+    private readonly classeService: ClasseService,
   ) {}
 
   @Post("/login")
@@ -106,6 +109,15 @@ export class AuthController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+
+    if (user.role === Role.Student && body.classCode) {
+      try {
+        await this.classeService.joinByCode(body.classCode, user);
+      } catch (error) {
+        console.error("Error joining class during registration:", error);
+      }
+    }
+
     const { accessToken } = this.authService.login(user);
 
     response.cookie("access_token", accessToken, {
