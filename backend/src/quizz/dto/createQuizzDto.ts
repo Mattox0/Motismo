@@ -1,6 +1,6 @@
 import { IQuizzType } from "../types/IQuizzType";
-import { IsEnum, IsNotEmpty, MinLength } from "@/utils/validation.decorators";
-import { IsEmpty, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, MinLength, IsString } from "@/utils/validation.decorators";
+import { IsEmpty, IsOptional } from "class-validator";
 
 export class CreateQuizzDto {
   @IsNotEmpty()
@@ -15,4 +15,8 @@ export class CreateQuizzDto {
   @IsOptional()
   @IsEmpty()
   image?: string;
+
+  @IsOptional()
+  @IsString()
+  classIds?: string;
 }

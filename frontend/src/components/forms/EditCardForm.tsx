@@ -4,19 +4,19 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGetClassesQuery } from '@/services/classe.service';
-import { IQuizzType } from '@/types/model/IQuizzType';
-import { CreateQuizFormData, createQuizSchema } from '@/types/schemas/createQuizSchema';
+import { IQuizz } from '@/types/model/IQuizz';
+import { EditCardFormData, editCardSchema } from '@/types/schemas/editCardSchema';
 
 import { Button } from './Button';
 import { ClassSelector } from './ClassSelector';
 
-interface ICreateQuizFormProps {
-  type: IQuizzType;
-  onSubmit: (_data: CreateQuizFormData) => void;
+interface IEditCardFormProps {
+  card: IQuizz;
+  onSubmit: (_data: EditCardFormData) => void;
   onCancel: () => void;
 }
 
-export const CreateQuizForm: FC<ICreateQuizFormProps> = ({ type, onSubmit, onCancel }) => {
+export const EditCardForm: FC<IEditCardFormProps> = ({ card, onSubmit, onCancel }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { data: classes = [] } = useGetClassesQuery();
@@ -27,10 +27,11 @@ export const CreateQuizForm: FC<ICreateQuizFormProps> = ({ type, onSubmit, onCan
     setValue,
     watch,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(createQuizSchema),
+  } = useForm<EditCardFormData>({
+    resolver: zodResolver(editCardSchema),
     defaultValues: {
-      classIds: [],
+      title: card.title,
+      classIds: card.classes?.map(classe => classe.id) || [],
     },
   });
 
@@ -53,28 +54,24 @@ export const CreateQuizForm: FC<ICreateQuizFormProps> = ({ type, onSubmit, onCan
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="create-quiz-form">
+    <form onSubmit={handleSubmit(onSubmit)} className="edit-card-form">
       <div className="form-group">
         <label htmlFor="title" className="form-label">
-          {t('create_quiz.form.title')}
+          {t('edit_card.form.title')}
         </label>
         <input
           type="text"
           id="title"
           {...register('title')}
           className={`form-input ${errors.title ? 'form-input--error' : ''}`}
-          placeholder={
-            type === IQuizzType.QUESTIONS
-              ? t('create_quiz.form.title_questions')
-              : t('create_quiz.form.title_cards')
-          }
+          placeholder={t('edit_card.form.title_placeholder')}
         />
         {errors.title && <span className="form-error">{t(errors.title.message as string)}</span>}
       </div>
 
       <div className="form-group">
         <label htmlFor="image" className="form-label">
-          {t('create_quiz.form.image')}
+          {t('edit_card.form.image')}
         </label>
         <div className="image-upload">
           <input
@@ -92,12 +89,18 @@ export const CreateQuizForm: FC<ICreateQuizFormProps> = ({ type, onSubmit, onCan
             {selectedFile ? (
               <img
                 src={URL.createObjectURL(selectedFile)}
-                alt={t('create_quiz.form.image_preview')}
+                alt={t('edit_card.form.image_preview')}
+                className="image-upload__preview-image"
+              />
+            ) : card.image ? (
+              <img
+                src={card.image}
+                alt={t('edit_card.form.current_image')}
                 className="image-upload__preview-image"
               />
             ) : (
               <div className="image-upload__placeholder">
-                <span>{t('create_quiz.form.image_placeholder')}</span>
+                <span>{t('edit_card.form.image_placeholder')}</span>
               </div>
             )}
           </div>
@@ -105,23 +108,21 @@ export const CreateQuizForm: FC<ICreateQuizFormProps> = ({ type, onSubmit, onCan
         </div>
       </div>
 
-      {type === IQuizzType.CARDS && (
-        <div className="form-group">
-          <ClassSelector
-            classes={classes}
-            selectedClassIds={selectedClassIds}
-            onSelectionChange={handleClassSelectionChange}
-            error={errors.classIds?.message}
-          />
-        </div>
-      )}
+      <div className="form-group">
+        <ClassSelector
+          classes={classes}
+          selectedClassIds={selectedClassIds}
+          onSelectionChange={handleClassSelectionChange}
+          error={errors.classIds?.message}
+        />
+      </div>
 
-      <div className="create-quiz-form__buttons">
+      <div className="edit-card-form__buttons">
         <Button type="button" variant="secondary" onClick={onCancel}>
-          {t('create_quiz.form.cancel')}
+          {t('edit_card.form.cancel')}
         </Button>
         <Button type="submit" variant="primary">
-          {t('create_quiz.form.submit')}
+          {t('edit_card.form.submit')}
         </Button>
       </div>
     </form>

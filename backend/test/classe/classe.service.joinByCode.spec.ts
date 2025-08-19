@@ -87,6 +87,7 @@ describe('ClasseService - joinByCode', () => {
       code: mockCode,
       students: [],
       teachers: [mockTeacher],
+      quizz: [],
     } as Classe;
 
     it('should allow a student to join a class by code', async () => {

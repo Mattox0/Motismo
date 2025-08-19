@@ -69,6 +69,25 @@ export class ClasseService {
     return classe;
   }
 
+  async findByIds(ids: string[]): Promise<Classe[]> {
+    const classes = await this.classesRepository.find({
+      where: ids.map((id) => ({ id })),
+      relations: {
+        teachers: true,
+        students: true,
+      },
+    });
+
+    if (classes.length !== ids.length) {
+      throw new HttpException(
+        await this.translationService.translate("error.SOME_CLASSES_NOT_FOUND"),
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return classes;
+  }
+
   async findByCode(code: string): Promise<Classe> {
     const classe = await this.classesRepository.findOne({
       where: { code },
@@ -248,5 +267,26 @@ export class ClasseService {
       classe.students = classe.students.filter((existingStudent) => existingStudent.id !== student.id);
       await this.classesRepository.save(classe);
     }
+  }
+
+  async validateClassesOwnership(classIds: string[], teacherId: string): Promise<Classe[]> {
+    if (classIds.length === 0) {
+      return [];
+    }
+
+    const classes = await this.findByIds(classIds);
+
+    const unauthorizedClasses = classes.filter(
+      (classe) => !classe.teachers.some((teacher) => teacher.id === teacherId),
+    );
+
+    if (unauthorizedClasses.length > 0) {
+      throw new HttpException(
+        await this.translationService.translate("error.CLASSES_NOT_OWNED_BY_TEACHER"),
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    return classes;
   }
 }

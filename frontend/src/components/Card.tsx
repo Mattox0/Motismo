@@ -11,8 +11,9 @@ export interface ICardProps {
   badge: string;
   title: string;
   creationDate: Date;
-  onEditClick: () => void;
+  onEditClick?: () => void;
   onPresentationClick: () => void;
+  onCardClick?: () => void;
 }
 
 export const Card: FC<ICardProps> = ({
@@ -21,14 +22,24 @@ export const Card: FC<ICardProps> = ({
   title,
   onEditClick,
   onPresentationClick,
+  onCardClick,
   creationDate,
 }) => {
   const { t } = useTranslation();
   return (
     <div className="card">
-      <div className="card-header">
+      <div
+        className="card-header"
+        onClick={onCardClick}
+        style={{ cursor: onCardClick ? 'pointer' : 'default' }}
+      >
         <img className="card-header__image" src={image ?? ''} alt={title} />
         <span className="card-header__badge">{badge}</span>
+        {onCardClick && (
+          <div className="card-header__overlay">
+            <span className="card-header__overlay-text">Modifier</span>
+          </div>
+        )}
       </div>
       <div className="card-content">
         <h3>{title}</h3>
@@ -37,9 +48,11 @@ export const Card: FC<ICardProps> = ({
           <p className="card-content__date-text">{formatDate(creationDate)}</p>
         </div>
         <div className="card-content__buttons">
-          <Button variant="primary" onClick={onEditClick}>
-            {t('card.button.primary')}
-          </Button>
+          {onEditClick && (
+            <Button variant="primary" onClick={onEditClick}>
+              {t('card.button.primary')}
+            </Button>
+          )}
           <Button variant="secondary" onClick={onPresentationClick}>
             {t('card.button.secondary')}
           </Button>

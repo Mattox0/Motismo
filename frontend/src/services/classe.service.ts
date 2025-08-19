@@ -52,6 +52,13 @@ export const classeApi = baseApi.injectEndpoints({
         method: 'DELETE',
       }),
     }),
+    removeStudentFromClass: builder.mutation<IClasse, { classeId: string; studentId: string }>({
+      query: ({ classeId, studentId }) => ({
+        url: `/classes/${classeId}/students/${studentId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [QueryTags.CLASSE],
+    }),
   }),
 });
 
@@ -64,4 +71,5 @@ export const {
   useDeleteClasseMutation,
   useJoinClasseByCodeMutation,
   useLeaveClassMutation,
+  useRemoveStudentFromClassMutation,
 } = classeApi;

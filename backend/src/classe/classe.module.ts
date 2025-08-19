@@ -9,9 +9,10 @@ import { TeacherClasseGuard } from "@/classe/guards/teacher-classe.guard";
 import { TranslationService } from "@/translation/translation.service";
 import { User } from "@/user/user.entity";
 import { UsersModule } from "@/user/user.module";
+import { Quizz } from "@/quizz/quizz.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Classe, User]), forwardRef(() => UsersModule)],
+  imports: [TypeOrmModule.forFeature([Classe, User, Quizz]), forwardRef(() => UsersModule)],
   controllers: [ClasseController],
   providers: [ClasseService, ClasseGuard, TeacherClasseGuard, TranslationService],
   exports: [ClasseService],

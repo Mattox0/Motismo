@@ -78,7 +78,8 @@ export const IsEmail = () =>
     },
   );
 
-export const IsUUID = () =>
-  OriginalIsUUID(4, {
+export const IsUUID = (version?: "4" | "3" | "5" | "6" | "7", options?: ValidationOptions) =>
+  OriginalIsUUID(version, {
+    ...options,
     message: i18nValidationMessage<I18nTranslations>("validation.IS_NOT_UUID"),
   });

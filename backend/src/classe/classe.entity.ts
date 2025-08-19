@@ -1,5 +1,6 @@
 import { User } from "@/user/user.entity";
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Quizz } from "@/quizz/quizz.entity";
 
 @Entity()
 export class Classe {
@@ -39,4 +40,7 @@ export class Classe {
     },
   })
   teachers: User[];
+
+  @ManyToMany(() => Quizz, (quizz) => quizz.classes)
+  quizz: Quizz[];
 }

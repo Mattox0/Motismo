@@ -12,6 +12,7 @@ export const createQuizSchema = z.object({
       file => ['image/jpeg', 'image/png', 'image/gif'].includes(file.type),
       'create_quiz.validation.image_type'
     ),
+  classIds: z.array(z.string()).default([]),
 });
 
 export type CreateQuizFormData = z.infer<typeof createQuizSchema>;

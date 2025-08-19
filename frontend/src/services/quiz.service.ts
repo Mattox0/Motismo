@@ -17,6 +17,14 @@ export const quizApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [QueryTags.QUIZ],
     }),
+    updateQuizz: builder.mutation<IQuizz, { id: string; formData: FormData }>({
+      query: ({ id, formData }) => ({
+        url: `/quizz/${id}`,
+        method: 'PUT',
+        body: formData,
+      }),
+      invalidatesTags: [QueryTags.QUIZ],
+    }),
     getOneQuiz: builder.query<IQuizz, string>({
       query: (id: string) => `/quizz/${id}`,
       providesTags: [QueryTags.QUIZ],
@@ -37,6 +45,7 @@ export const quizApi = baseApi.injectEndpoints({
 export const {
   useGetQuizQuery,
   useCreateQuizzMutation,
+  useUpdateQuizzMutation,
   useGetOneQuizQuery,
   useGetQuizByCodeQuery,
   useCreateGameMutation,

@@ -1,9 +1,20 @@
 import { Question } from "@/question/question.entity";
 import { User } from "@/user/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
 import { IQuizzType } from "./types/IQuizzType";
 import { Card } from "@/cards/card.entity";
 import { Game } from "@/game/game.entity";
+import { Classe } from "@/classe/classe.entity";
+
 @Entity()
 export class Quizz {
   @PrimaryGeneratedColumn("uuid")
@@ -20,6 +31,20 @@ export class Quizz {
 
   @Column({ type: "enum", enum: IQuizzType, default: IQuizzType.QUESTIONS })
   quizzType: IQuizzType;
+
+  @ManyToMany(() => Classe, (classe) => classe.quizz)
+  @JoinTable({
+    name: "quizz_classes",
+    joinColumn: {
+      name: "quizz_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "classe_id",
+      referencedColumnName: "id",
+    },
+  })
+  classes: Classe[];
 
   @OneToMany(() => Question, (question) => question.quizz, {
     cascade: ["remove"],

@@ -56,13 +56,6 @@ export const Navbar: React.FC = () => {
         >
           Dashboard
         </Link>
-        <Link
-          className={isHydrated && pathname === '/contact' ? 'active' : ''}
-          href="/contact"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Contact
-        </Link>
         {(session?.user.role === IUserRole.Teacher || session?.user.role === IUserRole.Student) && (
           <Link
             className={isHydrated && pathname === '/class' ? 'active' : ''}
@@ -72,6 +65,13 @@ export const Navbar: React.FC = () => {
             {session?.user.role === IUserRole.Teacher ? 'Mes classes' : 'Ma classe'}
           </Link>
         )}
+        <Link
+          className={isHydrated && pathname === '/contact' ? 'active' : ''}
+          href="/contact"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Contact
+        </Link>
       </div>
 
       <div className="navbar-brand">

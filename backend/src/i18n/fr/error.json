@@ -35,5 +35,6 @@
   "ONLY_TEACHERS_CAN_BE_ADDED": "Seuls les enseignants peuvent être ajoutés à une classe",
   "TEACHER_ALREADY_IN_CLASSE": "L'enseignant est déjà dans cette classe",
   "ONLY_STUDENTS_CAN_JOIN_CLASSES": "Seuls les étudiants peuvent rejoindre des classes",
-  "STUDENT_NOT_IN_CLASS": "L'étudiant n'est dans aucune classe"
+  "STUDENT_NOT_IN_CLASS": "L'étudiant n'est dans aucune classe",
+  "CLASSES_NOT_OWNED_BY_TEACHER": "Vous ne pouvez pas assigner des classes qui ne vous appartiennent pas"
 }

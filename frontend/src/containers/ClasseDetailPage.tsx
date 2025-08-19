@@ -9,7 +9,10 @@ import { ClasseHeader } from '@/components/ClasseHeader';
 import { ErrorState } from '@/components/ErrorState';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { StudentsList } from '@/components/StudentsList';
-import { useGetClasseByCodeQuery } from '@/services/classe.service';
+import {
+  useGetClasseByCodeQuery,
+  useRemoveStudentFromClassMutation,
+} from '@/services/classe.service';
 import { IUserRole } from '@/types/IUserRole';
 import { showToast } from '@/utils/toast';
 
@@ -28,6 +31,8 @@ export const ClasseDetailPage: FC<IClasseDetailPageProps> = ({ params }) => {
     isLoading,
     error,
   } = useGetClasseByCodeQuery({ code: code || '' }, { skip: !code || !session?.accessToken });
+
+  const [removeStudent] = useRemoveStudentFromClassMutation();
 
   useEffect(() => {
     const getCode = async () => {
@@ -79,6 +84,18 @@ export const ClasseDetailPage: FC<IClasseDetailPageProps> = ({ params }) => {
     router.push('/class');
   };
 
+  const handleRemoveStudent = async (studentId: string) => {
+    if (!classe) return;
+
+    try {
+      await removeStudent({ classeId: classe.id, studentId }).unwrap();
+      showToast.success(t('classe.removeStudent.success'));
+    } catch (error) {
+      console.error('Error removing student:', error);
+      showToast.error(t('classe.removeStudent.error'));
+    }
+  };
+
   if (status === 'loading' || isLoading) {
     return (
       <div className="classe-detail-page">
@@ -103,7 +120,7 @@ export const ClasseDetailPage: FC<IClasseDetailPageProps> = ({ params }) => {
     <div className="classe-detail-page">
       <ClasseHeader classe={classe} onBackClick={handleBackToClasses} />
       <div className="classe-detail-page__content">
-        <StudentsList students={classe.students} />
+        <StudentsList students={classe.students} onRemoveStudent={handleRemoveStudent} />
       </div>
     </div>
   );

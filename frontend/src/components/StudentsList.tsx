@@ -10,9 +10,10 @@ import { StudentCard } from './StudentCard';
 
 interface IStudentsListProps {
   students: IUser[];
+  onRemoveStudent?: (studentId: string) => void;
 }
 
-export const StudentsList: FC<IStudentsListProps> = ({ students }) => {
+export const StudentsList: FC<IStudentsListProps> = ({ students, onRemoveStudent }) => {
   const { t } = useTranslation();
 
   if (students.length === 0) {
@@ -29,7 +30,7 @@ export const StudentsList: FC<IStudentsListProps> = ({ students }) => {
       <h2 className="section-title">{t('classe.students')}</h2>
       <div className="students-list">
         {students.map((student: IUser) => (
-          <StudentCard key={student.id} student={student} />
+          <StudentCard key={student.id} student={student} onRemoveStudent={onRemoveStudent} />
         ))}
       </div>
     </div>

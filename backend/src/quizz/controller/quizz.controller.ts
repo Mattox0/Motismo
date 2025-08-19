@@ -35,6 +35,7 @@ import { QuizzRequest } from "@/quizz/decorator/quizz.decorator";
 import { QuizzGuard } from "@/quizz/guards/quizz.guard";
 import { UpdatedQuizzDto } from "@/quizz/dto/updatedQuizzDto";
 import { ParseFilesPipe } from "@/files/files.validator";
+import { Role } from "@/user/role.enum";
 
 @ApiTags("quizz")
 @ApiUnauthorizedResponse({ description: "User not connected" })
@@ -56,7 +57,11 @@ export class QuizzController {
     isArray: true,
   })
   getAll(@CurrentUser() myUser: User): Promise<Quizz[]> {
-    return this.quizzService.getMyQuizz(myUser);
+    if (myUser.role === Role.Teacher || myUser.role === Role.Admin) {
+      return this.quizzService.getMyQuizz(myUser);
+    }
+
+    return this.quizzService.getStudentQuizz(myUser);
   }
 
   @Get("/code/:code")

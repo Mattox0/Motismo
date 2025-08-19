@@ -39,6 +39,14 @@ export const AskCreateSection: FC = () => {
         formData.append('image', data.image);
       }
 
+      if (selectedType === IQuizzType.CARDS) {
+        if (data.classIds && data.classIds.length > 0) {
+          formData.append('classIds', JSON.stringify(data.classIds));
+        } else {
+          formData.append('classIds', JSON.stringify([]));
+        }
+      }
+
       const response = await createQuizz(formData).unwrap();
 
       showToast.success(

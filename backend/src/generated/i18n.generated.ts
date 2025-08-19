@@ -43,6 +43,7 @@ export type I18nTranslations = {
         "TEACHER_ALREADY_IN_CLASSE": string;
         "ONLY_STUDENTS_CAN_JOIN_CLASSES": string;
         "STUDENT_NOT_IN_CLASS": string;
+        "CLASSES_NOT_OWNED_BY_TEACHER": string;
     };
     "user": {
         "HELLO": string;

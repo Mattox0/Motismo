@@ -9,6 +9,8 @@ import { UserService } from "@/user/service/user.service";
 import { UpdatedQuizzDto } from "@/quizz/dto/updatedQuizzDto";
 import { FileUploadService } from "@/files/files.service";
 import { User } from "@/user/user.entity";
+import { ClasseService } from "@/classe/service/classe.service";
+import { IQuizzType } from "@/quizz/types/IQuizzType";
 
 @Injectable()
 export class QuizzService {
@@ -18,12 +20,14 @@ export class QuizzService {
     private userService: UserService,
     private translationService: TranslationService,
     private fileUploadService: FileUploadService,
+    private classeService: ClasseService,
   ) {}
 
   getAll(): Promise<Quizz[]> {
     return this.quizzRepository.find({
       relations: {
         author: true,
+        classes: true,
       },
     });
   }
@@ -31,14 +35,26 @@ export class QuizzService {
   async getMyQuizz(user: User) {
     return await this.quizzRepository.find({
       where: { author: { id: user.id } },
-      relations: { cards: true, questions: true },
+      relations: { cards: true, questions: true, classes: true },
+    });
+  }
+
+  async getStudentQuizz(user: User) {
+    return await this.quizzRepository.find({
+      where: {
+        quizzType: IQuizzType.CARDS,
+        classes: {
+          students: { id: user.id },
+        },
+      },
+      relations: { cards: true, questions: true, classes: true, author: true },
     });
   }
 
   async getByCode(code: string) {
     return await this.quizzRepository.findOne({
       where: { games: { code: code } },
-      relations: { cards: true, questions: true, games: true, author: true },
+      relations: { cards: true, questions: true, games: true, author: true, classes: true },
     });
   }
 
@@ -54,6 +70,20 @@ export class QuizzService {
       author: user,
     });
 
+    if (createQuizzDto.classIds) {
+      try {
+        const classIdsArray = JSON.parse(createQuizzDto.classIds);
+
+        if (Array.isArray(classIdsArray) && classIdsArray.length > 0) {
+          const classes = await this.classeService.validateClassesOwnership(classIdsArray as string[], userId);
+
+          quizz.classes = classes;
+        }
+      } catch (error) {
+        console.warn("Failed to parse classIds:", error);
+      }
+    }
+
     return this.quizzRepository.save(quizz);
   }
 
@@ -66,16 +96,28 @@ export class QuizzService {
   async update(quizz: Quizz, updateQuizzDto: UpdatedQuizzDto): Promise<void> {
     await this.deleteUnusedImages(quizz, updateQuizzDto);
 
-    const query = await this.quizzRepository
-      .createQueryBuilder()
-      .update(Quizz)
-      .set(updateQuizzDto)
-      .where("id = :id", { id: quizz.id })
-      .execute();
+    const updateData: any = Object.assign({}, updateQuizzDto);
 
-    if (query.affected === 0) {
-      throw new HttpException(await this.translationService.translate("error.QUIZZ_NOT_FOUND"), HttpStatus.NOT_FOUND);
+    if (updateQuizzDto.classIds !== undefined) {
+      try {
+        const classIdsArray = JSON.parse(updateQuizzDto.classIds);
+
+        if (Array.isArray(classIdsArray) && classIdsArray.length > 0) {
+          const classes = await this.classeService.validateClassesOwnership(classIdsArray as string[], quizz.author.id);
+
+          updateData.classes = classes;
+        } else {
+          updateData.classes = [];
+        }
+      } catch (error) {
+        updateData.classes = [];
+        console.warn("Failed to parse classIds in update:", error);
+      }
     }
+
+    Object.assign(quizz, updateData);
+
+    await this.quizzRepository.save(quizz);
 
     return;
   }
@@ -102,6 +144,9 @@ export class QuizzService {
       relations: {
         author: true,
         questions: true,
+        classes: true,
+        cards: true,
+        games: true,
       },
     });
 
