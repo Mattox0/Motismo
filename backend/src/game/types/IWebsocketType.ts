@@ -12,4 +12,5 @@ export enum IWebsocketType {
   RESULTS = "RESULTS",
   RANKING = "RANKING",
   TIMER = "TIMER",
+  RESET_QUESTION = "RESET_QUESTION",
 }

@@ -20,6 +20,9 @@ export class GameResponse {
   @Column({ type: "json" })
   answer: string | string[];
 
+  @Column({ type: "int", default: 0 })
+  roundPoints: number;
+
   @CreateDateColumn()
   answeredAt: Date;
 }

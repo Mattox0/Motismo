@@ -293,6 +293,9 @@
       "image_type": "L'image doit être au format JPG, PNG ou GIF",
       "image_file": "Veuillez sélectionner une image"
     },
+    "add": {
+      "question": "Ajouter une question"
+    },
     "success": "Quiz modifié avec succès",
     "error": "Une erreur est survenue lors de la modification du quiz"
   },

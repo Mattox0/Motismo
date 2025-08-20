@@ -24,6 +24,7 @@ interface IRankingPlayer {
   name: string;
   avatar: string;
   points: number;
+  roundPoints: number;
   isAuthor: boolean;
   isFastest: boolean;
 }
@@ -146,7 +147,10 @@ export class GameService {
       throw new Error(await this.translationService.translate("error.NOT_AUTHOR"));
     }
 
-    await this.gameRepository.update({ code: socket.data.code }, { status: IGameStatus.DISPLAY_QUESTION });
+    await this.gameRepository.update(
+      { code: socket.data.code },
+      { status: IGameStatus.DISPLAY_QUESTION, questionStartTime: new Date() },
+    );
   }
 
   async getCurrentQuestion(socket: IAuthenticatedSocket): Promise<Question | null> {
@@ -223,6 +227,33 @@ export class GameService {
     }
   }
 
+  private calculatePointsBasedOnTime(game: Game, responseTime: Date): number {
+    if (!game.questionStartTime) {
+      return 100;
+    }
+    const responseTimeMs = responseTime.getTime();
+    const startTimeMs = game.questionStartTime.getTime();
+    const timeElapsedMs = responseTimeMs - startTimeMs;
+    const timeElapsedSeconds = timeElapsedMs / 1000;
+
+    if (timeElapsedSeconds < 0) {
+      return 100;
+    }
+
+    if (timeElapsedSeconds <= 5) {
+      return 100;
+    }
+
+    if (timeElapsedSeconds >= 30) {
+      return 0;
+    }
+
+    const timeRatio = (30 - timeElapsedSeconds) / (30 - 5);
+    const points = Math.round(10 + 90 * timeRatio);
+
+    return points;
+  }
+
   private async submitMultipleChoiceAnswer(
     game: Game,
     gameUser: GameUser,
@@ -232,7 +263,7 @@ export class GameService {
       throw new Error(await this.translationService.translate("error.INVALID_QUESTION_TYPE"));
     }
 
-    await this.gameResponseService.createResponse(gameUser, game.currentQuestion, game, answer);
+    const responseTime = new Date();
 
     const correctChoices = game.currentQuestion.choices.filter((choice) => choice.isCorrect);
     const correctChoiceIds = correctChoices.map((choice) => choice.id);
@@ -242,11 +273,14 @@ export class GameService {
       answer.every((id) => correctChoiceIds.includes(id)) &&
       correctChoiceIds.every((id) => answer.includes(id));
 
-    if (isCorrect) {
-      const points = 100;
+    let points = 0;
 
+    if (isCorrect) {
+      points = this.calculatePointsBasedOnTime(game, responseTime);
       await this.gameUserService.addPoints(gameUser.id, points);
     }
+
+    await this.gameResponseService.createResponse(gameUser, game.currentQuestion, game, answer, points);
 
     return await this.checkAllPlayersAnswered(game);
   }
@@ -260,18 +294,21 @@ export class GameService {
       throw new Error(await this.translationService.translate("error.INVALID_QUESTION_TYPE"));
     }
 
-    await this.gameResponseService.createResponse(gameUser, game.currentQuestion, game, [answer]);
+    const responseTime = new Date();
 
     const correctChoices = game.currentQuestion.choices.filter((choice) => choice.isCorrect);
     const correctChoiceIds = correctChoices.map((choice) => choice.id);
 
     const isCorrect = correctChoiceIds.includes(answer);
 
-    if (isCorrect) {
-      const points = 100;
+    let points = 0;
 
+    if (isCorrect) {
+      points = this.calculatePointsBasedOnTime(game, responseTime);
       await this.gameUserService.addPoints(gameUser.id, points);
     }
+
+    await this.gameResponseService.createResponse(gameUser, game.currentQuestion, game, [answer], points);
 
     return await this.checkAllPlayersAnswered(game);
   }
@@ -285,18 +322,21 @@ export class GameService {
       throw new Error(await this.translationService.translate("error.INVALID_QUESTION_TYPE"));
     }
 
-    await this.gameResponseService.createResponse(gameUser, game.currentQuestion, game, [answer]);
+    const responseTime = new Date();
 
     const correctChoices = game.currentQuestion.choices.filter((choice) => choice.isCorrect);
     const correctChoiceIds = correctChoices.map((choice) => choice.id);
 
     const isCorrect = correctChoiceIds.includes(answer);
 
-    if (isCorrect) {
-      const points = 100;
+    let points = 0;
 
+    if (isCorrect) {
+      points = this.calculatePointsBasedOnTime(game, responseTime);
       await this.gameUserService.addPoints(gameUser.id, points);
     }
+
+    await this.gameResponseService.createResponse(gameUser, game.currentQuestion, game, [answer], points);
 
     return await this.checkAllPlayersAnswered(game);
   }
@@ -437,6 +477,7 @@ export class GameService {
         name: user.name,
         avatar: user.avatar,
         points: user.points,
+        roundPoints: gameResponses.find((response) => response.user.id === user.id)?.roundPoints || 0,
         isAuthor: user.isAuthor,
         isFastest: user.id === fastestPlayerId,
       }));
@@ -461,6 +502,7 @@ export class GameService {
     if (nextQuestion) {
       game.currentQuestion = nextQuestion;
       game.status = IGameStatus.DISPLAY_QUESTION;
+      game.questionStartTime = new Date();
     } else {
       game.status = IGameStatus.FINISHED;
     }

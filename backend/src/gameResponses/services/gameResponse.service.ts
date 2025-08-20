@@ -20,12 +20,14 @@ export class GameResponseService {
     question: Question,
     game: Game,
     answer: string | string[],
+    roundPoints: number = 0,
   ): Promise<GameResponse> {
     const gameResponse = this.gameResponseRepository.create({
       user,
       question,
       game,
       answer,
+      roundPoints,
     });
 
     return await this.gameResponseRepository.save(gameResponse);

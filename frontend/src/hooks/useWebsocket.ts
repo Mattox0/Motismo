@@ -22,6 +22,7 @@ export const useWebsocket = (code: string) => {
     setRankingStatistics,
     setAnswerCount,
     setTimerFinished,
+    answerCount,
   } = useGame();
 
   useEffect(() => {
@@ -75,6 +76,12 @@ export const useWebsocket = (code: string) => {
         setTimerFinished(data.finished || false);
       }
     );
+
+    socket.on(IWebsocketEvent.RESET_QUESTION, () => {
+      setTimerFinished(false);
+      setTimeLeft(30000);
+      setAnswerCount({ ...answerCount, answered: 0 });
+    });
 
     socket.on(IWebsocketEvent.RESULTS, (statistics: IAnswerStatistics) => {
       setAnswerStatistics(statistics);

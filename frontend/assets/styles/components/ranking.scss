@@ -137,17 +137,36 @@
   }
 
   &__points {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--tertiary-color);
-    background: var(--tertiary-color-light);
-    padding: 0.375rem 0.75rem;
-    border-radius: 20px;
-    border: 1px solid rgba(22, 163, 74, 0.2);
-    min-width: 50px;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
     flex-shrink: 0;
     margin-left: 0.75rem;
+
+    .points-total {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--tertiary-color);
+      background: var(--tertiary-color-light);
+      padding: 0.375rem 0.75rem;
+      border-radius: 20px;
+      border: 1px solid rgba(22, 163, 74, 0.2);
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .points-round {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--primary-color);
+      background: var(--primary-color-light);
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      min-width: 40px;
+      text-align: center;
+    }
   }
 }
 
@@ -193,6 +212,11 @@
           font-size: 0.875rem;
         }
 
+        .player-icon {
+          width: 24px;
+          height: 24px;
+        }
+
         .current-star {
           font-size: 0.875rem;
         }
@@ -200,10 +224,20 @@
     }
 
     &__points {
-      font-size: 0.75rem;
-      padding: 0.25rem 0.5rem;
-      min-width: 40px;
+      gap: 0.125rem;
       margin-left: 0.5rem;
+
+      .points-total {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        min-width: 40px;
+      }
+
+      .points-round {
+        font-size: 0.625rem;
+        padding: 0.125rem 0.375rem;
+        min-width: 32px;
+      }
     }
   }
 }

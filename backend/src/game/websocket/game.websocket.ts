@@ -138,8 +138,11 @@ export class RoomWebsocketGateway implements OnGatewayConnection, OnGatewayDisco
   @SubscribeMessage(IWebsocketType.NEXT_QUESTION)
   nextQuestion(@ConnectedSocket() socket: IAuthenticatedSocket) {
     return this.handleAction(socket, async () => {
+      this.server.to(socket.data.code).emit(IWebsocketType.RESET_QUESTION);
       await this.gameService.nextQuestion(socket);
       await this.emitUpdate(socket);
+      await this.emitQuestionData(socket);
+      this.startQuestionTimer(socket);
     });
   }
 

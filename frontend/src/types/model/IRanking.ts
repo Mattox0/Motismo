@@ -4,6 +4,7 @@ export interface IRankingPlayer {
   name: string;
   avatar: string;
   points: number;
+  roundPoints: number;
   isAuthor: boolean;
   isFastest: boolean;
 }

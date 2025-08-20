@@ -85,12 +85,7 @@ export const Ranking: FC<IRankingProps> = ({ statistics }) => {
                       />
                       <div className="player-info">
                         <span className="player-name">{player.name}</span>
-                        {player.isFastest && (
-                          <BoltIcon
-                            className="fastest-player"
-                            style={{ fontSize: '1rem', color: '#FFD700' }}
-                          />
-                        )}
+                        {player.isFastest && <BoltIcon className="player-icon" />}
                       </div>
                     </div>
                     <motion.div
@@ -99,7 +94,10 @@ export const Ranking: FC<IRankingProps> = ({ statistics }) => {
                       animate={{ scale: 1 }}
                       transition={{ delay: index * 0.1 + 0.2, type: 'spring' }}
                     >
-                      {player.points} pts
+                      <div className="points-total">{player.points} pts</div>
+                      {player.roundPoints > 0 && (
+                        <div className="points-round">+{player.roundPoints} pts</div>
+                      )}
                     </motion.div>
                   </motion.div>
                 );

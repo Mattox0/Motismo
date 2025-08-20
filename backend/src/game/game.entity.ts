@@ -31,4 +31,7 @@ export class Game {
 
   @OneToMany(() => GameResponse, (gameResponse) => gameResponse.game)
   responses: GameResponse[];
+
+  @Column({ type: "timestamp", nullable: true })
+  questionStartTime?: Date;
 }
