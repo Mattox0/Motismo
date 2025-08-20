@@ -27,11 +27,11 @@ export const EditCardForm: FC<IEditCardFormProps> = ({ card, onSubmit, onCancel 
     setValue,
     watch,
     formState: { errors },
-  } = useForm<EditCardFormData>({
+  } = useForm({
     resolver: zodResolver(editCardSchema),
     defaultValues: {
       title: card.title,
-      classIds: card.classes?.map(classe => classe.id) || [],
+      classIds: [],
     },
   });
 

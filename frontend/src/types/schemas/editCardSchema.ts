@@ -13,7 +13,11 @@ export const editCardSchema = z.object({
       'edit_card.validation.image_type'
     )
     .optional(),
-  classIds: z.array(z.string()).optional().default([]),
+  classIds: z.array(z.string()),
 });
 
-export type EditCardFormData = z.infer<typeof editCardSchema>;
+export type EditCardFormData = {
+  title: string;
+  image?: File;
+  classIds: string[];
+};
