@@ -116,11 +116,11 @@ describe('AuthPage', () => {
     expect(registerWrapper).toHaveClass('register', 'active');
   });
 
-  it('should render divider and social login components', () => {
+  it('should render auth content with title and description', () => {
     render(<AuthPage />);
 
-    expect(screen.getByTestId('divider')).toBeInTheDocument();
-    expect(screen.getByTestId('social-login')).toBeInTheDocument();
+    expect(screen.getByText('auth.welcome')).toBeInTheDocument();
+    expect(screen.getByText('auth.loginDescription')).toBeInTheDocument();
   });
 
   it('should render all form components', () => {

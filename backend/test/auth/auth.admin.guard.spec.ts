@@ -63,7 +63,7 @@ describe("AdminGuard", () => {
       const context = {
         switchToHttp: () => ({
           getRequest: () => ({
-            user: { role: Role.Customer },
+            user: { role: Role.Student },
           }),
         }),
       } as ExecutionContext;

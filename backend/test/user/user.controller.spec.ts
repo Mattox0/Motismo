@@ -25,7 +25,7 @@ describe("UserController", () => {
     id: "user-id",
     username: "testuser",
     email: "test@example.com",
-    role: Role.Customer,
+    role: Role.Student,
     password: "hashed-password",
     creationDate: new Date(),
   };

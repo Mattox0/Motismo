@@ -32,6 +32,7 @@ describe("GameController", () => {
       quizzType: IQuizzType.QUESTIONS,
       questions: [{ id: "q1" }],
       author: { id: "user-id" },
+      classes: [],
     };
 
     it("should create a game successfully", async () => {
@@ -42,7 +43,7 @@ describe("GameController", () => {
     });
 
     it("should throw BadRequestException for non-question quizz type", async () => {
-      const invalidQuizz = { ...mockQuizz, quizzType: IQuizzType.CARDS };
+      const invalidQuizz = { ...mockQuizz, quizzType: IQuizzType.CARDS, classes: [] };
 
       await expect(controller.createGame(invalidQuizz as any, mockUser as any)).rejects.toThrow(BadRequestException);
 
@@ -50,7 +51,7 @@ describe("GameController", () => {
     });
 
     it("should throw BadRequestException for quizz without questions", async () => {
-      const invalidQuizz = { ...mockQuizz, questions: [] };
+      const invalidQuizz = { ...mockQuizz, questions: [], classes: [] };
 
       await expect(controller.createGame(invalidQuizz as any, mockUser as any)).rejects.toThrow(BadRequestException);
 
@@ -58,7 +59,7 @@ describe("GameController", () => {
     });
 
     it("should throw UnauthorizedException if user is not the author", async () => {
-      const invalidQuizz = { ...mockQuizz, author: { id: "other-user-id" } };
+      const invalidQuizz = { ...mockQuizz, author: { id: "other-user-id" }, classes: [] };
 
       await expect(controller.createGame(invalidQuizz as any, mockUser as any)).rejects.toThrow(UnauthorizedException);
 

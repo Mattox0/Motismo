@@ -95,7 +95,7 @@ describe("JwtStrategy", () => {
         id: "123",
         username: "testuser",
         email: "test@example.com",
-        role: Role.Customer,
+        role: Role.Student,
       };
 
       const result = strategy.validate(payload);
@@ -131,7 +131,7 @@ describe("JwtStrategy", () => {
         id: "123",
         username: "testuser",
         email: "test@example.com",
-        role: Role.Customer,
+        role: Role.Student,
         extraField: "should not be included",
       };
 

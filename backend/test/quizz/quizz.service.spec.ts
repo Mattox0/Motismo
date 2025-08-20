@@ -11,6 +11,7 @@ import { HttpException } from "@nestjs/common";
 import { Role } from "@/user/role.enum";
 import { IQuizzType } from "@/quizz/types/IQuizzType";
 import { FileUploadService } from "@/files/files.service";
+import { ClasseService } from "@/classe/service/classe.service";
 
 const mockQuizzRepository = {
   find: jest.fn(),
@@ -59,6 +60,16 @@ describe("QuizzService", () => {
           provide: FileUploadService,
           useValue: mockFileUploadService,
         },
+        {
+          provide: ClasseService,
+          useValue: {
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            remove: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -82,9 +93,10 @@ describe("QuizzService", () => {
           email: "example@yoohoo.fr",
           password: "password",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         },
         creationDate: new Date(),
+        classes: [],
       };
 
       mockQuizzRepository.find.mockResolvedValue([quizz1]);
@@ -162,9 +174,10 @@ describe("QuizzService", () => {
           email: "example@yoohoo.fr",
           password: "password",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         },
         creationDate: new Date(),
+        classes: [],
       };
 
       const mockQueryBuilder = {
@@ -175,18 +188,11 @@ describe("QuizzService", () => {
       };
 
       mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
-      jest
-        .spyOn(quizzRepo, "createQueryBuilder")
-
-        .mockImplementation(() => mockQueryBuilder as any);
+      mockQuizzRepository.save = jest.fn().mockResolvedValue(existingQuizz);
 
       await service.update(existingQuizz, updatedQuizzDto);
 
-      expect(mockQueryBuilder.update).toHaveBeenCalledWith(Quizz);
-      expect(mockQueryBuilder.set).toHaveBeenCalledWith(updatedQuizzDto);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id", {
-        id: quizzId,
-      });
+      expect(mockQuizzRepository.save).toHaveBeenCalledWith(existingQuizz);
     });
 
     it("should delete old image when updating with new image", async () => {
@@ -208,9 +214,10 @@ describe("QuizzService", () => {
           email: "example@yoohoo.fr",
           password: "password",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         },
         creationDate: new Date(),
+        classes: [],
       };
 
       const updatedQuizzDto: UpdatedQuizzDto = {
@@ -226,21 +233,14 @@ describe("QuizzService", () => {
       };
 
       mockQuizzRepository.findOne.mockResolvedValue(existingQuizz);
-      jest
-        .spyOn(quizzRepo, "createQueryBuilder")
-
-        .mockImplementation(() => mockQueryBuilder as any);
+      mockQuizzRepository.save = jest.fn().mockResolvedValue(existingQuizz);
 
       mockFileUploadService.deleteFile.mockClear();
 
       await service.update(existingQuizz, updatedQuizzDto);
 
       expect(mockFileUploadService.deleteFile).toHaveBeenCalledWith(oldImage);
-      expect(mockQueryBuilder.update).toHaveBeenCalledWith(Quizz);
-      expect(mockQueryBuilder.set).toHaveBeenCalledWith(updatedQuizzDto);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith("id = :id", {
-        id: quizzId,
-      });
+      expect(mockQuizzRepository.save).toHaveBeenCalledWith(existingQuizz);
     });
 
     it("should throw HttpException if update fails", async () => {
@@ -263,25 +263,16 @@ describe("QuizzService", () => {
           email: "example@yoohoo.fr",
           password: "password",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         },
         creationDate: new Date(),
-      };
-
-      const mockQueryBuilder = {
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({ affected: 0 }),
+        classes: [],
       };
 
       mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
-      jest
-        .spyOn(quizzRepo, "createQueryBuilder")
+      mockQuizzRepository.save = jest.fn().mockRejectedValue(new Error("Update failed"));
 
-        .mockImplementation(() => mockQueryBuilder as any);
-
-      await expect(service.update(existingQuizz, updatedQuizzDto)).rejects.toThrow("error.QUIZZ_NOT_FOUND");
+      await expect(service.update(existingQuizz, updatedQuizzDto)).rejects.toThrow("Update failed");
     });
   });
 
@@ -300,9 +291,10 @@ describe("QuizzService", () => {
           email: "example@yoohoo.fr",
           password: "password",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         },
         creationDate: new Date(),
+        classes: [],
       };
 
       mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
@@ -327,9 +319,10 @@ describe("QuizzService", () => {
           email: "example@yoohoo.fr",
           password: "password",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         },
         creationDate: new Date(),
+        classes: [],
       };
 
       mockQuizzRepository.findOne = jest.fn().mockResolvedValue(existingQuizz);
@@ -369,9 +362,10 @@ describe("QuizzService", () => {
           email: "u@e.c",
           password: "p",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         },
         creationDate: new Date(),
+        classes: [],
       };
 
       mockQuizzRepository.findOne.mockResolvedValue(quizz);
@@ -380,7 +374,7 @@ describe("QuizzService", () => {
 
       expect(mockQuizzRepository.findOne).toHaveBeenCalledWith({
         where: { games: { code: "ROOM123" } },
-        relations: { cards: true, questions: true, games: true, author: true },
+        relations: { cards: true, questions: true, games: true, author: true, classes: true },
       });
       expect(res).toBe(quizz);
     });
@@ -392,7 +386,7 @@ describe("QuizzService", () => {
 
       expect(mockQuizzRepository.findOne).toHaveBeenCalledWith({
         where: { games: { code: "UNKNOWN" } },
-        relations: { cards: true, questions: true, games: true, author: true },
+        relations: { cards: true, questions: true, games: true, author: true, classes: true },
       });
       expect(res).toBeNull();
     });
@@ -407,7 +401,7 @@ describe("QuizzService", () => {
 
       expect(mockQuizzRepository.find).toHaveBeenCalledWith({
         where: { author: { id: "user-42" } },
-        relations: { cards: true, questions: true },
+        relations: { cards: true, questions: true, classes: true },
       });
       expect(res).toBe(rows);
     });
@@ -429,9 +423,10 @@ describe("QuizzService", () => {
           email: "x@y.z",
           password: "p",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         },
         creationDate: new Date(),
+        classes: [],
       };
 
       mockQuizzRepository.findOne.mockResolvedValue(quizz);
@@ -440,7 +435,7 @@ describe("QuizzService", () => {
 
       expect(mockQuizzRepository.findOne).toHaveBeenCalledWith({
         where: { id: "abc" },
-        relations: { author: true, questions: true },
+        relations: { author: true, questions: true, cards: true, classes: true, games: true },
       });
       expect(res).toBe(quizz);
     });

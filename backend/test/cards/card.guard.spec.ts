@@ -21,7 +21,7 @@ describe("CardGuard", () => {
     email: "test@example.com",
     password: "hashed-password",
     creationDate: new Date(),
-    role: Role.Customer,
+    role: Role.Student,
   };
 
   const mockQuizz: Quizz = {
@@ -34,6 +34,7 @@ describe("CardGuard", () => {
     image: "image.jpg",
     questions: [],
     cards: [],
+    classes: [],
   };
 
   const mockCard: Card = {

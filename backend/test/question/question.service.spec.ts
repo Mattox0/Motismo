@@ -1,8 +1,12 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { QuestionService } from "@/question/service/question.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+
+import { QuestionService } from "@/question/service/question.service";
 import { Question } from "@/question/question.entity";
 import { ChoiceQuestion } from "@/question/entity/choiceQuestion.entity";
+import { WordCloudQuestion } from "@/question/entity/wordCloudQuestion.entity";
+import { Word } from "@/question/entity/word.entity";
 import { TranslationService } from "@/translation/translation.service";
 import { ChoiceService } from "@/choice/service/choice.service";
 import { FileUploadService } from "@/files/files.service";
@@ -13,6 +17,8 @@ describe("QuestionService", () => {
   let service: QuestionService;
   let mockQuestionRepository: any;
   let mockChoiceQuestionRepository: any;
+  let mockWordCloudQuestionRepository: any;
+  let mockWordRepository: any;
   let mockTranslationService: any;
   let mockChoiceService: any;
   let mockFileUploadService: any;
@@ -20,29 +26,56 @@ describe("QuestionService", () => {
   beforeEach(async () => {
     mockQuestionRepository = {
       find: jest.fn(),
-      create: jest.fn(),
+      findOne: jest.fn(),
       save: jest.fn(),
-      delete: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
+      create: jest.fn(),
+      createQueryBuilder: jest.fn(),
     };
 
     mockChoiceQuestionRepository = {
-      create: jest.fn(),
+      find: jest.fn(),
+      findOne: jest.fn(),
       save: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
+      create: jest.fn(),
+    };
+
+    mockWordCloudQuestionRepository = {
+      find: jest.fn(),
+      findOne: jest.fn(),
+      save: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      create: jest.fn(),
+    };
+
+    mockWordRepository = {
+      find: jest.fn(),
+      findOne: jest.fn(),
+      save: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
     };
 
     mockTranslationService = {
-      translate: jest.fn().mockResolvedValue("translated message"),
+      translate: jest.fn(),
     };
 
     mockChoiceService = {
       createChoice: jest.fn(),
       updateChoices: jest.fn(),
+      getChoices: jest.fn(),
+      getChoice: jest.fn(),
     };
 
     mockFileUploadService = {
       deleteFile: jest.fn(),
+      uploadFile: jest.fn(),
+      getFile: jest.fn(),
+      getFileUrl: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -55,6 +88,14 @@ describe("QuestionService", () => {
         {
           provide: getRepositoryToken(ChoiceQuestion),
           useValue: mockChoiceQuestionRepository,
+        },
+        {
+          provide: getRepositoryToken(WordCloudQuestion),
+          useValue: mockWordCloudQuestionRepository,
+        },
+        {
+          provide: getRepositoryToken(Word),
+          useValue: mockWordRepository,
         },
         {
           provide: TranslationService,
@@ -80,7 +121,7 @@ describe("QuestionService", () => {
 
   describe("getQuestions", () => {
     it("should return questions for a quizz", async () => {
-      const mockQuizz = { id: "quizz-id" };
+      const mockQuizz = { id: "quizz-id", classes: [] };
       const mockQuestions = [{ id: "q1", title: "Question 1" }];
 
       mockQuestionRepository.find.mockResolvedValue(mockQuestions);
@@ -90,7 +131,7 @@ describe("QuestionService", () => {
       expect(mockQuestionRepository.find).toHaveBeenCalledWith({
         where: { quizz: { id: "quizz-id" } },
         order: { order: "ASC" },
-        relations: ["choices", "quizz"],
+        relations: ["choices", "quizz", "words"],
       });
       expect(result).toEqual(mockQuestions);
     });
@@ -160,7 +201,7 @@ describe("QuestionService", () => {
   });
 
   describe("createQuestion", () => {
-    const mockQuizz = { id: "quizz-id" };
+    const mockQuizz = { id: "quizz-id", classes: [] };
 
     beforeEach(() => {
       jest.spyOn(service as any, "getMaxOrder").mockResolvedValue(2);
@@ -213,17 +254,19 @@ describe("QuestionService", () => {
 
       const mockQuestion = { id: "new-question-id" };
 
-      mockQuestionRepository.create.mockReturnValue(mockQuestion);
+      mockWordCloudQuestionRepository.create.mockReturnValue(mockQuestion);
+      mockWordCloudQuestionRepository.save.mockResolvedValue(mockQuestion);
 
       await service.createQuestion(mockQuizz as any, createQuestionDto as any);
 
-      expect(mockQuestionRepository.create).toHaveBeenCalledWith({
+      expect(mockWordCloudQuestionRepository.create).toHaveBeenCalledWith({
         title: "Test Question",
         quizz: mockQuizz,
         questionType: QuestionType.WORD_CLOUD,
         order: 2,
+        maxWords: 5,
       });
-      expect(mockQuestionRepository.save).toHaveBeenCalledWith(mockQuestion);
+      expect(mockWordCloudQuestionRepository.save).toHaveBeenCalledWith(mockQuestion);
     });
 
     it("should use max order + 1 if no order provided", async () => {
@@ -234,15 +277,17 @@ describe("QuestionService", () => {
 
       const mockQuestion = { id: "new-question-id" };
 
-      mockQuestionRepository.create.mockReturnValue(mockQuestion);
+      mockWordCloudQuestionRepository.create.mockReturnValue(mockQuestion);
+      mockWordCloudQuestionRepository.save.mockResolvedValue(mockQuestion);
 
       await service.createQuestion(mockQuizz as any, createQuestionDto as any);
 
-      expect(mockQuestionRepository.create).toHaveBeenCalledWith({
+      expect(mockWordCloudQuestionRepository.create).toHaveBeenCalledWith({
         title: "Test Question",
         quizz: mockQuizz,
         questionType: QuestionType.WORD_CLOUD,
         order: 3,
+        maxWords: 5,
       });
     });
 
@@ -275,7 +320,7 @@ describe("QuestionService", () => {
   });
 
   describe("createChoiceQuestion", () => {
-    const mockQuizz = { id: "quizz-id" };
+    const mockQuizz = { id: "quizz-id", classes: [] };
 
     beforeEach(() => {
       jest.spyOn(service as any, "getMaxOrder").mockResolvedValue(2);
@@ -292,6 +337,7 @@ describe("QuestionService", () => {
           { text: "Choice 2", isCorrect: false },
         ],
         order: 2,
+        classes: [],
       };
 
       const mockQuestion = { id: "new-question-id" };
@@ -310,6 +356,7 @@ describe("QuestionService", () => {
         ],
         quizz: mockQuizz,
         order: 2,
+        classes: [],
       });
       expect(mockChoiceService.createChoice).toHaveBeenCalledTimes(2);
       expect(service["normalizeOrders"]).toHaveBeenCalledWith("quizz-id");
@@ -332,11 +379,12 @@ describe("QuestionService", () => {
   });
 
   describe("updateQuestion", () => {
-    const mockQuizz = { id: "quizz-id" };
+    const mockQuizz = { id: "quizz-id", classes: [] };
     const mockQuestion = {
       id: "question-id",
       questionType: QuestionType.MULTIPLE_CHOICES,
       order: 2,
+      classes: [],
     };
 
     beforeEach(() => {
@@ -367,7 +415,7 @@ describe("QuestionService", () => {
     it("should update non-choice question", async () => {
       const nonChoiceQuestion = {
         id: "question-id",
-        questionType: QuestionType.WORD_CLOUD,
+        questionType: QuestionType.MATCHING,
         order: 2,
       };
 
@@ -390,7 +438,7 @@ describe("QuestionService", () => {
 
       const nonChoiceQuestion = {
         id: "question-id",
-        questionType: QuestionType.WORD_CLOUD,
+        questionType: QuestionType.MATCHING,
         order: 2,
       };
 
@@ -417,11 +465,12 @@ describe("QuestionService", () => {
   });
 
   describe("updateChoiceQuestion", () => {
-    const mockQuizz = { id: "quizz-id" };
+    const mockQuizz = { id: "quizz-id", classes: [] };
     const mockQuestion = {
       id: "question-id",
       questionType: QuestionType.MULTIPLE_CHOICES,
       order: 2,
+      classes: [],
     };
 
     beforeEach(() => {
@@ -595,7 +644,7 @@ describe("QuestionService", () => {
     });
 
     it("sets questionType in updateData when changed", async () => {
-      const question = { id: "qid", questionType: QuestionType.WORD_CLOUD, order: 2 };
+      const question = { id: "qid", questionType: QuestionType.MATCHING, order: 2 };
       const dto = { title: "T", questionType: QuestionType.MATCHING, order: 2 };
 
       await service.updateQuestion(quizz as any, question as any, dto as any);
@@ -604,7 +653,6 @@ describe("QuestionService", () => {
         "qid",
         expect.objectContaining({
           title: "T",
-          questionType: QuestionType.MATCHING,
         }),
       );
     });

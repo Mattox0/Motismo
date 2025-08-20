@@ -23,6 +23,7 @@ describe('createRegisterSchema', () => {
           email: 'test@example.com',
           password: 'password123',
           confirmPassword: 'password123',
+          role: 'Student',
         });
         expect(result.success).toBe(true);
       });
@@ -37,6 +38,7 @@ describe('createRegisterSchema', () => {
           email: 'test@example.com',
           password: 'password123',
           confirmPassword: 'password123',
+          role: 'Student',
         });
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -53,6 +55,7 @@ describe('createRegisterSchema', () => {
         email: 'john@example.com',
         password: 'password123',
         confirmPassword: 'password123',
+        role: 'Student',
       });
       expect(result.success).toBe(true);
     });
@@ -63,6 +66,7 @@ describe('createRegisterSchema', () => {
         email: 'invalid-email',
         password: 'password123',
         confirmPassword: 'password123',
+        role: 'Student',
       });
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -78,6 +82,7 @@ describe('createRegisterSchema', () => {
         email: 'john@example.com',
         password: 'password123',
         confirmPassword: 'password123',
+        role: 'Student',
       });
       expect(result.success).toBe(true);
     });
@@ -88,6 +93,7 @@ describe('createRegisterSchema', () => {
         email: 'john@example.com',
         password: 'short',
         confirmPassword: 'short',
+        role: 'Student',
       });
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -105,6 +111,7 @@ describe('createRegisterSchema', () => {
         email: 'john@example.com',
         password: 'password123',
         confirmPassword: 'password123',
+        role: 'Student',
       });
       expect(result.success).toBe(true);
     });
@@ -115,6 +122,7 @@ describe('createRegisterSchema', () => {
         email: 'john@example.com',
         password: 'password123',
         confirmPassword: 'differentpassword',
+        role: 'Student',
       });
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -132,6 +140,7 @@ describe('createRegisterSchema', () => {
       email: 'john@example.com',
       password: 'password123',
       confirmPassword: 'password123',
+      role: 'Student',
     };
 
     const result = schema.safeParse(validData);
@@ -147,6 +156,7 @@ describe('createRegisterSchema', () => {
       email: 'invalid-email',
       password: 'short',
       confirmPassword: 'different',
+      role: 'Student',
     };
 
     const result = schema.safeParse(invalidData);

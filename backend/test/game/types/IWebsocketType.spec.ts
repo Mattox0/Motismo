@@ -15,12 +15,13 @@ describe("IWebsocketType", () => {
     expect(IWebsocketType.RESULTS).toBe("RESULTS");
     expect(IWebsocketType.RANKING).toBe("RANKING");
     expect(IWebsocketType.TIMER).toBe("TIMER");
+    expect(IWebsocketType.RESET_QUESTION).toBe("RESET_QUESTION");
   });
 
   it("should have correct number of enum values", () => {
     const enumValues = Object.values(IWebsocketType);
 
-    expect(enumValues).toHaveLength(13);
+    expect(enumValues).toHaveLength(14);
   });
 
   it("should have unique values", () => {

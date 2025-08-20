@@ -96,8 +96,8 @@ describe("GameService", () => {
 
   describe("create", () => {
     it("creates with unique code", async () => {
-      const mockQuizz = { id: "qz", questions: [{ id: "q1", order: 1 }] };
-      const mockUser = { id: "u1" };
+      const mockQuizz = { id: "qz", questions: [{ id: "q1", order: 1 }], classes: [] };
+      const mockUser = { id: "u1", classes: [] };
       const mockGame = { id: "g1", code: "ABCDEF" };
 
       mockGameRepository.exists.mockResolvedValue(false);
@@ -110,8 +110,8 @@ describe("GameService", () => {
       expect(res).toEqual(mockGame);
     });
     it("regenerates if code exists", async () => {
-      const mockQuizz = { id: "qz", questions: [{ id: "q1", order: 1 }] };
-      const mockUser = { id: "u1" };
+      const mockQuizz = { id: "qz", questions: [{ id: "q1", order: 1 }], classes: [] };
+      const mockUser = { id: "u1", classes: [] };
       const mockGame = { id: "g1", code: "ABCDEF" };
 
       mockGameRepository.exists.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
@@ -252,7 +252,13 @@ describe("GameService", () => {
     });
     it("ok for author", async () => {
       await service.start(socket as any);
-      expect(mockGameRepository.update).toHaveBeenCalledWith({ code: "ABC" }, { status: IGameStatus.DISPLAY_QUESTION });
+      expect(mockGameRepository.update).toHaveBeenCalledWith(
+        { code: "ABC" },
+        expect.objectContaining({
+          status: IGameStatus.DISPLAY_QUESTION,
+          questionStartTime: expect.any(Date),
+        }),
+      );
     });
     it("rejects non-author", async () => {
       await expect(service.start({ data: { code: "ABC", user: { externalId: "x" } } } as any)).rejects.toThrow();

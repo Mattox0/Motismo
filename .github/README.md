@@ -159,8 +159,6 @@ npm run test:coverage
 docker-compose up -d
 ```
 
-## 🔧 Scripts Utiles
-
 ## 📄 Licence
 
 Ce projet est sous licence MIT.

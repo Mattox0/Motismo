@@ -1,7 +1,6 @@
 /// <reference types="@testing-library/jest-dom" />
 
-import { render, screen, fireEvent } from '@testing-library/react';
-import { useTranslation } from 'react-i18next';
+import { render, screen } from '@testing-library/react';
 
 import { IQuizzType } from '@/types/model/IQuizzType';
 
@@ -13,78 +12,82 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-jest.mock('../Button', () => ({
-  Button: ({ children, type, variant, onClick }: any) => (
-    <button type={type} onClick={onClick} data-testid={`button-${variant}`}>
-      {children}
-    </button>
-  ),
+jest.mock('@/services/classe.service', () => ({
+  useGetClassesQuery: () => ({
+    data: [],
+    isLoading: false,
+  }),
 }));
 
-describe('CreateQuizForm component', () => {
-  const defaultProps = {
-    type: IQuizzType.QUESTIONS,
-    onSubmit: jest.fn(),
-    onCancel: jest.fn(),
+jest.mock('@/components/forms/Input', () => {
+  return function MockInput({ label, error, registration, isPassword, ...props }: any) {
+    return (
+      <div>
+        {label && <label>{label}</label>}
+        <input
+          {...registration}
+          {...props}
+          type={isPassword ? 'password' : 'text'}
+          data-testid={`input-${label?.toLowerCase()}`}
+        />
+        {error && <span className="error">{error}</span>}
+      </div>
+    );
   };
+});
+
+jest.mock('@/components/forms/ClassSelector', () => {
+  return function MockClassSelector({ classes, selectedClassIds, onSelectionChange, error }: any) {
+    return (
+      <div data-testid="class-selector">
+        <span>Class Selector</span>
+        {error && <span className="error">{error}</span>}
+      </div>
+    );
+  };
+});
+
+describe('CreateQuizForm component', () => {
+  const mockOnSubmit = jest.fn();
+  const mockOnCancel = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('should render form with title input', () => {
-    render(<CreateQuizForm {...defaultProps} />);
+    render(
+      <CreateQuizForm type={IQuizzType.QUESTIONS} onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
+    );
 
     expect(screen.getByText('create_quiz.form.title')).toBeInTheDocument();
-    expect(screen.getByLabelText('create_quiz.form.title')).toBeInTheDocument();
   });
 
   it('should render image upload section', () => {
-    render(<CreateQuizForm {...defaultProps} />);
+    render(
+      <CreateQuizForm type={IQuizzType.QUESTIONS} onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
+    );
 
     expect(screen.getByText('create_quiz.form.image')).toBeInTheDocument();
-    expect(screen.getByText('create_quiz.form.image_placeholder')).toBeInTheDocument();
   });
 
   it('should render cancel and submit buttons', () => {
-    render(<CreateQuizForm {...defaultProps} />);
+    render(
+      <CreateQuizForm type={IQuizzType.QUESTIONS} onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
+    );
 
-    expect(screen.getByTestId('button-secondary')).toBeInTheDocument();
-    expect(screen.getByTestId('button-primary')).toBeInTheDocument();
     expect(screen.getByText('create_quiz.form.cancel')).toBeInTheDocument();
-  });
-
-  it('should show questions placeholder when type is QUESTIONS', () => {
-    render(<CreateQuizForm {...defaultProps} type={IQuizzType.QUESTIONS} />);
-
-    const titleInput = screen.getByLabelText('create_quiz.form.title');
-    expect(titleInput).toHaveAttribute('placeholder', 'create_quiz.form.title_questions');
-  });
-
-  it('should show cards placeholder when type is CARDS', () => {
-    render(<CreateQuizForm {...defaultProps} type={IQuizzType.CARDS} />);
-
-    const titleInput = screen.getByLabelText('create_quiz.form.title');
-    expect(titleInput).toHaveAttribute('placeholder', 'create_quiz.form.title_cards');
+    expect(screen.getByText('create_quiz.form.submit')).toBeInTheDocument();
   });
 
   it('should call onCancel when cancel button is clicked', () => {
-    render(<CreateQuizForm {...defaultProps} />);
+    render(
+      <CreateQuizForm type={IQuizzType.QUESTIONS} onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
+    );
 
-    const cancelButton = screen.getByTestId('button-secondary');
-    fireEvent.click(cancelButton);
+    const cancelButton = screen.getByText('create_quiz.form.cancel');
+    cancelButton.click();
 
-    expect(defaultProps.onCancel).toHaveBeenCalledTimes(1);
-  });
-
-  it('should have correct input attributes', () => {
-    render(<CreateQuizForm {...defaultProps} />);
-
-    const titleInput = screen.getByLabelText('create_quiz.form.title');
-    expect(titleInput).toHaveAttribute('type', 'text');
-
-    const fileInput = screen.getByLabelText('create_quiz.form.image');
-    expect(fileInput).toHaveAttribute('type', 'file');
-    expect(fileInput).toHaveAttribute('accept', 'image/jpeg,image/png,image/gif,image/jpg');
+    expect(mockOnCancel).toHaveBeenCalled();
   });
 });

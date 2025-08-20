@@ -155,7 +155,7 @@ describe('LoginForm component', () => {
   });
 
   it('should not redirect when login returns false', async () => {
-    mockLogin.mockResolvedValue(false);
+    mockLogin.mockResolvedValue({ error: true });
 
     render(<LoginForm />);
 

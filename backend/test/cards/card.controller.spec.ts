@@ -35,7 +35,7 @@ describe("CardController", () => {
       email: "test@example.com",
       password: "hashed-password",
       creationDate: new Date(),
-      role: Role.Customer,
+      role: Role.Student,
     };
 
     const mockQuizz: Quizz = {
@@ -48,6 +48,7 @@ describe("CardController", () => {
       image: "image.jpg",
       questions: [],
       cards: [],
+      classes: [],
     };
 
     const mockCard: Card = {

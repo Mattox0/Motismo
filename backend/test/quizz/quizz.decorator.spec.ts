@@ -30,6 +30,7 @@ describe("QuizzRequest Decorator", () => {
         creationDate: new Date("2025-02-23T20:13:43.578Z"),
       },
       creationDate: new Date("2025-02-23T20:13:43.578Z"),
+      classes: [],
     };
 
     const context = {

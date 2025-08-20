@@ -9,6 +9,7 @@ import { RegisterDto } from "@/auth/dto/register.dto";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import { FileUploadService } from "@/files/files.service";
+import { ClasseService } from "@/classe/service/classe.service";
 import { Response } from "express";
 import { Role } from "@/user/role.enum";
 
@@ -39,6 +40,14 @@ describe("AuthController", () => {
       translate: jest.fn().mockResolvedValue("Translated error message"),
     };
 
+    const mockClasseService = {
+      create: jest.fn(),
+      findAll: jest.fn(),
+      findOne: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
@@ -46,6 +55,7 @@ describe("AuthController", () => {
         { provide: UserService, useValue: mockUserService },
         { provide: TranslationService, useValue: mockTranslationService },
         { provide: FileUploadService, useValue: mockFileUploadService },
+        { provide: ClasseService, useValue: mockClasseService },
       ],
     }).compile();
 
@@ -72,7 +82,7 @@ describe("AuthController", () => {
         id: "1",
         username: "oui",
         creationDate: new Date(),
-        role: Role.Customer,
+        role: Role.Student,
         email: "test@example.com",
         password: await bcrypt.hash("password123", 10),
         rating: [],
@@ -130,7 +140,7 @@ describe("AuthController", () => {
       const mockUser = {
         id: "2",
         creationDate: new Date(),
-        role: Role.Customer,
+        role: Role.Student,
         username: "oui",
         email: "test@example.com",
         password: await bcrypt.hash("correctpassword", 10),
@@ -206,7 +216,7 @@ describe("AuthController", () => {
         id: "42",
         email: registerDto.email,
         username: registerDto.username,
-        role: Role.Customer,
+        role: Role.Student,
         password: "hashed",
         creationDate: new Date(),
       };
@@ -264,7 +274,7 @@ describe("AuthController", () => {
         id: "84",
         email: registerDto.email,
         username: registerDto.username,
-        role: Role.Customer,
+        role: Role.Student,
         password: "hashed",
         image: publicUrl,
       };

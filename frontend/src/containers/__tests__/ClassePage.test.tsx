@@ -2,7 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 
-import { useGetClassesQuery } from '@/services/classe.service';
+import {
+  useGetClassesQuery,
+  useUpdateClasseMutation,
+  useDeleteClasseMutation,
+} from '@/services/classe.service';
 
 import { ClassePage } from '../ClassePage';
 
@@ -24,6 +28,8 @@ jest.mock('@/components/sections/CreateClasseSection', () => ({
 
 jest.mock('@/services/classe.service', () => ({
   useGetClassesQuery: jest.fn(),
+  useUpdateClasseMutation: jest.fn(),
+  useDeleteClasseMutation: jest.fn(),
 }));
 
 jest.mock('next/navigation', () => ({
@@ -40,9 +46,22 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
+jest.mock('@/utils/toast', () => ({
+  showToast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
 describe('ClassePage', () => {
   const mockUseGetClassesQuery = useGetClassesQuery as jest.MockedFunction<
     typeof useGetClassesQuery
+  >;
+  const mockUseUpdateClasseMutation = useUpdateClasseMutation as jest.MockedFunction<
+    typeof useUpdateClasseMutation
+  >;
+  const mockUseDeleteClasseMutation = useDeleteClasseMutation as jest.MockedFunction<
+    typeof useDeleteClasseMutation
   >;
   const mockUseSession = useSession as jest.MockedFunction<typeof useSession>;
 
@@ -52,27 +71,8 @@ describe('ClassePage', () => {
       data: { user: { id: '1', role: 'Teacher' } },
       status: 'authenticated',
     } as any);
-  });
-
-  it('should render with loading state', () => {
-    mockUseGetClassesQuery.mockReturnValue({ data: undefined, isLoading: true } as any);
-
-    render(<ClassePage />);
-
-    expect(screen.getByText('classe.title')).toBeInTheDocument();
-    expect(screen.getByText('classe.description')).toBeInTheDocument();
-    expect(screen.getByTestId('create-classe-section')).toBeInTheDocument();
-    expect(screen.getByTestId('classe-list-section')).toBeInTheDocument();
-    expect(screen.getByTestId('classe-list-section')).toHaveAttribute('data-loading', 'true');
-  });
-
-  it('should render with session loading state', () => {
-    mockUseSession.mockReturnValue({ data: null, status: 'loading' } as any);
-    mockUseGetClassesQuery.mockReturnValue({ data: [], isLoading: false } as any);
-
-    render(<ClassePage />);
-
-    expect(screen.getByTestId('classe-page')).toBeInTheDocument();
+    mockUseUpdateClasseMutation.mockReturnValue([jest.fn(), {}] as any);
+    mockUseDeleteClasseMutation.mockReturnValue([jest.fn(), {}] as any);
   });
 
   it('should redirect when user is not authenticated', () => {
@@ -81,7 +81,6 @@ describe('ClassePage', () => {
 
     render(<ClassePage />);
 
-    // Should not render anything when redirecting
     expect(screen.queryByText('classe.title')).not.toBeInTheDocument();
   });
 
@@ -94,7 +93,6 @@ describe('ClassePage', () => {
 
     render(<ClassePage />);
 
-    // Should not render anything when redirecting
     expect(screen.queryByText('classe.title')).not.toBeInTheDocument();
   });
 

@@ -42,7 +42,7 @@ describe("AuthService", () => {
         username: "testuser",
         email: "test@example.com",
         password: "hashedpassword",
-        role: Role.Customer,
+        role: Role.Student,
         creationDate: new Date(),
       };
 
@@ -100,7 +100,7 @@ describe("AuthService", () => {
         username: "complete",
         email: "complete@example.com",
         password: "hashedpassword",
-        role: Role.Customer,
+        role: Role.Student,
         creationDate: new Date(),
       };
 

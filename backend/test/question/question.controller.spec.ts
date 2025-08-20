@@ -30,7 +30,7 @@ describe("QuestionController", () => {
 
   describe("getQuestions", () => {
     it("should return questions for a quizz", async () => {
-      const mockQuizz = { id: "quizz-id" };
+      const mockQuizz = { id: "quizz-id", classes: [] };
       const expectedQuestions = [{ id: "q1", title: "Question 1" }];
 
       mockQuestionService.getQuestions = jest.fn().mockResolvedValue(expectedQuestions);
@@ -53,7 +53,7 @@ describe("QuestionController", () => {
   });
 
   describe("createQuestion", () => {
-    const mockQuizz = { id: "quizz-id" };
+    const mockQuizz = { id: "quizz-id", classes: [] };
     const mockCreateQuestionDto = {
       title: "New Question",
       questionType: "MULTIPLE_CHOICES",
@@ -84,7 +84,7 @@ describe("QuestionController", () => {
   });
 
   describe("updateQuestion", () => {
-    const mockQuizz = { id: "quizz-id" };
+    const mockQuizz = { id: "quizz-id", classes: [] };
     const mockQuestion = { id: "question-id" };
     const mockUpdateQuestionDto = { title: "Updated Question" };
 

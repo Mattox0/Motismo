@@ -35,6 +35,7 @@ describe("QuizzController", () => {
     image: "image.jpg",
     questions: [],
     cards: [],
+    classes: [],
     author: {} as User,
     creationDate: new Date(),
     quizzType: IQuizzType.QUESTIONS,
@@ -46,7 +47,7 @@ describe("QuizzController", () => {
     email: "test@example.com",
     password: "hashed-password",
     creationDate: new Date(),
-    role: Role.Customer,
+    role: Role.Student,
   };
 
   const mockQuizzs: Quizz[] = [mockQuizz];
@@ -61,6 +62,7 @@ describe("QuizzController", () => {
     mockQuizzService = {
       getAll: jest.fn().mockResolvedValue(mockQuizzs),
       getMyQuizz: jest.fn().mockResolvedValue(mockQuizzs),
+      getStudentQuizz: jest.fn().mockResolvedValue(mockQuizzs),
       getByCode: jest.fn(),
       create: jest.fn().mockResolvedValue(undefined),
       update: jest.fn().mockResolvedValue(undefined),

@@ -55,6 +55,7 @@ describe("GameResponseService", () => {
         question: mockQuestion,
         game: mockGame,
         answer,
+        roundPoints: 0,
       };
 
       mockGameResponseRepository.create.mockReturnValue(mockGameResponse);
@@ -67,6 +68,7 @@ describe("GameResponseService", () => {
         question: mockQuestion,
         game: mockGame,
         answer,
+        roundPoints: 0,
       });
       expect(mockGameResponseRepository.save).toHaveBeenCalledWith(mockGameResponse);
       expect(result).toEqual(mockGameResponse);
@@ -84,6 +86,7 @@ describe("GameResponseService", () => {
         question: mockQuestion,
         game: mockGame,
         answer,
+        roundPoints: 0,
       };
 
       mockGameResponseRepository.create.mockReturnValue(mockGameResponse);
@@ -96,6 +99,7 @@ describe("GameResponseService", () => {
         question: mockQuestion,
         game: mockGame,
         answer,
+        roundPoints: 0,
       });
       expect(result).toEqual(mockGameResponse);
     });
@@ -112,6 +116,7 @@ describe("GameResponseService", () => {
         question: mockQuestion,
         game: mockGame,
         answer,
+        roundPoints: 0,
       };
 
       mockGameResponseRepository.create.mockReturnValue(mockGameResponse);

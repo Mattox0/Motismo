@@ -30,6 +30,7 @@ describe("TeacherClasseGuard", () => {
       },
     ],
     students: [],
+    quizz: [],
   };
 
   const mockTeacher: User = {

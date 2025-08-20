@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
 import { ClasseController } from "@/classe/controller/classe.controller";
 import { ClasseService } from "@/classe/service/classe.service";
 import { TranslationService } from "@/translation/translation.service";
@@ -18,6 +19,7 @@ describe("ClasseController", () => {
     code: "ABC123",
     students: [],
     teachers: [],
+    quizz: [],
   };
 
   const mockUser: User = {
@@ -56,6 +58,26 @@ describe("ClasseController", () => {
           provide: TranslationService,
           useValue: {
             translate: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(Classe),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            save: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(User),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            save: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
           },
         },
       ],

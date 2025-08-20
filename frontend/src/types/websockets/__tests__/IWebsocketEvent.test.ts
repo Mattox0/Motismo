@@ -16,11 +16,12 @@ describe('IWebsocketEvent', () => {
     expect(IWebsocketEvent.RESULTS).toBe('RESULTS');
     expect(IWebsocketEvent.RANKING).toBe('RANKING');
     expect(IWebsocketEvent.NEXT_QUESTION).toBe('NEXT_QUESTION');
+    expect(IWebsocketEvent.RESET_QUESTION).toBe('RESET_QUESTION');
   });
 
-  it('should have exactly 14 event values', () => {
+  it('should have exactly 15 event values', () => {
     const eventValues = Object.values(IWebsocketEvent);
-    expect(eventValues).toHaveLength(14);
+    expect(eventValues).toHaveLength(15);
   });
 
   it('should have unique values', () => {

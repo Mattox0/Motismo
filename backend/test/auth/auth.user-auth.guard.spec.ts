@@ -61,7 +61,7 @@ describe("UserAuthGuard", () => {
         id: "1",
         email: "test@yopmail.com",
         password: "password",
-        role: Role.Customer,
+        role: Role.Student,
       } as User;
 
       jest.spyOn(mockUserService, "findOneUser").mockResolvedValue(mockUser);

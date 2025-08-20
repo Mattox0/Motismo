@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
 
-import { useGetMyClassQuery } from '@/services/classe.service';
+import { useGetMyClassQuery, useLeaveClassMutation } from '@/services/classe.service';
 import { IUserRole } from '@/types/IUserRole';
 
 import { ClasseMePage } from '../ClasseMePage';
@@ -14,7 +14,10 @@ jest.mock('next/navigation');
 jest.mock('react-i18next', () => ({
   useTranslation: jest.fn(),
 }));
-jest.mock('@/services/classe.service');
+jest.mock('@/services/classe.service', () => ({
+  useGetMyClassQuery: jest.fn(),
+  useLeaveClassMutation: jest.fn(),
+}));
 jest.mock('@/components/ClasseHeader', () => ({
   ClasseHeader: ({ classe, onBackClick }: any) => (
     <div data-testid="classe-header">
@@ -53,6 +56,9 @@ jest.mock('@/utils/toast', () => ({
 const mockUseSession = useSession as jest.MockedFunction<typeof useSession>;
 const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
 const mockUseGetMyClassQuery = useGetMyClassQuery as jest.MockedFunction<typeof useGetMyClassQuery>;
+const mockUseLeaveClassMutation = useLeaveClassMutation as jest.MockedFunction<
+  typeof useLeaveClassMutation
+>;
 
 describe('ClasseMePage', () => {
   const mockPush = jest.fn();
@@ -68,6 +74,8 @@ describe('ClasseMePage', () => {
     (useTranslation as jest.Mock).mockReturnValue({
       t: mockT,
     });
+
+    mockUseLeaveClassMutation.mockReturnValue([jest.fn(), { isLoading: false }] as any);
   });
 
   it('should render without crashing', () => {
@@ -82,19 +90,21 @@ describe('ClasseMePage', () => {
     } as any);
 
     mockUseGetMyClassQuery.mockReturnValue({
-      data: {
-        id: '1',
-        name: 'Test Class',
-        code: 'ABC123',
-        students: [],
-        teachers: [],
-      },
+      data: [
+        {
+          id: '1',
+          name: 'Test Class',
+          code: 'ABC123',
+          students: [],
+          teachers: [],
+        },
+      ],
       isLoading: false,
       error: null,
     } as any);
 
     render(<ClasseMePage />);
 
-    expect(screen.getByTestId('classe-header')).toBeInTheDocument();
+    expect(screen.getByText('classe.myClass')).toBeInTheDocument();
   });
 });

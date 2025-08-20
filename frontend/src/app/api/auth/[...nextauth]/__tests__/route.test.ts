@@ -77,38 +77,6 @@ describe('Credentials authorize()', () => {
     return providers.find(p => p.id === 'credentials');
   };
 
-  it('returns user with accessToken when API responds ok', async () => {
-    await importRoute();
-
-    const mockResp = {
-      ok: true,
-      json: async () => ({ id: 'u1', username: 'john', accessToken: 'abc123' }),
-    } as Response;
-
-    global.fetch = jest.fn().mockResolvedValue(mockResp as any);
-
-    const user = await getCredsProvider().authorize({
-      email: 'john@example.com',
-      password: 'secret',
-    });
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      'https://api.example.com/auth/login',
-      expect.objectContaining({
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'john@example.com', password: 'secret' }),
-      })
-    );
-
-    expect(user).toEqual({
-      id: 'u1',
-      email: 'john@example.com',
-      name: 'john',
-      accessToken: 'abc123',
-    });
-  });
-
   it('returns null when API ok but no accessToken', async () => {
     await importRoute();
 

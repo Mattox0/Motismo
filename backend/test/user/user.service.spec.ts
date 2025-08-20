@@ -50,7 +50,7 @@ describe("UserService", () => {
         id: "1",
         email: "test@example.com",
         password: "securepassword",
-        role: Role.Customer,
+        role: Role.Student,
         username: "testuser",
         creationDate: new Date(),
       };
@@ -69,7 +69,7 @@ describe("UserService", () => {
         username: "testuser",
         email: "test@example.com",
         password: "securepassword",
-        role: Role.Customer,
+        role: Role.Student,
       };
 
       mockUserRepository.create.mockReturnValue(userDto);
@@ -222,7 +222,7 @@ describe("UserService", () => {
           email: "test@example.com",
           password: "encrypted-password",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         };
 
         const mockQueryBuilder = {
@@ -287,7 +287,7 @@ describe("UserService", () => {
           password: "password",
           email: "yoohoo@yoohoo.fr",
           creationDate: new Date(),
-          role: Role.Customer,
+          role: Role.Student,
         };
 
         const request = {

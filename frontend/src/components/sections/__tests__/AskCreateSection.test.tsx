@@ -34,6 +34,13 @@ jest.mock('@/services/quiz.service', () => ({
   ],
 }));
 
+jest.mock('@/services/classe.service', () => ({
+  useGetClassesQuery: () => ({
+    data: [],
+    isLoading: false,
+  }),
+}));
+
 jest.mock('@/utils/toast', () => ({
   showToast: {
     success: jest.fn(),
@@ -43,7 +50,9 @@ jest.mock('@/utils/toast', () => ({
 
 const createMockStore = () =>
   configureStore({
-    reducer: {},
+    reducer: {
+      api: (state = {}) => state,
+    },
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         serializableCheck: false,

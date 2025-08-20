@@ -21,6 +21,7 @@ describe("QuizzGuard", () => {
     quizzType: "QUESTIONS",
     games: [],
     creationDate: new Date(),
+    classes: [],
   };
 
   beforeEach(async () => {
@@ -31,6 +32,7 @@ describe("QuizzGuard", () => {
       orderBy: jest.fn().mockReturnThis(),
       addOrderBy: jest.fn().mockReturnThis(),
       getOne: jest.fn(),
+      classes: [],
     };
 
     const mockTranslationService = {
