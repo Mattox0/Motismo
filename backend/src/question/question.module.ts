@@ -14,10 +14,20 @@ import { Quizz } from "@/quizz/quizz.entity";
 import { Choice } from "@/choice/choice.entity";
 import { ChoiceModule } from "@/choice/choice.module";
 import { Card } from "@/cards/card.entity";
+import { Word } from "./entity/word.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Question, ChoiceQuestion, WordCloudQuestion, MatchingQuestion, Quizz, Choice, Card]),
+    TypeOrmModule.forFeature([
+      Question,
+      ChoiceQuestion,
+      WordCloudQuestion,
+      MatchingQuestion,
+      Quizz,
+      Choice,
+      Card,
+      Word,
+    ]),
     forwardRef(() => UsersModule),
     forwardRef(() => ChoiceModule),
   ],

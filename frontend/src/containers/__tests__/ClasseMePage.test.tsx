@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
 
-import { ClasseMePage } from '../ClasseMePage';
 import { useGetMyClassQuery } from '@/services/classe.service';
 import { IUserRole } from '@/types/IUserRole';
+
+import { ClasseMePage } from '../ClasseMePage';
 
 // Mock dependencies
 jest.mock('next-auth/react');
@@ -59,7 +60,7 @@ describe('ClasseMePage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     mockUseRouter.mockReturnValue({
       push: mockPush,
     } as any);
@@ -93,7 +94,7 @@ describe('ClasseMePage', () => {
     } as any);
 
     render(<ClasseMePage />);
-    
+
     expect(screen.getByTestId('classe-header')).toBeInTheDocument();
   });
 });

@@ -1,4 +1,11 @@
-import { quizApi, useGetQuizQuery, useCreateQuizzMutation, useGetOneQuizQuery, useGetQuizByCodeQuery, useCreateGameMutation } from '../quiz.service';
+import {
+  quizApi,
+  useGetQuizQuery,
+  useCreateQuizzMutation,
+  useGetOneQuizQuery,
+  useGetQuizByCodeQuery,
+  useCreateGameMutation,
+} from '../quiz.service';
 
 describe('quizApi', () => {
   it('should have getQuiz query', () => {
@@ -24,7 +31,7 @@ describe('quizApi', () => {
   it('should have correct query configuration for getQuiz', () => {
     const endpoint = quizApi.endpoints.getQuiz;
     expect(endpoint).toBeDefined();
-    
+
     const queryFn = endpoint.queryFn;
     if (queryFn) {
       const result = queryFn();
@@ -35,7 +42,7 @@ describe('quizApi', () => {
   it('should have correct query configuration for createQuizz', () => {
     const endpoint = quizApi.endpoints.createQuizz;
     expect(endpoint).toBeDefined();
-    
+
     const queryFn = endpoint.queryFn;
     if (queryFn) {
       const formData = new FormData();
@@ -51,7 +58,7 @@ describe('quizApi', () => {
   it('should have correct query configuration for getOneQuiz', () => {
     const endpoint = quizApi.endpoints.getOneQuiz;
     expect(endpoint).toBeDefined();
-    
+
     const queryFn = endpoint.queryFn;
     if (queryFn) {
       const result = queryFn('test-id');
@@ -62,7 +69,7 @@ describe('quizApi', () => {
   it('should have correct query configuration for getQuizByCode', () => {
     const endpoint = quizApi.endpoints.getQuizByCode;
     expect(endpoint).toBeDefined();
-    
+
     const queryFn = endpoint.queryFn;
     if (queryFn) {
       const result = queryFn('test-code');
@@ -73,7 +80,7 @@ describe('quizApi', () => {
   it('should have correct query configuration for createGame', () => {
     const endpoint = quizApi.endpoints.createGame;
     expect(endpoint).toBeDefined();
-    
+
     const queryFn = endpoint.queryFn;
     if (queryFn) {
       const result = queryFn('test-id');
@@ -87,7 +94,7 @@ describe('quizApi', () => {
   it('should provide quiz tags for getQuiz', () => {
     const getQuizEndpoint = quizApi.endpoints.getQuiz;
     expect(getQuizEndpoint).toBeDefined();
-    
+
     if (getQuizEndpoint.providesTags) {
       const providedTags = getQuizEndpoint.providesTags({} as any, {} as any, {} as any);
       expect(providedTags).toEqual(['QUIZ']);
@@ -97,7 +104,7 @@ describe('quizApi', () => {
   it('should provide quiz tags for getOneQuiz', () => {
     const getOneQuizEndpoint = quizApi.endpoints.getOneQuiz;
     expect(getOneQuizEndpoint).toBeDefined();
-    
+
     if (getOneQuizEndpoint.providesTags) {
       const providedTags = getOneQuizEndpoint.providesTags({} as any, {} as any, {} as any);
       expect(providedTags).toEqual(['QUIZ']);
@@ -107,7 +114,7 @@ describe('quizApi', () => {
   it('should provide quiz tags for getQuizByCode', () => {
     const getQuizByCodeEndpoint = quizApi.endpoints.getQuizByCode;
     expect(getQuizByCodeEndpoint).toBeDefined();
-    
+
     if (getQuizByCodeEndpoint.providesTags) {
       const providedTags = getQuizByCodeEndpoint.providesTags({} as any, {} as any, {} as any);
       expect(providedTags).toEqual(['QUIZ']);
@@ -117,7 +124,7 @@ describe('quizApi', () => {
   it('should invalidate quiz tags for createQuizz', () => {
     const createQuizzEndpoint = quizApi.endpoints.createQuizz;
     expect(createQuizzEndpoint).toBeDefined();
-    
+
     if (createQuizzEndpoint.invalidatesTags) {
       const invalidatedTags = createQuizzEndpoint.invalidatesTags({} as any, {} as any, {} as any);
       expect(invalidatedTags).toEqual(['QUIZ']);
@@ -144,4 +151,3 @@ describe('quizApi', () => {
     expect(useCreateGameMutation).toBeDefined();
   });
 });
-

@@ -8,7 +8,7 @@ describe('gameApi', () => {
   it('should have correct query configuration for createGameUser', () => {
     const endpoint = gameApi.endpoints.createGameUser;
     expect(endpoint).toBeDefined();
-    
+
     const queryFn = endpoint.queryFn;
     if (queryFn) {
       const mockData: ICreateGameUserRequest = {
@@ -28,7 +28,7 @@ describe('gameApi', () => {
   it('should handle createGameUser without externalId', () => {
     const endpoint = gameApi.endpoints.createGameUser;
     expect(endpoint).toBeDefined();
-    
+
     const queryFn = endpoint.queryFn;
     if (queryFn) {
       const mockData: ICreateGameUserRequest = {
@@ -59,7 +59,7 @@ describe('gameApi', () => {
       avatar: 'test-avatar',
       externalId: 'test-external-id',
     };
-    
+
     expect(mockRequest.name).toBe('Test User');
     expect(mockRequest.avatar).toBe('test-avatar');
     expect(mockRequest.externalId).toBe('test-external-id');
@@ -70,7 +70,7 @@ describe('gameApi', () => {
       name: 'Test User',
       avatar: 'test-avatar',
     };
-    
+
     expect(mockRequest.name).toBe('Test User');
     expect(mockRequest.avatar).toBe('test-avatar');
     expect(mockRequest.externalId).toBeUndefined();

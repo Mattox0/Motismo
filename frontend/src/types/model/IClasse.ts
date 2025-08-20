@@ -7,10 +7,3 @@ export interface IClasse {
   students: IUser[];
   teachers: IUser[];
 }
-
-
-
-
-
-
-

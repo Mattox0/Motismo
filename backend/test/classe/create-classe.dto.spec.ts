@@ -10,6 +10,7 @@ describe("CreateClasseDto", () => {
   describe("validation", () => {
     it("should pass validation with valid data", async () => {
       const dto = new CreateClasseDto();
+
       dto.name = "Test Class";
 
       const errors = await validate(dto);
@@ -19,6 +20,7 @@ describe("CreateClasseDto", () => {
 
     it("should fail validation with empty name", async () => {
       const dto = new CreateClasseDto();
+
       dto.name = "";
 
       const errors = await validate(dto);
@@ -29,6 +31,7 @@ describe("CreateClasseDto", () => {
 
     it("should fail validation with name too short", async () => {
       const dto = new CreateClasseDto();
+
       dto.name = "ab";
 
       const errors = await validate(dto);
@@ -39,6 +42,7 @@ describe("CreateClasseDto", () => {
 
     it("should fail validation with non-string name", async () => {
       const dto = new CreateClasseDto();
+
       (dto as any).name = 123;
 
       const errors = await validate(dto);

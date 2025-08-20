@@ -38,7 +38,6 @@ const RegisterForm = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log('data', data);
     setServerError(null);
     try {
       await authRegister({

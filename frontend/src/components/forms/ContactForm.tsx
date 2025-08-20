@@ -31,13 +31,11 @@ export const ContactForm: FC = () => {
     },
   });
 
-  const onSubmit = async (data: ContactFormData) => {
+  const onSubmit = async () => {
     setIsSubmitting(true);
 
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-
-      console.log('Données du formulaire:', data);
 
       toast.success(
         'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.'

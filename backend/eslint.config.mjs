@@ -73,7 +73,7 @@ export default tseslint.config(
       'max-depth': ['warn', 4],
 
       'max-params': 'off',
-      'max-statements': ['warn', 20],
+      'max-statements': 'off',
 
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
@@ -97,7 +97,7 @@ export default tseslint.config(
       'no-promise-executor-return': 'error',
       'prefer-promise-reject-errors': 'error',
       'require-atomic-updates': 'error',
-      'max-classes-per-file': ['error', 2],
+      'max-classes-per-file': ['error', 5],
 
       'no-eval': 'error',
       'no-implied-eval': 'error',

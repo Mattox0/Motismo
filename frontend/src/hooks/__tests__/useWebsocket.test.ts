@@ -53,7 +53,7 @@ describe('useWebsocket', () => {
 
   test('should return early if no socket', () => {
     mockUseSocket.mockReturnValue(null);
-    
+
     renderHook(() => useWebsocket('ABC123'));
 
     expect(mockSocket.on).not.toHaveBeenCalled();
@@ -103,8 +103,6 @@ describe('useWebsocket', () => {
     }
   });
 
-
-
   test('should handle join event and store user data', () => {
     const mockUser = { id: '1', name: 'Test User' };
 
@@ -150,7 +148,10 @@ describe('useWebsocket', () => {
   });
 
   test('should handle members event', () => {
-    const mockUsers = [{ id: '1', name: 'User 1' }, { id: '2', name: 'User 2' }];
+    const mockUsers = [
+      { id: '1', name: 'User 1' },
+      { id: '2', name: 'User 2' },
+    ];
 
     renderHook(() => useWebsocket('ABC123'));
 

@@ -17,8 +17,3 @@ export const BackButton: FC<IBackButtonProps> = ({ onClick, className = '' }) =>
     </button>
   );
 };
-
-
-
-
-

@@ -4,6 +4,8 @@ import { type Repository } from "typeorm";
 
 import { Question } from "@/question/question.entity";
 import { ChoiceQuestion } from "../entity/choiceQuestion.entity";
+import { WordCloudQuestion } from "../entity/wordCloudQuestion.entity";
+import { Word } from "../entity/word.entity";
 import { CreateChoiceQuestionDto } from "../dto/createChoiceQuestion.dto";
 import { CreateQuestionDto } from "../dto/createQuestion.dto";
 import { Quizz } from "@/quizz/quizz.entity";
@@ -19,6 +21,10 @@ export class QuestionService {
   constructor(
     @InjectRepository(ChoiceQuestion)
     private choiceQuestionRepository: Repository<ChoiceQuestion>,
+    @InjectRepository(WordCloudQuestion)
+    private wordCloudQuestionRepository: Repository<WordCloudQuestion>,
+    @InjectRepository(Word)
+    private wordRepository: Repository<Word>,
     private translationService: TranslationService,
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
@@ -30,7 +36,7 @@ export class QuestionService {
     return await this.questionRepository.find({
       where: { quizz: { id: quizz.id } },
       order: { order: "ASC" },
-      relations: ["choices", "quizz"],
+      relations: ["choices", "quizz", "words"],
     });
   }
 
@@ -96,7 +102,7 @@ export class QuestionService {
   }
 
   async createQuestion(quizz: Quizz, createQuestionDto: CreateQuestionDto): Promise<void> {
-    const { questionType, choices, ...questionData } = createQuestionDto;
+    const { questionType, choices, words, maxWords, ...questionData } = createQuestionDto;
 
     switch (questionType) {
       case QuestionType.MULTIPLE_CHOICES:
@@ -116,7 +122,43 @@ export class QuestionService {
         return this.createChoiceQuestion(quizz, choiceQuestionDto);
       }
 
-      case QuestionType.WORD_CLOUD:
+      case QuestionType.WORD_CLOUD: {
+        const maxOrder = await this.getMaxOrder(quizz.id);
+        const order = createQuestionDto.order ?? maxOrder + 1;
+
+        if (order < 1 || order > maxOrder + 1) {
+          throw new BadRequestException(await this.translationService.translate("error.INVALID_ORDER_VALUE"));
+        }
+
+        if (order <= maxOrder) {
+          await this.reorderQuestions(quizz.id, order);
+        }
+
+        const wordCloudQuestion = this.wordCloudQuestionRepository.create({
+          ...questionData,
+          quizz,
+          questionType,
+          order,
+          maxWords: maxWords ?? 5,
+        });
+
+        const savedQuestion = await this.wordCloudQuestionRepository.save(wordCloudQuestion);
+
+        if (words && words.length > 0) {
+          for (const wordOption of words) {
+            const word = this.wordRepository.create({
+              text: wordOption.text,
+              question: savedQuestion,
+            });
+
+            await this.wordRepository.save(word);
+          }
+        }
+
+        await this.normalizeOrders(quizz.id);
+        break;
+      }
+
       case QuestionType.MATCHING: {
         const maxOrder = await this.getMaxOrder(quizz.id);
         const order = createQuestionDto.order ?? maxOrder + 1;
@@ -169,6 +211,11 @@ export class QuestionService {
         break;
 
       case QuestionType.WORD_CLOUD:
+        if (question instanceof WordCloudQuestion) {
+          return this.updateWordCloudQuestion(quizz, question, updateQuestionDto);
+        }
+        break;
+
       case QuestionType.MATCHING: {
         const maxOrder = await this.getMaxOrder(quizz.id);
 
@@ -263,11 +310,57 @@ export class QuestionService {
 
   private async deleteUnusedImages(
     question: AllQuestion,
-    updateChoiceQuestionDto: UpdateChoiceQuestionDto,
+    updateChoiceQuestionDto: UpdateChoiceQuestionDto | UpdateQuestionDto,
   ): Promise<void> {
     if (updateChoiceQuestionDto.image && question.image && updateChoiceQuestionDto.image !== question.image) {
       await this.fileUploadService.deleteFile(question.image);
     }
+  }
+
+  async updateWordCloudQuestion(
+    quizz: Quizz,
+    question: WordCloudQuestion,
+    updateQuestionDto: UpdateQuestionDto,
+  ): Promise<void> {
+    const maxOrder = await this.getMaxOrder(quizz.id);
+
+    if (updateQuestionDto.order !== undefined) {
+      if (updateQuestionDto.order < 1 || updateQuestionDto.order > maxOrder) {
+        throw new BadRequestException(await this.translationService.translate("error.INVALID_ORDER_VALUE"));
+      }
+
+      if (updateQuestionDto.order !== question.order) {
+        await this.reorderQuestions(quizz.id, updateQuestionDto.order, question.order);
+      }
+    }
+
+    await this.deleteUnusedImages(question, updateQuestionDto);
+
+    const { words, maxWords, ...updateData } = updateQuestionDto;
+
+    const updateDataWithMaxWords = {
+      ...updateData,
+      ...(maxWords !== undefined && { maxWords }),
+    };
+
+    await this.wordCloudQuestionRepository.update(question.id, updateDataWithMaxWords);
+
+    if (words) {
+      await this.wordRepository.delete({ question: { id: question.id } });
+
+      if (words.length > 0) {
+        for (const wordOption of words) {
+          const word = this.wordRepository.create({
+            text: wordOption.text,
+            question: question,
+          });
+
+          await this.wordRepository.save(word);
+        }
+      }
+    }
+
+    await this.normalizeOrders(quizz.id);
   }
 
   // async createMatchingQuestion(

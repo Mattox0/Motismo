@@ -10,6 +10,8 @@ import {
   ValidateNested as OriginalValidateNested,
   IsEmail as OriginalIsEmail,
   IsUUID as OriginalIsUUID,
+  Min as OriginalMin,
+  Max as OriginalMax,
   ValidationOptions,
 } from "class-validator";
 import { i18nValidationMessage } from "nestjs-i18n";
@@ -82,4 +84,18 @@ export const IsUUID = (version?: "4" | "3" | "5" | "6" | "7", options?: Validati
   OriginalIsUUID(version, {
     ...options,
     message: i18nValidationMessage<I18nTranslations>("validation.IS_NOT_UUID"),
+  });
+
+export const IsMin = (min: number) =>
+  OriginalMin(min, {
+    message: i18nValidationMessage<I18nTranslations>("validation.MIN_NUMBER", {
+      min,
+    }),
+  });
+
+export const IsMax = (max: number) =>
+  OriginalMax(max, {
+    message: i18nValidationMessage<I18nTranslations>("validation.MAX_NUMBER", {
+      max,
+    }),
   });

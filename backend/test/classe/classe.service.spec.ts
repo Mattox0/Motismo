@@ -212,9 +212,7 @@ describe("ClasseService", () => {
 
   describe("findByTeacher", () => {
     it("should return classes by teacher id", async () => {
-      const expectedClasses = [
-        { id: "1", name: "Class 1", code: "code1", teachers: [], students: [] },
-      ];
+      const expectedClasses = [{ id: "1", name: "Class 1", code: "code1", teachers: [], students: [] }];
 
       mockClasseRepository.find.mockResolvedValue(expectedClasses);
 
@@ -235,9 +233,7 @@ describe("ClasseService", () => {
 
   describe("findByStudent", () => {
     it("should return classes by student id", async () => {
-      const expectedClasses = [
-        { id: "1", name: "Class 1", code: "code1", teachers: [], students: [] },
-      ];
+      const expectedClasses = [{ id: "1", name: "Class 1", code: "code1", teachers: [], students: [] }];
 
       mockClasseRepository.find.mockResolvedValue(expectedClasses);
 

@@ -1,6 +1,6 @@
+import { configureStore } from '@reduxjs/toolkit';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
 
 import { ClientLayout } from '../ClientLayout';
 
@@ -9,11 +9,15 @@ jest.mock('@/store', () => ({
 }));
 
 jest.mock('@/providers/SessionProvider', () => ({
-  SessionProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="session-provider">{children}</div>,
+  SessionProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="session-provider">{children}</div>
+  ),
 }));
 
 jest.mock('@/providers/I18nProvider', () => ({
-  I18nProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="i18n-provider">{children}</div>,
+  I18nProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="i18n-provider">{children}</div>
+  ),
 }));
 
 jest.mock('react-toastify', () => ({
@@ -47,4 +51,3 @@ describe('ClientLayout', () => {
     expect(container.querySelector('[data-testid="session-provider"]')).toBeInTheDocument();
   });
 });
-

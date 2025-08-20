@@ -1,11 +1,18 @@
 import { render, screen } from '@testing-library/react';
+import { useSession } from 'next-auth/react';
 import React from 'react';
+
+import { useGetClassesQuery } from '@/services/classe.service';
 
 import { ClassePage } from '../ClassePage';
 
 jest.mock('@/components/sections/ClasseListSection', () => ({
   ClasseListSection: ({ classes, isLoading }: any) => (
-    <div data-testid="classe-list-section" data-loading={isLoading} data-classes-count={classes.length}>
+    <div
+      data-testid="classe-list-section"
+      data-loading={isLoading}
+      data-classes-count={classes.length}
+    >
       Classe List Section
     </div>
   ),
@@ -33,11 +40,10 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-import { useGetClassesQuery } from '@/services/classe.service';
-import { useSession } from 'next-auth/react';
-
 describe('ClassePage', () => {
-  const mockUseGetClassesQuery = useGetClassesQuery as jest.MockedFunction<typeof useGetClassesQuery>;
+  const mockUseGetClassesQuery = useGetClassesQuery as jest.MockedFunction<
+    typeof useGetClassesQuery
+  >;
   const mockUseSession = useSession as jest.MockedFunction<typeof useSession>;
 
   beforeEach(() => {

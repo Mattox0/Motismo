@@ -22,8 +22,3 @@ describe('ClassDetailPage', () => {
     expect(screen.getByTestId('classe-detail-page')).toBeInTheDocument();
   });
 });
-
-
-
-
-

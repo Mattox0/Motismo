@@ -12,7 +12,7 @@ describe('cardApi', () => {
   it('should have correct query configuration for createCard', () => {
     const endpoint = cardApi.endpoints.createCard;
     expect(endpoint).toBeDefined();
-    
+
     const queryFn = endpoint.queryFn;
     if (queryFn) {
       const result = queryFn({ quizzId: 'test-quiz', formData: new FormData() });
@@ -27,10 +27,14 @@ describe('cardApi', () => {
   it('should have correct query configuration for updateCard', () => {
     const endpoint = cardApi.endpoints.updateCard;
     expect(endpoint).toBeDefined();
-    
+
     const queryFn = endpoint.queryFn;
     if (queryFn) {
-      const result = queryFn({ quizzId: 'test-quiz', cardId: 'test-card', formData: new FormData() });
+      const result = queryFn({
+        quizzId: 'test-quiz',
+        cardId: 'test-card',
+        formData: new FormData(),
+      });
       expect(result).toEqual({
         url: '/quizz/test-quiz/card/test-card',
         method: 'PUT',
@@ -42,7 +46,7 @@ describe('cardApi', () => {
   it('should invalidate quiz tags for createCard', () => {
     const createCardEndpoint = cardApi.endpoints.createCard;
     expect(createCardEndpoint).toBeDefined();
-    
+
     if (createCardEndpoint.invalidatesTags) {
       const invalidatedTags = createCardEndpoint.invalidatesTags({} as any, {} as any, {} as any);
       expect(invalidatedTags).toEqual(['QUIZ']);
@@ -52,7 +56,7 @@ describe('cardApi', () => {
   it('should invalidate quiz tags for updateCard', () => {
     const updateCardEndpoint = cardApi.endpoints.updateCard;
     expect(updateCardEndpoint).toBeDefined();
-    
+
     if (updateCardEndpoint.invalidatesTags) {
       const invalidatedTags = updateCardEndpoint.invalidatesTags({} as any, {} as any, {} as any);
       expect(invalidatedTags).toEqual(['QUIZ']);

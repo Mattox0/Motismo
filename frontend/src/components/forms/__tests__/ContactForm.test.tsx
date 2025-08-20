@@ -1,7 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ContactForm } from '../ContactForm';
 import { toast } from 'react-toastify';
+
+import { ContactForm } from '../ContactForm';
 
 // Mock react-toastify
 jest.mock('react-toastify', () => ({
@@ -35,11 +36,15 @@ describe('ContactForm', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/le prénom doit contenir au moins 2 caractères/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/le prénom doit contenir au moins 2 caractères/i)
+      ).toBeInTheDocument();
       expect(screen.getByText(/le nom doit contenir au moins 2 caractères/i)).toBeInTheDocument();
       expect(screen.getByText(/veuillez entrer une adresse email valide/i)).toBeInTheDocument();
       expect(screen.getByText(/le sujet doit contenir au moins 5 caractères/i)).toBeInTheDocument();
-      expect(screen.getByText(/le message doit contenir au moins 10 caractères/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/le message doit contenir au moins 10 caractères/i)
+      ).toBeInTheDocument();
     });
   });
 
@@ -72,7 +77,9 @@ describe('ContactForm', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/le prénom doit contenir au moins 2 caractères/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/le prénom doit contenir au moins 2 caractères/i)
+      ).toBeInTheDocument();
       expect(screen.getByText(/le nom doit contenir au moins 2 caractères/i)).toBeInTheDocument();
     });
   });
@@ -91,8 +98,14 @@ describe('ContactForm', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/le prénom ne peut contenir que des lettres, espaces, tirets et apostrophes/i)).toBeInTheDocument();
-      expect(screen.getByText(/le nom ne peut contenir que des lettres, espaces, tirets et apostrophes/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          /le prénom ne peut contenir que des lettres, espaces, tirets et apostrophes/i
+        )
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/le nom ne peut contenir que des lettres, espaces, tirets et apostrophes/i)
+      ).toBeInTheDocument();
     });
   });
 
@@ -105,7 +118,10 @@ describe('ContactForm', () => {
     await user.type(screen.getByLabelText(/nom/i), 'Dupont');
     await user.type(screen.getByLabelText(/email/i), 'jean.dupont@example.com');
     await user.type(screen.getByLabelText(/sujet/i), 'Question sur le service');
-    await user.type(screen.getByLabelText(/message/i), 'Bonjour, j\'ai une question concernant votre service. Pouvez-vous m\'aider ?');
+    await user.type(
+      screen.getByLabelText(/message/i),
+      "Bonjour, j'ai une question concernant votre service. Pouvez-vous m'aider ?"
+    );
 
     const submitButton = screen.getByRole('button', { name: /envoyer le message/i });
     await user.click(submitButton);
@@ -133,10 +149,10 @@ describe('ContactForm', () => {
 
   it('handles form submission error', async () => {
     const user = userEvent.setup();
-    
+
     // Mock console.error to avoid noise in tests
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    
+
     render(<ContactForm />);
 
     // Fill in all required fields with valid data
@@ -144,7 +160,10 @@ describe('ContactForm', () => {
     await user.type(screen.getByLabelText(/nom/i), 'Dupont');
     await user.type(screen.getByLabelText(/email/i), 'jean.dupont@example.com');
     await user.type(screen.getByLabelText(/sujet/i), 'Question sur le service');
-    await user.type(screen.getByLabelText(/message/i), 'Bonjour, j\'ai une question concernant votre service. Pouvez-vous m\'aider ?');
+    await user.type(
+      screen.getByLabelText(/message/i),
+      "Bonjour, j'ai une question concernant votre service. Pouvez-vous m'aider ?"
+    );
 
     const submitButton = screen.getByRole('button', { name: /envoyer le message/i });
     await user.click(submitButton);
@@ -156,7 +175,7 @@ describe('ContactForm', () => {
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
-        'Une erreur est survenue lors de l\'envoi du message. Veuillez réessayer.'
+        "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer."
       );
     });
 
@@ -172,7 +191,10 @@ describe('ContactForm', () => {
     await user.type(screen.getByLabelText(/nom/i), 'Dupont');
     await user.type(screen.getByLabelText(/email/i), 'jean.dupont@example.com');
     await user.type(screen.getByLabelText(/sujet/i), 'Question sur le service');
-    await user.type(screen.getByLabelText(/message/i), 'Bonjour, j\'ai une question concernant votre service. Pouvez-vous m\'aider ?');
+    await user.type(
+      screen.getByLabelText(/message/i),
+      "Bonjour, j'ai une question concernant votre service. Pouvez-vous m'aider ?"
+    );
 
     const submitButton = screen.getByRole('button', { name: /envoyer le message/i });
     await user.click(submitButton);
@@ -184,4 +206,3 @@ describe('ContactForm', () => {
     });
   });
 });
-
