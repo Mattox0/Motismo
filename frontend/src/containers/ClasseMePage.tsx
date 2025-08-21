@@ -54,7 +54,6 @@ export const ClasseMePage: FC = () => {
     try {
       await leaveClass().unwrap();
       showToast.success(t('classe.leaveClassSuccess'));
-      // Force refresh the page to update the cache
       window.location.href = '/class';
     } catch (error) {
       console.error('Error leaving class:', error);

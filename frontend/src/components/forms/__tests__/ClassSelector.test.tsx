@@ -282,14 +282,12 @@ describe('ClassSelector', () => {
     const trigger = document.querySelector('.class-selector__trigger');
     fireEvent.click(trigger!);
 
-    // Check the state of checkboxes
     const checkbox1 = screen.getByLabelText(/Class A/) as HTMLInputElement;
     const checkbox2 = screen.getByLabelText(/Class B/) as HTMLInputElement;
 
     expect(checkbox1.checked).toBe(true);
     expect(checkbox2.checked).toBe(false);
 
-    // Toggle checkbox 2
     fireEvent.click(checkbox2);
     expect(mockOnSelectionChange).toHaveBeenCalledWith(['1', '2']);
   });
@@ -308,11 +306,9 @@ describe('ClassSelector', () => {
       .closest('.class-selector__trigger');
     fireEvent.click(trigger!);
 
-    // Click on the class name span
     const classNameSpan = screen.getByText('Class A');
     fireEvent.click(classNameSpan);
 
-    // Should still trigger the change
     expect(mockOnSelectionChange).toHaveBeenCalledWith(['1']);
   });
 
@@ -330,11 +326,8 @@ describe('ClassSelector', () => {
       .closest('.class-selector__trigger');
     fireEvent.click(trigger!);
 
-    // Unmount component
     unmount();
 
-    // Event listener should be cleaned up - no way to directly test this
-    // but the useEffect cleanup should run
     expect(() => fireEvent.mouseDown(document.body)).not.toThrow();
   });
 });

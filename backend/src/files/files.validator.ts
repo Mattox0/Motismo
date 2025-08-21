@@ -30,14 +30,12 @@ export class ParseFilesPipe implements PipeTransform {
       return;
     }
 
-    // Si c'est un seul fichier
     if ("originalname" in value && typeof value.originalname === "string") {
       await this.validateFile(value as Express.Multer.File);
 
       return value;
     }
 
-    // Si c'est un objet de fichiers
     if (typeof value === "object") {
       for (const files of Object.values(value)) {
         if (Array.isArray(files) && files[0] && this.isValidFile(files[0])) {

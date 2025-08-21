@@ -5,14 +5,12 @@ import { useGetOneQuizQuery } from '@/services/quiz.service';
 
 import { QuizzProvider, useQuizz } from '../QuizzProvider';
 
-// Mock des dépendances
 jest.mock('@/hooks/useAuth');
 jest.mock('@/services/quiz.service');
 
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 const mockUseGetOneQuizQuery = useGetOneQuizQuery as jest.MockedFunction<typeof useGetOneQuizQuery>;
 
-// Composant de test pour accéder au contexte
 const TestComponent = () => {
   const context = useQuizz();
   return (

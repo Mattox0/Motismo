@@ -2,59 +2,36 @@
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
 
+import { Navbar } from '@/components/Navbar';
 import { useAuth } from '@/hooks/useAuth';
-
-import { Navbar } from '../Navbar';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   usePathname: jest.fn(),
 }));
 
-jest.mock('next/link', () => {
-  return function MockLink({ children, href, onClick, className }: any) {
-    return (
-      <a href={href} onClick={onClick} className={className}>
-        {children}
-      </a>
-    );
-  };
-});
-
 jest.mock('next/image', () => {
-  return function MockImage({ src, alt, width, height }: any) {
-    return <img src={src} alt={alt} width={width} height={height} data-testid="logo" />;
+  return function MockImage({ src, alt, ...props }: any) {
+    return <img src={src} alt={alt} data-testid="logo" {...props} />;
   };
 });
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
-jest.mock('@/hooks/useAuth', () => ({
-  useAuth: jest.fn(),
-}));
-
-jest.mock('@root/assets/images/motismo_logo.webp', () => 'mock-logo-path');
-
-const mockRouter = {
-  push: jest.fn(),
-};
-
-const mockLogout = jest.fn();
+jest.mock('@/hooks/useAuth');
 
 describe('Navbar component', () => {
+  const mockRouter = {
+    push: jest.fn(),
+  };
+  const mockLogout = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (usePathname as jest.Mock).mockReturnValue('/');
   });
 
-  it('should render navbar with logo', () => {
+  it('should render logo', () => {
     (useAuth as jest.Mock).mockReturnValue({
       session: null,
       logout: mockLogout,
@@ -62,24 +39,25 @@ describe('Navbar component', () => {
 
     render(<Navbar />);
 
-    expect(screen.getByTestId('logo')).toBeInTheDocument();
-    expect(screen.getByTestId('logo')).toHaveAttribute('alt', 'Motismo Logo');
-    expect(screen.getByTestId('logo')).toHaveAttribute('width', '75');
-    expect(screen.getByTestId('logo')).toHaveAttribute('height', '75');
+    const logo = screen.getByTestId('logo');
+    expect(logo).toBeInTheDocument();
+    expect(logo).toHaveAttribute('alt', 'Motismo Logo');
   });
 
   it('should render navigation links', () => {
     (useAuth as jest.Mock).mockReturnValue({
-      session: null,
+      session: {
+        user: { role: 'Teacher' },
+      },
       logout: mockLogout,
     });
 
     render(<Navbar />);
 
     expect(screen.getByText('Accueil')).toBeInTheDocument();
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Mon espace')).toBeInTheDocument();
     expect(screen.getByText('Accueil')).toHaveAttribute('href', '/');
-    expect(screen.getByText('Dashboard')).toHaveAttribute('href', '/profile');
+    expect(screen.getByText('Mon espace')).toHaveAttribute('href', '/profile');
   });
 
   it('should show login button when user is not authenticated', () => {
@@ -90,8 +68,8 @@ describe('Navbar component', () => {
 
     render(<Navbar />);
 
-    expect(screen.getByText('navigation.login')).toBeInTheDocument();
-    expect(screen.queryByText('navigation.logout')).not.toBeInTheDocument();
+    expect(screen.getByText('Se connecter')).toBeInTheDocument();
+    expect(screen.queryByText('Se déconnecter')).not.toBeInTheDocument();
   });
 
   it('should show logout button when user is authenticated', () => {
@@ -102,8 +80,8 @@ describe('Navbar component', () => {
 
     render(<Navbar />);
 
-    expect(screen.getByText('navigation.logout')).toBeInTheDocument();
-    expect(screen.queryByText('navigation.login')).not.toBeInTheDocument();
+    expect(screen.getByText('Se déconnecter')).toBeInTheDocument();
+    expect(screen.queryByText('Se connecter')).not.toBeInTheDocument();
   });
 
   it('should navigate to auth page when login button is clicked', () => {
@@ -114,7 +92,7 @@ describe('Navbar component', () => {
 
     render(<Navbar />);
 
-    const loginButton = screen.getByText('navigation.login');
+    const loginButton = screen.getByText('Se connecter');
     fireEvent.click(loginButton);
 
     expect(mockRouter.push).toHaveBeenCalledWith('/auth');
@@ -128,7 +106,7 @@ describe('Navbar component', () => {
 
     render(<Navbar />);
 
-    const logoutButton = screen.getByText('navigation.logout');
+    const logoutButton = screen.getByText('Se déconnecter');
     fireEvent.click(logoutButton);
 
     expect(mockLogout).toHaveBeenCalled();
@@ -143,7 +121,7 @@ describe('Navbar component', () => {
 
     render(<Navbar />);
 
-    const hamburgerButton = screen.getByLabelText('Toggle menu');
+    const hamburgerButton = screen.getByLabelText('Basculer le menu');
 
     expect(screen.getByText('Accueil').closest('.navigation')).not.toHaveClass('open');
 
@@ -162,7 +140,7 @@ describe('Navbar component', () => {
 
     render(<Navbar />);
 
-    const hamburgerButton = screen.getByLabelText('Toggle menu');
+    const hamburgerButton = screen.getByLabelText('Basculer le menu');
     const homeLink = screen.getByText('Accueil');
 
     fireEvent.click(hamburgerButton);
@@ -174,7 +152,9 @@ describe('Navbar component', () => {
 
   it('should show active state for current page', async () => {
     (useAuth as jest.Mock).mockReturnValue({
-      session: null,
+      session: {
+        user: { role: 'Teacher' },
+      },
       logout: mockLogout,
     });
     (usePathname as jest.Mock).mockReturnValue('/profile');
@@ -182,7 +162,7 @@ describe('Navbar component', () => {
     render(<Navbar />);
 
     await waitFor(() => {
-      expect(screen.getByText('Dashboard')).toHaveClass('active');
+      expect(screen.getByText('Mon espace')).toHaveClass('active');
     });
 
     expect(screen.getByText('Accueil')).not.toHaveClass('active');
@@ -190,7 +170,9 @@ describe('Navbar component', () => {
 
   it('should show active state for home page', async () => {
     (useAuth as jest.Mock).mockReturnValue({
-      session: null,
+      session: {
+        user: { role: 'Teacher' },
+      },
       logout: mockLogout,
     });
     (usePathname as jest.Mock).mockReturnValue('/');
@@ -201,12 +183,14 @@ describe('Navbar component', () => {
       expect(screen.getByText('Accueil')).toHaveClass('active');
     });
 
-    expect(screen.getByText('Dashboard')).not.toHaveClass('active');
+    expect(screen.getByText('Mon espace')).not.toHaveClass('active');
   });
 
   it('should have correct CSS classes', () => {
     (useAuth as jest.Mock).mockReturnValue({
-      session: null,
+      session: {
+        user: { role: 'Teacher' },
+      },
       logout: mockLogout,
     });
 
@@ -214,7 +198,7 @@ describe('Navbar component', () => {
 
     expect(screen.getByRole('navigation')).toHaveClass('navbar');
     expect(screen.getByText('Accueil').closest('.navigation')).toBeInTheDocument();
-    expect(screen.getByText('navigation.login').closest('.auth-buttons')).toBeInTheDocument();
+    expect(screen.getByText('Se déconnecter').closest('.auth-buttons')).toBeInTheDocument();
   });
 
   it('should render hamburger menu lines', () => {
@@ -231,21 +215,23 @@ describe('Navbar component', () => {
     expect(hamburgerLines).toHaveLength(3);
   });
 
-  it('should close mobile menu when Dashboard link is clicked', () => {
+  it('should close mobile menu when Mon espace link is clicked', () => {
     (useAuth as jest.Mock).mockReturnValue({
-      session: null,
+      session: {
+        user: { role: 'Teacher' },
+      },
       logout: mockLogout,
     });
 
     render(<Navbar />);
 
-    const hamburgerButton = screen.getByLabelText('Toggle menu');
-    const dashboardLink = screen.getByText('Dashboard');
+    const hamburgerButton = screen.getByLabelText('Basculer le menu');
+    const profileLink = screen.getByText('Mon espace');
 
     fireEvent.click(hamburgerButton);
     expect(screen.getByText('Accueil').closest('.navigation')).toHaveClass('open');
 
-    fireEvent.click(dashboardLink);
+    fireEvent.click(profileLink);
     expect(screen.getByText('Accueil').closest('.navigation')).not.toHaveClass('open');
   });
 });

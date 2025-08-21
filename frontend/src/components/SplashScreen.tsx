@@ -1,8 +1,11 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const SplashScreen: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="splash-screen" data-testid="splash-screen">
       <div className="splash-content">
@@ -15,8 +18,8 @@ export const SplashScreen: React.FC = () => {
           </div>
         </div>
         <div className="splash-text">
-          <h1>Motismo</h1>
-          <p>Chargement en cours...</p>
+          <h1>{t('splash.title')}</h1>
+          <p>{t('splash.loading')}</p>
         </div>
         <div className="splash-loader">
           <div className="pulse-loader">

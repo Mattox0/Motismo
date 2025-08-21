@@ -12,21 +12,18 @@ const createSignInResponse = (error: string | null, ok: boolean) => ({
   url: null,
 });
 
-// Mock next-auth
 jest.mock('next-auth/react', () => ({
   signIn: jest.fn(),
   signOut: jest.fn(),
   useSession: jest.fn(),
 }));
 
-// Mock react-i18next
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
-// Mock toast
 jest.mock('@/utils/toast', () => ({
   showToast: {
     error: jest.fn(),
@@ -34,7 +31,6 @@ jest.mock('@/utils/toast', () => ({
   },
 }));
 
-// Mock fetch
 global.fetch = jest.fn();
 
 describe('useAuth', () => {
@@ -139,13 +135,18 @@ describe('useAuth', () => {
     it('should successfully register and auto-login', async () => {
       const mockResponse = { ok: true, json: jest.fn().mockResolvedValue({ message: 'Success' }) };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
-      mockSignIn.mockResolvedValue({ error: null, ok: true });
+      mockSignIn.mockResolvedValue({
+        error: null,
+        ok: true,
+        status: 200,
+        url: null,
+      });
 
       const { result } = renderHook(() => useAuth());
 
       await act(async () => {
         const registerResult = await result.current.register(mockUserData);
-        expect(registerResult).toEqual({ error: null, ok: true });
+        expect(registerResult).toEqual({ error: null, ok: true, status: 200, url: null });
       });
 
       expect(global.fetch).toHaveBeenCalledWith(
@@ -172,13 +173,18 @@ describe('useAuth', () => {
 
       const mockResponse = { ok: true, json: jest.fn().mockResolvedValue({ message: 'Success' }) };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
-      mockSignIn.mockResolvedValue({ error: null, ok: true });
+      mockSignIn.mockResolvedValue({
+        error: null,
+        ok: true,
+        status: 200,
+        url: null,
+      });
 
       const { result } = renderHook(() => useAuth());
 
       await act(async () => {
         const registerResult = await result.current.register(userDataWithoutImage);
-        expect(registerResult).toEqual({ error: null, ok: true });
+        expect(registerResult).toEqual({ error: null, ok: true, status: 200, url: null });
       });
 
       expect(global.fetch).toHaveBeenCalledWith(
@@ -225,7 +231,12 @@ describe('useAuth', () => {
     it('should handle auto-login failure after registration', async () => {
       const mockResponse = { ok: true, json: jest.fn().mockResolvedValue({ message: 'Success' }) };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
-      mockSignIn.mockResolvedValue({ error: 'Auto-login failed', ok: false });
+      mockSignIn.mockResolvedValue({
+        error: 'Auto-login failed',
+        ok: false,
+        status: 401,
+        url: '/api/auth/callback/credentials',
+      });
 
       const { result } = renderHook(() => useAuth());
 
@@ -278,7 +289,12 @@ describe('useAuth', () => {
     it('should create FormData with all user data', async () => {
       const mockResponse = { ok: true, json: jest.fn().mockResolvedValue({ message: 'Success' }) };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
-      mockSignIn.mockResolvedValue({ error: null, ok: true });
+      mockSignIn.mockResolvedValue({
+        error: null,
+        ok: true,
+        status: 200,
+        url: 'http://localhost/api/auth/callback/credentials',
+      });
 
       const userData = {
         email: 'test@example.com',
@@ -305,7 +321,12 @@ describe('useAuth', () => {
     it('should handle undefined values in FormData', async () => {
       const mockResponse = { ok: true, json: jest.fn().mockResolvedValue({ message: 'Success' }) };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
-      mockSignIn.mockResolvedValue({ error: null, ok: true });
+      mockSignIn.mockResolvedValue({
+        error: null,
+        ok: true,
+        status: 200,
+        url: 'http://localhost/api/auth/callback/credentials',
+      });
 
       const userData = {
         email: 'test@example.com',

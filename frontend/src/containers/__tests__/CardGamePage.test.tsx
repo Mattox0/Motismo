@@ -145,8 +145,8 @@ describe('CardGamePage', () => {
 
     expect(screen.getByText('Test Cards')).toBeInTheDocument();
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Précédent' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Suivant' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'common.previous' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'common.next' })).toBeInTheDocument();
   });
 
   it('handles navigation with previous and next buttons', () => {
@@ -167,13 +167,11 @@ describe('CardGamePage', () => {
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
     expect(screen.getByText('Front: Front 1')).toBeInTheDocument();
 
-    // Navigate to next card
-    fireEvent.click(screen.getByRole('button', { name: 'Suivant' }));
+    fireEvent.click(screen.getByRole('button', { name: 'common.next' }));
     expect(screen.getByText('2 / 2')).toBeInTheDocument();
     expect(screen.getByText('Front: Front 2')).toBeInTheDocument();
 
-    // Navigate back to previous card
-    fireEvent.click(screen.getByRole('button', { name: 'Précédent' }));
+    fireEvent.click(screen.getByRole('button', { name: 'common.previous' }));
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
     expect(screen.getByText('Front: Front 1')).toBeInTheDocument();
   });
@@ -193,7 +191,7 @@ describe('CardGamePage', () => {
 
     render(<CardGamePage />);
 
-    const prevButton = screen.getByRole('button', { name: 'Précédent' });
+    const prevButton = screen.getByRole('button', { name: 'common.previous' });
     expect(prevButton).toBeDisabled();
   });
 
@@ -212,9 +210,9 @@ describe('CardGamePage', () => {
 
     render(<CardGamePage />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Suivant' }));
+    fireEvent.click(screen.getByRole('button', { name: 'common.next' }));
 
-    const nextButton = screen.getByRole('button', { name: 'Suivant' });
+    const nextButton = screen.getByRole('button', { name: 'common.next' });
     expect(nextButton).toBeDisabled();
   });
 
@@ -255,27 +253,21 @@ describe('CardGamePage', () => {
 
     render(<CardGamePage />);
 
-    // Test ArrowRight navigation
     fireEvent.keyDown(window, { key: 'ArrowRight' });
     expect(screen.getByText('2 / 2')).toBeInTheDocument();
 
-    // Test ArrowLeft navigation
     fireEvent.keyDown(window, { key: 'ArrowLeft' });
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
 
-    // Test 'd' key navigation
     fireEvent.keyDown(window, { key: 'd' });
     expect(screen.getByText('2 / 2')).toBeInTheDocument();
 
-    // Test 'q' key navigation
     fireEvent.keyDown(window, { key: 'q' });
     expect(screen.getByText('1 / 2')).toBeInTheDocument();
 
-    // Test space key for flipping
     fireEvent.keyDown(window, { key: ' ' });
     expect(screen.getByText('Flipped: Yes')).toBeInTheDocument();
 
-    // Test Enter key for flipping
     fireEvent.keyDown(window, { key: 'Enter' });
     expect(screen.getByText('Flipped: No')).toBeInTheDocument();
   });
@@ -402,10 +394,10 @@ describe('CardGamePage', () => {
 
     expect(screen.getByText('Front: Front 1')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Suivant' }));
+    fireEvent.click(screen.getByRole('button', { name: 'common.next' }));
     expect(screen.getByText('Front: Front 2')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Précédent' }));
+    fireEvent.click(screen.getByRole('button', { name: 'common.previous' }));
     expect(screen.getByText('Front: Front 1')).toBeInTheDocument();
   });
 
@@ -440,13 +432,11 @@ describe('CardGamePage', () => {
 
     render(<CardGamePage />);
 
-    // Flip the card
     const cardFlip = screen.getByTestId('card-flip');
     fireEvent.click(cardFlip);
     expect(screen.getByText('Flipped: Yes')).toBeInTheDocument();
 
-    // Navigate to next card
-    fireEvent.click(screen.getByRole('button', { name: 'Suivant' }));
+    fireEvent.click(screen.getByRole('button', { name: 'common.next' }));
     expect(screen.getByText('Flipped: No')).toBeInTheDocument();
   });
 

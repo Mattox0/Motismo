@@ -78,11 +78,11 @@ describe('LoginForm component', () => {
   it('should render login form with all fields', () => {
     render(<LoginForm />);
 
-    expect(screen.getByText('Email')).toBeInTheDocument();
-    expect(screen.getByText('Mot de passe')).toBeInTheDocument();
-    expect(screen.getByTestId('input-email')).toBeInTheDocument();
-    expect(screen.getByTestId('input-mot de passe')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Se connecter' })).toBeInTheDocument();
+    expect(screen.getByText('auth.email')).toBeInTheDocument();
+    expect(screen.getByText('auth.password')).toBeInTheDocument();
+    expect(screen.getByTestId('input-auth.email')).toBeInTheDocument();
+    expect(screen.getByTestId('input-auth.password')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'auth.login' })).toBeInTheDocument();
   });
 
   it('should handle successful login', async () => {
@@ -90,9 +90,9 @@ describe('LoginForm component', () => {
 
     render(<LoginForm />);
 
-    const emailInput = screen.getByTestId('input-email');
-    const passwordInput = screen.getByTestId('input-mot de passe');
-    const submitButton = screen.getByRole('button', { name: 'Se connecter' });
+    const emailInput = screen.getByTestId('input-auth.email');
+    const passwordInput = screen.getByTestId('input-auth.password');
+    const submitButton = screen.getByRole('button', { name: 'auth.login' });
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
@@ -119,9 +119,9 @@ describe('LoginForm component', () => {
 
     render(<LoginForm />);
 
-    const emailInput = screen.getByTestId('input-email');
-    const passwordInput = screen.getByTestId('input-mot de passe');
-    const submitButton = screen.getByRole('button', { name: 'Se connecter' });
+    const emailInput = screen.getByTestId('input-auth.email');
+    const passwordInput = screen.getByTestId('input-auth.password');
+    const submitButton = screen.getByRole('button', { name: 'auth.login' });
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
@@ -141,9 +141,9 @@ describe('LoginForm component', () => {
 
     render(<LoginForm />);
 
-    const emailInput = screen.getByTestId('input-email');
-    const passwordInput = screen.getByTestId('input-mot de passe');
-    const submitButton = screen.getByRole('button', { name: 'Se connecter' });
+    const emailInput = screen.getByTestId('input-auth.email');
+    const passwordInput = screen.getByTestId('input-auth.password');
+    const submitButton = screen.getByRole('button', { name: 'auth.login' });
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
@@ -159,9 +159,9 @@ describe('LoginForm component', () => {
 
     render(<LoginForm />);
 
-    const emailInput = screen.getByTestId('input-email');
-    const passwordInput = screen.getByTestId('input-mot de passe');
-    const submitButton = screen.getByRole('button', { name: 'Se connecter' });
+    const emailInput = screen.getByTestId('input-auth.email');
+    const passwordInput = screen.getByTestId('input-auth.password');
+    const submitButton = screen.getByRole('button', { name: 'auth.login' });
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });

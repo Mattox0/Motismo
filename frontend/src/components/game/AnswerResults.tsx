@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { IAnswerStatistics } from '@/types/model/IAnswerStatistics';
 
@@ -9,6 +10,7 @@ interface IAnswerResultsProps {
 }
 
 export const AnswerResults: FC<IAnswerResultsProps> = ({ statistics }) => {
+  const { t } = useTranslation();
   const { questionTitle, totalResponses, choices } = statistics;
 
   return (
@@ -17,7 +19,7 @@ export const AnswerResults: FC<IAnswerResultsProps> = ({ statistics }) => {
         <h1 className="answer-results__title">{questionTitle}</h1>
         <div className="answer-results__summary">
           <span className="summary-badge">
-            {totalResponses} réponse{totalResponses > 1 ? 's' : ''}
+            {totalResponses} {t('game.player.responses', { count: totalResponses })}
           </span>
         </div>
       </div>

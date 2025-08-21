@@ -362,46 +362,4 @@ export class QuestionService {
 
     await this.normalizeOrders(quizz.id);
   }
-
-  // async createMatchingQuestion(
-  //   createMatchingQuestionDto: CreateMatchingQuestionDto,
-  // ): Promise<Question> {
-  //   const quizz = await this.quizzService.findOne(
-  //     createMatchingQuestionDto.quizzId,
-  //   );
-
-  //   if (!quizz) {
-  //     throw new NotFoundException(
-  //       await this.translationService.translate("error.QUIZZ_NOT_FOUND"),
-  //     );
-  //   }
-
-  //   const question = this.matchingQuestionRepository.create({
-  //     ...createMatchingQuestionDto,
-  //     quizz,
-  //   });
-
-  //   return this.matchingQuestionRepository.save(question);
-  // }
-
-  // async createWordCloudQuestion(
-  //   createWordCloudQuestionDto: CreateWordCloudQuestionDto,
-  // ): Promise<Question> {
-  //   const quizz = await this.quizzService.findOne(
-  //     createWordCloudQuestionDto.quizzId,
-  //   );
-
-  //   if (!quizz) {
-  //     throw new NotFoundException(
-  //       await this.translationService.translate("error.QUIZZ_NOT_FOUND"),
-  //     );
-  //   }
-
-  //   const question = this.wordCloudQuestionRepository.create({
-  //     ...createWordCloudQuestionDto,
-  //     quizz,
-  //   });
-
-  //   return this.wordCloudQuestionRepository.save(question);
-  // }
 }

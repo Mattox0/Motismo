@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { AdminGuard } from "@/auth/guards/admin.guard"; // Chemin vers votre AdminGuard
+import { AdminGuard } from "@/auth/guards/admin.guard";
 import { UserAuthGuard } from "@/auth/guards/user-auth.guard";
 import { TranslationService } from "@/translation/translation.service";
 import { UserService } from "@/user/service/user.service";

@@ -1,6 +1,7 @@
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { motion } from 'framer-motion';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useGame } from '@/providers/GameProvider';
 import { IRankingStatistics } from '@/types/model/IRanking';
@@ -10,9 +11,17 @@ interface IGameFinishedProps {
 }
 
 export const GameFinished: FC<IGameFinishedProps> = ({ statistics }) => {
+  const { t } = useTranslation();
   const { myUser } = useGame();
   const winner = statistics.ranking[0];
   const myRank = statistics.ranking.find(player => player.id === myUser?.id);
+
+  const getRankSuffix = (rank: number) => {
+    if (rank === 1) return t('game.finished.rankSuffix.1');
+    if (rank === 2) return t('game.finished.rankSuffix.2');
+    if (rank === 3) return t('game.finished.rankSuffix.3');
+    return t('game.finished.rankSuffix.other');
+  };
 
   return (
     <div className="game-finished">
@@ -29,7 +38,7 @@ export const GameFinished: FC<IGameFinishedProps> = ({ statistics }) => {
             animate={{ scale: 1 }}
             transition={{ delay: 0.3, type: 'spring' }}
           >
-            Partie terminée !
+            {t('game.finished.title')}
           </motion.h1>
         </div>
 
@@ -43,9 +52,11 @@ export const GameFinished: FC<IGameFinishedProps> = ({ statistics }) => {
             className="winner-trophy"
             style={{ fontSize: '4rem', color: '#FFD700' }}
           />
-          <h2 className="winner-title">Vainqueur</h2>
+          <h2 className="winner-title">{t('game.finished.winner')}</h2>
           <div className="winner-name">{winner.name}</div>
-          <div className="winner-points">{winner.points} points</div>
+          <div className="winner-points">
+            {winner.points} {t('game.finished.points')}
+          </div>
         </motion.div>
 
         {myUser && myUser.id !== winner.id && myRank && (
@@ -55,20 +66,14 @@ export const GameFinished: FC<IGameFinishedProps> = ({ statistics }) => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
           >
-            <h3>Votre classement</h3>
+            <h3>{t('game.finished.yourRanking')}</h3>
             <div className="your-rank-position">
               {myRank.rank}
-              <span className="rank-suffix">
-                {myRank.rank === 1
-                  ? 'er'
-                  : myRank.rank === 2
-                    ? 'ème'
-                    : myRank.rank === 3
-                      ? 'ème'
-                      : 'ème'}
-              </span>
+              <span className="rank-suffix">{getRankSuffix(myRank.rank)}</span>
             </div>
-            <div className="your-rank-points">{myRank.points} points</div>
+            <div className="your-rank-points">
+              {myRank.points} {t('game.finished.points')}
+            </div>
           </motion.div>
         )}
 
@@ -80,7 +85,7 @@ export const GameFinished: FC<IGameFinishedProps> = ({ statistics }) => {
         >
           <div className="stats-item">
             <div className="stats-value">{statistics.totalPlayers}</div>
-            <div className="stats-label">Joueurs</div>
+            <div className="stats-label">{t('game.finished.players')}</div>
           </div>
         </motion.div>
       </motion.div>

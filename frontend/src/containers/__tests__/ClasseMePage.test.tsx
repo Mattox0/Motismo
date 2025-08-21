@@ -8,7 +8,6 @@ import { IUserRole } from '@/types/IUserRole';
 
 import { ClasseMePage } from '../ClasseMePage';
 
-// Mock dependencies
 jest.mock('next-auth/react');
 jest.mock('next/navigation');
 jest.mock('react-i18next', () => ({

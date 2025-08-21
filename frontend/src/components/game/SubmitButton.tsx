@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ISubmitButtonProps {
   onClick: () => void;
@@ -13,13 +14,17 @@ export const SubmitButton: FC<ISubmitButtonProps> = ({
   onClick,
   disabled = false,
   isSubmitted = false,
-  submitText = 'Valider',
-  submittedText = 'Réponse envoyée',
+  submitText,
+  submittedText,
   className = '',
 }) => {
+  const { t } = useTranslation();
+
   return (
     <button className={`submit-btn ${className}`} onClick={onClick} disabled={disabled}>
-      {isSubmitted ? submittedText : submitText}
+      {isSubmitted
+        ? submittedText || t('game.player.submitted')
+        : submitText || t('game.player.submit')}
     </button>
   );
 };

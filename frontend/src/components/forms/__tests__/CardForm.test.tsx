@@ -5,7 +5,6 @@ import { ICard } from '@/types/model/ICard';
 
 import { CardForm } from '../CardForm';
 
-// Mock react-hook-form
 jest.mock('react-hook-form', () => ({
   useForm: jest.fn(),
 }));
@@ -169,7 +168,6 @@ describe('CardForm', () => {
 
       render(<CardForm onSubmit={mockOnSubmit} index={0} initialData={mockInitialData} />);
 
-      // Switch to image mode
       const imageButtons = screen.getAllByText('Image');
       const rectoImageButton = imageButtons[0];
       fireEvent.click(rectoImageButton);
@@ -182,7 +180,6 @@ describe('CardForm', () => {
         fireEvent.change(rectoInput, { target: { files: [file] } });
       });
 
-      // Check that setValue was called, but don't check the exact order
       expect(mockFormMethods.setValue).toHaveBeenCalledWith('term', '');
     });
 
@@ -196,7 +193,6 @@ describe('CardForm', () => {
 
       render(<CardForm onSubmit={mockOnSubmit} index={0} initialData={mockInitialData} />);
 
-      // Switch to image mode
       const imageButtons = screen.getAllByText('Image');
       const versoImageButton = imageButtons[1];
       fireEvent.click(versoImageButton);
@@ -267,7 +263,6 @@ describe('CardForm', () => {
     it('should handle submission error', async () => {
       const mockHandleSubmit = jest.fn(fn => {
         const mockFn = jest.fn().mockImplementation(() => {
-          // Don't throw error in test, just return
           return Promise.resolve();
         });
         return mockFn;
@@ -387,7 +382,6 @@ describe('CardForm', () => {
         fireEvent.click(submitButton);
       });
 
-      // The reset should be called by the form submission handler
       expect(mockHandleSubmit).toHaveBeenCalled();
     });
   });
@@ -405,12 +399,10 @@ describe('CardForm', () => {
 
       const submitButton = screen.getByText('Enregistrer la carte');
 
-      // Simulate submitting state
       act(() => {
         fireEvent.click(submitButton);
       });
 
-      // The button should still be present
       expect(screen.getByText('Enregistrer la carte')).toBeInTheDocument();
     });
   });
@@ -431,7 +423,6 @@ describe('CardForm', () => {
 
       render(<CardForm onSubmit={mockOnSubmit} index={0} initialData={imageInitialData} />);
 
-      // Switch to image mode
       const imageButtons = screen.getAllByText('Image');
       const rectoImageButton = imageButtons[0];
       fireEvent.click(rectoImageButton);
@@ -456,7 +447,6 @@ describe('CardForm', () => {
 
       render(<CardForm onSubmit={mockOnSubmit} index={0} initialData={imageInitialData} />);
 
-      // Switch to image mode
       const imageButtons = screen.getAllByText('Image');
       const versoImageButton = imageButtons[1];
       fireEvent.click(versoImageButton);

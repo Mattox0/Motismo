@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ICardFlipProps {
   frontContent: string;
@@ -17,6 +18,7 @@ const CardFlip: React.FC<ICardFlipProps> = ({
   flipped,
   setFlipped,
 }) => {
+  const { t } = useTranslation();
   const [localFlipped, setLocalFlipped] = useState(false);
   const isControlled = typeof flipped === 'boolean' && typeof setFlipped === 'function';
   const isFlipped = isControlled ? flipped : localFlipped;
@@ -33,7 +35,7 @@ const CardFlip: React.FC<ICardFlipProps> = ({
       >
         <div className="card-flip__face card-flip__face--front">
           {frontType === 'image' ? null : (
-            <div className="card-flip__label card-flip__label--front">Terme :</div>
+            <div className="card-flip__label card-flip__label--front">{t('card.term')}</div>
           )}
           <div className="card-flip__content card-flip__content--front">
             {frontType === 'image' ? (
@@ -50,7 +52,7 @@ const CardFlip: React.FC<ICardFlipProps> = ({
         </div>
         <div className="card-flip__face card-flip__face--back">
           {backType === 'image' ? null : (
-            <div className="card-flip__label card-flip__label--back">Définition :</div>
+            <div className="card-flip__label card-flip__label--back">{t('card.definition')}</div>
           )}
           <div className="card-flip__content card-flip__content--back">
             {backType === 'image' ? (

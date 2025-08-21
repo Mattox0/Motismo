@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import { BackButton } from '../BackButton';
 
-// Mock react-i18next
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,

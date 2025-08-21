@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Title } from '@/components/Title';
 import { useGame } from '@/providers/GameProvider';
@@ -27,6 +28,7 @@ export const QuestionChoicePlayer: FC<IQuestionChoicePlayerProps> = ({
   totalQuestions,
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   const socket = useSocket();
   const { answerCount, timerFinished } = useGame();
   const isMultipleChoice = question.questionType === IQuestionType.MULTIPLE_CHOICES;
@@ -120,7 +122,7 @@ export const QuestionChoicePlayer: FC<IQuestionChoicePlayerProps> = ({
           <div className="question-player__input">
             <textarea
               className="response-textarea"
-              placeholder="Votre réponse..."
+              placeholder={t('game.player.responsePlaceholder')}
               rows={4}
               disabled={disabled || isSubmitted}
             />

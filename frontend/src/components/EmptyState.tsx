@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
 
 interface IEmptyStateProps {
   title?: string;
@@ -6,11 +7,13 @@ interface IEmptyStateProps {
 }
 
 export const EmptyState = ({ title, description }: IEmptyStateProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="empty-state">
       <Image
         src="/empty_state_quizz.svg"
-        alt="État vide"
+        alt={t('emptyState.alt')}
         width={200}
         height={200}
         className="empty-state__image"

@@ -63,6 +63,6 @@ describe('Lobby', () => {
   it('shows waiting message when presentation is false', () => {
     render(<Lobby quizz={mockQuizz} code="TEST123" presentation={false} />);
 
-    expect(screen.getByText('En attente du présentateur pour lancer le quizz')).toBeInTheDocument();
+    expect(screen.getByText('game.lobby.waitingPresenter')).toBeInTheDocument();
   });
 });

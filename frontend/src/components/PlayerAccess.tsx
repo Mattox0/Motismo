@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ICreateGameUserRequest, useCreateGameUserMutation } from '@/services/game.service';
 import { showToast } from '@/utils/toast';
@@ -13,6 +14,7 @@ import Input from './forms/Input';
 import { SplashScreen } from './SplashScreen';
 
 export const PlayerAccess: React.FC = () => {
+  const { t } = useTranslation();
   const params = useParams();
   const rawCode = params.code;
   const code = Array.isArray(rawCode) ? rawCode[0] : rawCode;
@@ -44,16 +46,16 @@ export const PlayerAccess: React.FC = () => {
       })
       .catch(err => {
         console.error(err);
-        showToast.error('Impossible de charger les options d’avatar');
+        showToast.error(t('game.errors.loadAvatarOptions'));
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!code) return;
     if (!name || !name.trim()) {
-      showToast.error('Veuillez entrer un pseudo.');
+      showToast.error(t('game.errors.enterUsername'));
       return;
     }
     const player: ICreateGameUserRequest = {
@@ -69,7 +71,7 @@ export const PlayerAccess: React.FC = () => {
       })
       .catch(err => {
         console.error(err);
-        showToast.error('Impossible de rejoindre la partie');
+        showToast.error(t('game.errors.joinGame'));
       });
   };
 
@@ -83,19 +85,21 @@ export const PlayerAccess: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-sm">
         <div className="mb-6">
-          <label className="block font-medium mb-1">Pseudo</label>
+          <label className="block font-medium mb-1">{t('game.player.username')}</label>
           <Input
             type="text"
             value={name ?? ''}
             onChange={e => setName(e.target.value)}
-            placeholder="Votre pseudo"
+            placeholder={t('game.player.usernamePlaceholder')}
             className="w-full border rounded px-3 py-2"
             maxLength={20}
           />
         </div>
 
         <div className="mb-6">
-          <label className="block font-medium mb-2 text-center">Choisissez votre avatar</label>
+          <label className="block font-medium mb-2 text-center">
+            {t('game.player.chooseAvatar')}
+          </label>
           <div className="relative flex justify-center items-center">
             <div className="flex flex-col items-center absolute left-0">
               <button
@@ -138,7 +142,7 @@ export const PlayerAccess: React.FC = () => {
         <ColorPicker color={color} setColor={setColor} />
 
         <Button variant="primary" type="submit" className="mt-4">
-          Rejoindre
+          {t('game.player.join')}
         </Button>
       </form>
     </div>

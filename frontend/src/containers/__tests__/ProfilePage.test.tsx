@@ -121,8 +121,8 @@ describe('ProfilePage', () => {
 
     render(<ProfilePage />);
 
-    expect(screen.getByText('Vos quizz')).toBeInTheDocument();
-    expect(screen.getByText('Vos cartes')).toBeInTheDocument();
+    expect(screen.getByText('profile.yourQuizzes')).toBeInTheDocument();
+    expect(screen.getByText('profile.yourCards')).toBeInTheDocument();
     expect(screen.getByText('Test Quiz')).toBeInTheDocument();
     expect(screen.getByText('Test Cards')).toBeInTheDocument();
   });
@@ -138,9 +138,9 @@ describe('ProfilePage', () => {
 
     render(<ProfilePage />);
 
-    expect(screen.getByText('Mes cartes assignées')).toBeInTheDocument();
+    expect(screen.getByText('profile.myAssignedCards')).toBeInTheDocument();
     expect(screen.getByText('Test Cards')).toBeInTheDocument();
-    expect(screen.queryByText('Vos quizz')).not.toBeInTheDocument();
+    expect(screen.queryByText('profile.yourQuizzes')).not.toBeInTheDocument();
   });
 
   it('shows loading state', () => {
@@ -168,8 +168,8 @@ describe('ProfilePage', () => {
 
     render(<ProfilePage />);
 
-    expect(screen.getByText('Aucun quiz trouvé')).toBeInTheDocument();
-    expect(screen.getByText('Aucune carte trouvée')).toBeInTheDocument();
+    expect(screen.getByText('profile.noQuizzesFound')).toBeInTheDocument();
+    expect(screen.getByText('profile.noCardsFound')).toBeInTheDocument();
   });
 
   it('shows empty state for student cards when no data', () => {
@@ -183,10 +183,8 @@ describe('ProfilePage', () => {
 
     render(<ProfilePage />);
 
-    expect(screen.getByText('Aucune carte assignée')).toBeInTheDocument();
-    expect(
-      screen.getByText("Vos professeurs n'ont pas encore assigné de cartes.")
-    ).toBeInTheDocument();
+    expect(screen.getByText('profile.noAssignedCards')).toBeInTheDocument();
+    expect(screen.getByText('profile.noAssignedCardsDescription')).toBeInTheDocument();
   });
 
   it('creates game successfully', async () => {
@@ -395,8 +393,8 @@ describe('ProfilePage', () => {
 
     render(<ProfilePage />);
 
-    expect(screen.getByText('Vos quizz')).toBeInTheDocument();
-    expect(screen.getByText('Vos cartes')).toBeInTheDocument();
+    expect(screen.getByText('profile.yourQuizzes')).toBeInTheDocument();
+    expect(screen.getByText('profile.yourCards')).toBeInTheDocument();
   });
 
   it('filters quiz types correctly', () => {

@@ -20,18 +20,18 @@ describe('ContactForm', () => {
     render(<ContactForm />);
 
     expect(screen.getByLabelText(/prénom/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^nom \*/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^nom$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/sujet/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/message/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /envoyer le message/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /envoyer/i })).toBeInTheDocument();
   });
 
   it('shows validation errors for empty required fields', async () => {
     const user = userEvent.setup();
     render(<ContactForm />);
 
-    const submitButton = screen.getByRole('button', { name: /envoyer le message/i });
+    const submitButton = screen.getByRole('button', { name: /envoyer/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -51,13 +51,13 @@ describe('ContactForm', () => {
     const user = userEvent.setup();
     render(<ContactForm />);
 
-    const firstNameInput = screen.getByLabelText(/prénom/i);
-    const lastNameInput = screen.getByLabelText(/^nom \*/i);
+    const firstNameInput = screen.getByRole('textbox', { name: /prénom/i });
+    const lastNameInput = screen.getByRole('textbox', { name: /^nom$/i });
 
     await user.type(firstNameInput, 'a');
     await user.type(lastNameInput, 'b');
 
-    const submitButton = screen.getByRole('button', { name: /envoyer le message/i });
+    const submitButton = screen.getByRole('button', { name: /envoyer/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -72,13 +72,13 @@ describe('ContactForm', () => {
     const user = userEvent.setup();
     render(<ContactForm />);
 
-    const firstNameInput = screen.getByLabelText(/prénom/i);
-    const lastNameInput = screen.getByLabelText(/^nom \*/i);
+    const firstNameInput = screen.getByRole('textbox', { name: /prénom/i });
+    const lastNameInput = screen.getByRole('textbox', { name: /^nom$/i });
 
     await user.type(firstNameInput, 'John123');
     await user.type(lastNameInput, 'Doe456');
 
-    const submitButton = screen.getByRole('button', { name: /envoyer le message/i });
+    const submitButton = screen.getByRole('button', { name: /envoyer/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -97,8 +97,8 @@ describe('ContactForm', () => {
     const user = userEvent.setup();
     render(<ContactForm />);
 
-    await user.type(screen.getByLabelText(/prénom/i), 'Jean');
-    await user.type(screen.getByLabelText(/^nom \*/i), 'Dupont');
+    await user.type(screen.getByRole('textbox', { name: /prénom/i }), 'Jean');
+    await user.type(screen.getByRole('textbox', { name: /^nom$/i }), 'Dupont');
     await user.type(screen.getByLabelText(/email/i), 'jean.dupont@example.com');
     await user.type(screen.getByLabelText(/sujet/i), 'Question sur le service');
     await user.type(
@@ -106,7 +106,7 @@ describe('ContactForm', () => {
       "Bonjour, j'ai une question concernant votre service. Pouvez-vous m'aider ?"
     );
 
-    const submitButton = screen.getByRole('button', { name: /envoyer le message/i });
+    const submitButton = screen.getByRole('button', { name: /envoyer/i });
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -123,8 +123,8 @@ describe('ContactForm', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/prénom/i)).toHaveValue('');
-      expect(screen.getByLabelText(/^nom \*/i)).toHaveValue('');
+      expect(screen.getByRole('textbox', { name: /prénom/i })).toHaveValue('');
+      expect(screen.getByRole('textbox', { name: /^nom$/i })).toHaveValue('');
       expect(screen.getByLabelText(/email/i)).toHaveValue('');
       expect(screen.getByLabelText(/sujet/i)).toHaveValue('');
       expect(screen.getByLabelText(/message/i)).toHaveValue('');
@@ -137,8 +137,8 @@ describe('ContactForm', () => {
 
     render(<ContactForm />);
 
-    await user.type(screen.getByLabelText(/prénom/i), 'Jean');
-    await user.type(screen.getByLabelText(/^nom \*/i), 'Dupont');
+    await user.type(screen.getByRole('textbox', { name: /prénom/i }), 'Jean');
+    await user.type(screen.getByRole('textbox', { name: /^nom$/i }), 'Dupont');
     await user.type(screen.getByLabelText(/email/i), 'jean.dupont@example.com');
     await user.type(screen.getByLabelText(/sujet/i), 'Question sur le service');
     await user.type(
@@ -146,7 +146,7 @@ describe('ContactForm', () => {
       "Bonjour, j'ai une question concernant votre service. Pouvez-vous m'aider ?"
     );
 
-    const submitButton = screen.getByRole('button', { name: /envoyer le message/i });
+    const submitButton = screen.getByRole('button', { name: /envoyer/i });
     await user.click(submitButton);
 
     await waitFor(
@@ -165,8 +165,8 @@ describe('ContactForm', () => {
     const user = userEvent.setup();
     render(<ContactForm />);
 
-    await user.type(screen.getByLabelText(/prénom/i), 'Jean');
-    await user.type(screen.getByLabelText(/^nom \*/i), 'Dupont');
+    await user.type(screen.getByRole('textbox', { name: /prénom/i }), 'Jean');
+    await user.type(screen.getByRole('textbox', { name: /^nom$/i }), 'Dupont');
     await user.type(screen.getByLabelText(/email/i), 'jean.dupont@example.com');
     await user.type(screen.getByLabelText(/sujet/i), 'Question sur le service');
     await user.type(
@@ -174,7 +174,7 @@ describe('ContactForm', () => {
       "Bonjour, j'ai une question concernant votre service. Pouvez-vous m'aider ?"
     );
 
-    const submitButton = screen.getByRole('button', { name: /envoyer le message/i });
+    const submitButton = screen.getByRole('button', { name: /envoyer/i });
     await user.click(submitButton);
 
     await waitFor(() => {

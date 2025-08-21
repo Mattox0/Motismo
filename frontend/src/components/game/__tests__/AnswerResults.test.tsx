@@ -72,7 +72,7 @@ describe('AnswerResults', () => {
       </GameProvider>
     );
 
-    expect(screen.getByText('1 réponse')).toBeInTheDocument();
+    expect(screen.getByText('1 réponses')).toBeInTheDocument();
   });
 
   it('should render all choices', () => {

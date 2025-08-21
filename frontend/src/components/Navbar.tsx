@@ -47,22 +47,26 @@ export const Navbar: React.FC = () => {
           href="/"
           onClick={() => setIsMenuOpen(false)}
         >
-          Accueil
+          {t('navigation.home')}
         </Link>
-        <Link
-          className={isHydrated && pathname === '/profile' ? 'active' : ''}
-          href="/profile"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Mon espace
-        </Link>
+        {(session?.user.role === IUserRole.Teacher || session?.user.role === IUserRole.Student) && (
+          <Link
+            className={isHydrated && pathname === '/profile' ? 'active' : ''}
+            href="/profile"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {t('navigation.mySpace')}
+          </Link>
+        )}
         {(session?.user.role === IUserRole.Teacher || session?.user.role === IUserRole.Student) && (
           <Link
             className={isHydrated && pathname === '/class' ? 'active' : ''}
             href="/class"
             onClick={() => setIsMenuOpen(false)}
           >
-            {session?.user.role === IUserRole.Teacher ? 'Mes classes' : 'Ma classe'}
+            {session?.user.role === IUserRole.Teacher
+              ? t('navigation.myClasses')
+              : t('navigation.myClass')}
           </Link>
         )}
         <Link
@@ -70,7 +74,7 @@ export const Navbar: React.FC = () => {
           href="/contact"
           onClick={() => setIsMenuOpen(false)}
         >
-          Contact
+          {t('navigation.contact')}
         </Link>
       </div>
 
@@ -92,7 +96,7 @@ export const Navbar: React.FC = () => {
             </button>
           )}
         </div>
-        <button className="hamburger" onClick={toggleMenu} aria-label="Toggle menu">
+        <button className="hamburger" onClick={toggleMenu} aria-label={t('common.toggleMenu')}>
           <span className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></span>
           <span className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></span>
           <span className={`hamburger-line ${isMenuOpen ? 'open' : ''}`}></span>

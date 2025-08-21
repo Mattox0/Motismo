@@ -8,7 +8,10 @@
     "about": "About",
     "contact": "Contact",
     "login": "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "mySpace": "My Space",
+    "myClasses": "My Classes",
+    "myClass": "My Class"
   },
   "hero": {
     "title": "Create, share and play interactive quizzes",
@@ -46,6 +49,7 @@
     "confirmPasswordPlaceholder": "Confirm your password",
     "registerSuccess": "Registration successful",
     "loginSuccess": "Login successful",
+    "loggingIn": "Logging in...",
     "role": "Role",
     "student": "Student",
     "teacher": "Teacher",
@@ -118,7 +122,10 @@
     "saving": "Saving...",
     "loading": "Loading...",
     "error": "An error occurred",
-    "back": "Back"
+    "back": "Back",
+    "previous": "Previous",
+    "next": "Next",
+    "toggleMenu": "Toggle menu"
   },
   "question": {
     "title": "Question title",
@@ -316,5 +323,128 @@
       "error": "Error removing student from class"
     },
     "accessDenied": "Access denied. This page is reserved for teachers."
+  },
+  "card": {
+    "cards": "{{ nbCards }} cards",
+    "questions": "{{ nbQuestions }} questions",
+    "button": {
+      "primary": "Edit",
+      "secondary": "Launch"
+    },
+    "front": "Front of card {{ current }} of {{ total }}",
+    "back": "Back of card {{ current }} of {{ total }}",
+    "overlay": "Edit",
+    "term": "Term:",
+    "definition": "Definition:"
+  },
+  "error": {
+    "unauthorized": {
+      "quizz": "You don't have access to this quiz"
+    },
+    "return": {
+      "home": "Return to home",
+      "dashboard": "Return to dashboard"
+    },
+    "no": {
+      "cards": "You don't have any cards"
+    },
+    "hex_invalid": "Invalid hexadecimal code (format #RRGGBB)"
+  },
+  "contact": {
+    "form": {
+      "firstName": "First Name *",
+      "lastName": "Last Name *",
+      "email": "Email *",
+      "subject": "Subject *",
+      "message": "Message *",
+      "firstNamePlaceholder": "Your first name",
+      "lastNamePlaceholder": "Your last name",
+      "emailPlaceholder": "your.email@example.com",
+      "subjectPlaceholder": "Subject of your message",
+      "messagePlaceholder": "Your message...",
+      "submit": "Send message",
+      "sending": "Sending...",
+      "requiredFields": "* Required fields"
+    },
+    "success": "Your message has been sent successfully! We will respond to you as soon as possible.",
+    "error": "An error occurred while sending the message. Please try again."
+  },
+  "game": {
+    "lobby": {
+      "joinText": "Join the game at the following address:",
+      "startQuiz": "Start the quiz",
+      "waitingPresenter": "Waiting for the presenter to launch the quiz",
+      "participants": "Participants",
+      "noParticipants": "No participants at the moment."
+    },
+    "question": {
+      "participantsAnswering": "Participants are answering this question..."
+    },
+    "finished": {
+      "title": "Game finished!",
+      "winner": "Winner",
+      "points": "points",
+      "yourRanking": "Your ranking",
+      "players": "Players",
+      "rankSuffix": {
+        "1": "st",
+        "2": "nd",
+        "3": "rd",
+        "other": "th"
+      }
+    },
+    "ranking": {
+      "title": "Ranking",
+      "players": "player",
+      "players_plural": "players",
+      "points": "pts"
+    },
+    "player": {
+      "username": "Username",
+      "usernamePlaceholder": "Your username",
+      "chooseAvatar": "Choose your avatar",
+      "join": "Join",
+      "responsePlaceholder": "Your answer...",
+      "submit": "Submit",
+      "submitted": "Answer sent",
+      "answeredBy": "Answered by:",
+      "responses": "response",
+      "responses_plural": "responses"
+    },
+    "errors": {
+      "loadAvatarOptions": "Unable to load avatar options",
+      "enterUsername": "Please enter a username.",
+      "joinGame": "Unable to join the game"
+    }
+  },
+  "splash": {
+    "title": "Motismo",
+    "loading": "Loading..."
+  },
+  "student": {
+    "removeStudent": "Remove student"
+  },
+  "emptyState": {
+    "alt": "Empty state"
+  },
+  "social": {
+    "google": "Google"
+  },
+  "profile": {
+    "ask_create_section": {
+      "text": "You want to create a quiz or a card game? You're in the right place! Create your quiz in a few clicks and share it with your friends.",
+      "create_quizz": "Create a quiz",
+      "create_cards": "Create cards",
+      "tag": "Your creation space"
+    },
+    "yourQuizzes": "Your Quizzes",
+    "yourCards": "Your Cards",
+    "myAssignedCards": "My Assigned Cards",
+    "noQuizzesFound": "No quiz found",
+    "noCardsFound": "No card found",
+    "noAssignedCards": "No assigned cards",
+    "createFirstQuiz": "Create your first quiz to start learning!",
+    "createFirstCard": "Create your first card to start learning!",
+    "noAssignedCardsDescription": "Your teachers haven't assigned any cards yet."
   }
 }

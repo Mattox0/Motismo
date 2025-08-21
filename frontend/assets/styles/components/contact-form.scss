@@ -127,7 +127,6 @@
     }
   }
 
-  // Styles pour les messages d'erreur
   .input-help-text {
     margin-top: 0.5rem;
     font-size: 0.85rem;
@@ -138,7 +137,6 @@
     }
   }
 
-  // Animation de chargement pour le bouton
   .btn:disabled {
     position: relative;
     overflow: hidden;
@@ -164,7 +162,6 @@
   100% { transform: rotate(360deg); }
 }
 
-// Responsive design
 @media (max-width: 768px) {
   .contact-form {
     padding: 1.5rem;

@@ -74,13 +74,11 @@ export const ProfilePage: React.FC = () => {
         formData.append('image', data.image);
       }
 
-      // Always send classIds as an array, even if empty
       if (data.classIds && data.classIds.length > 0) {
         data.classIds.forEach(classId => {
           formData.append('classIds', classId);
         });
       } else {
-        // Send empty array
         formData.append('classIds', '[]');
       }
 
@@ -129,7 +127,7 @@ export const ProfilePage: React.FC = () => {
       <div className="profile-container">
         {isTeacher && (
           <>
-            <span className="tag secondary profile-container__tag">Vos quizz</span>
+            <span className="tag secondary profile-container__tag">{t('profile.yourQuizzes')}</span>
             <div className="profile-container__quizz">
               {isLoading ? (
                 <span className="loader" />
@@ -148,17 +146,19 @@ export const ProfilePage: React.FC = () => {
                 ))
               ) : (
                 <EmptyState
-                  title="Aucun quiz trouvé"
-                  description="Créez votre premier quiz pour commencer à apprendre !"
+                  title={t('profile.noQuizzesFound')}
+                  description={t('profile.createFirstQuiz')}
                 />
               )}
             </div>
-            <span className="tag secondary profile-container__tag">Vos cartes</span>
+            <span className="tag secondary profile-container__tag">{t('profile.yourCards')}</span>
           </>
         )}
 
         {isStudent && (
-          <span className="tag secondary profile-container__tag">Mes cartes assignées</span>
+          <span className="tag secondary profile-container__tag">
+            {t('profile.myAssignedCards')}
+          </span>
         )}
 
         <div className="profile-container__quizz">
@@ -183,11 +183,9 @@ export const ProfilePage: React.FC = () => {
             ))
           ) : (
             <EmptyState
-              title={isStudent ? 'Aucune carte assignée' : 'Aucune carte trouvée'}
+              title={isStudent ? t('profile.noAssignedCards') : t('profile.noCardsFound')}
               description={
-                isStudent
-                  ? "Vos professeurs n'ont pas encore assigné de cartes."
-                  : 'Créez votre première carte pour commencer à apprendre !'
+                isStudent ? t('profile.noAssignedCardsDescription') : t('profile.createFirstCard')
               }
             />
           )}

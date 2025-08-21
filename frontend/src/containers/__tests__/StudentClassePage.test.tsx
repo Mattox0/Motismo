@@ -54,8 +54,14 @@ describe('StudentClassePage', () => {
       data: null,
       isLoading: false,
     } as any);
-    mockUseJoinClasseByCodeMutation.mockReturnValue([mockJoinClasse, { isLoading: false }]);
-    mockUseLeaveClassMutation.mockReturnValue([mockLeaveClass, { isLoading: false }]);
+    mockUseJoinClasseByCodeMutation.mockReturnValue([
+      mockJoinClasse,
+      { isLoading: false, reset: jest.fn() },
+    ]);
+    mockUseLeaveClassMutation.mockReturnValue([
+      mockLeaveClass,
+      { isLoading: false, reset: jest.fn() },
+    ]);
   });
 
   it('renders loading state initially', () => {
@@ -133,7 +139,6 @@ describe('StudentClassePage', () => {
       expect(screen.getByText('classe.student.title')).toBeInTheDocument();
     });
 
-    // Note: This test would need to be expanded if the join functionality is exposed in the UI
     expect(mockJoinClasse).toBeDefined();
   });
 
@@ -146,7 +151,6 @@ describe('StudentClassePage', () => {
       expect(screen.getByText('classe.student.title')).toBeInTheDocument();
     });
 
-    // Note: This test would need to be expanded if the join functionality is exposed in the UI
     expect(mockJoinClasse).toBeDefined();
   });
 

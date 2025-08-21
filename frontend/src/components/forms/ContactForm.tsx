@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 
@@ -13,6 +14,7 @@ import Input from './Input';
 type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export const ContactForm: FC = () => {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -37,14 +39,12 @@ export const ContactForm: FC = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      toast.success(
-        'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.'
-      );
+      toast.success(t('contact.success'));
 
       reset();
     } catch (error) {
       console.error("Erreur lors de l'envoi:", error);
-      toast.error("Une erreur est survenue lors de l'envoi du message. Veuillez réessayer.");
+      toast.error(t('contact.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -54,50 +54,50 @@ export const ContactForm: FC = () => {
     <form onSubmit={handleSubmit(onSubmit)} className="contact-form">
       <div className="form-row">
         <Input
-          label="Prénom *"
+          label={t('contact.form.firstName')}
           type="text"
           registration={register('firstName')}
           error={errors.firstName?.message}
           autoComplete="given-name"
-          placeholder="Votre prénom"
+          placeholder={t('contact.form.firstNamePlaceholder')}
         />
 
         <Input
-          label="Nom *"
+          label={t('contact.form.lastName')}
           type="text"
           registration={register('lastName')}
           error={errors.lastName?.message}
           autoComplete="family-name"
-          placeholder="Votre nom"
+          placeholder={t('contact.form.lastNamePlaceholder')}
         />
       </div>
 
       <Input
-        label="Email *"
+        label={t('contact.form.email')}
         type="email"
         registration={register('email')}
         error={errors.email?.message}
         autoComplete="email"
-        placeholder="votre.email@exemple.com"
+        placeholder={t('contact.form.emailPlaceholder')}
       />
 
       <Input
-        label="Sujet *"
+        label={t('contact.form.subject')}
         type="text"
         registration={register('subject')}
         error={errors.subject?.message}
         autoComplete="off"
-        placeholder="Sujet de votre message"
+        placeholder={t('contact.form.subjectPlaceholder')}
       />
 
       <div className="form-field">
         <label htmlFor="message" className="form-label">
-          Message *
+          {t('contact.form.message')}
         </label>
         <textarea
           id="message"
           className={`form-textarea ${errors.message ? 'input-error' : ''}`}
-          placeholder="Votre message..."
+          placeholder={t('contact.form.messagePlaceholder')}
           rows={6}
           {...register('message')}
           aria-invalid={!!errors.message}
@@ -109,11 +109,11 @@ export const ContactForm: FC = () => {
 
       <div className="form-actions">
         <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-          {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
+          {isSubmitting ? t('contact.form.sending') : t('contact.form.submit')}
         </button>
       </div>
 
-      <p className="form-note">* Champs obligatoires</p>
+      <p className="form-note">{t('contact.form.requiredFields')}</p>
     </form>
   );
 };

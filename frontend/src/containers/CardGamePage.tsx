@@ -126,8 +126,8 @@ export const CardGamePage: FC = () => {
             tabIndex={0}
             aria-label={
               isFlipped
-                ? t('card.back', `Verso de la carte ${currentIndex + 1} sur ${cards.length}`)
-                : t('card.front', `Recto de la carte ${currentIndex + 1} sur ${cards.length}`)
+                ? t('card.back', { current: currentIndex + 1, total: cards.length })
+                : t('card.front', { current: currentIndex + 1, total: cards.length })
             }
           >
             <CardFlip
@@ -147,9 +147,9 @@ export const CardGamePage: FC = () => {
           onClick={handlePrev}
           disabled={currentIndex === 0}
           className="text-lg py-3"
-          aria-label={t('previous', 'Carte précédente')}
+          aria-label={t('common.previous')}
         >
-          {t('previous', 'Précédent')}
+          {t('common.previous')}
         </Button>
         <div>
           <span className="card-game__counter" aria-live="polite" aria-atomic="true">
@@ -161,9 +161,9 @@ export const CardGamePage: FC = () => {
           onClick={handleNext}
           disabled={currentIndex === cards.length - 1}
           className="text-lg py-3"
-          aria-label={t('next', 'Carte suivante')}
+          aria-label={t('common.next')}
         >
-          {t('next', 'Suivant')}
+          {t('common.next')}
         </Button>
       </div>
     </div>

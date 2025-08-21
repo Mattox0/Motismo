@@ -38,7 +38,7 @@ export const Card: FC<ICardProps> = ({
         <span className="card-header__badge">{badge}</span>
         {onCardClick && (
           <div className="card-header__overlay">
-            <span className="card-header__overlay-text">Modifier</span>
+            <span className="card-header__overlay-text">{t('card.overlay')}</span>
           </div>
         )}
       </div>

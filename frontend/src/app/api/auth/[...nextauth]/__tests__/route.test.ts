@@ -67,7 +67,7 @@ describe('NextAuth route config', () => {
     expect(capturedConfig!.pages?.signIn).toBe('/auth');
     expect(capturedConfig!.session?.strategy).toBe('jwt');
     expect(capturedConfig!.session?.maxAge).toBe(30 * 24 * 60 * 60);
-    expect(capturedConfig!.debug).toBe(false); // NODE_ENV = test
+    expect(capturedConfig!.debug).toBe(false);
   });
 });
 

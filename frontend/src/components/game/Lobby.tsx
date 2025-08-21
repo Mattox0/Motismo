@@ -1,5 +1,6 @@
 import StartIcon from '@mui/icons-material/Start';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import QRCode from 'react-qr-code';
 
 import { useGame } from '@/providers/GameProvider';
@@ -22,6 +23,7 @@ export const Lobby: FC<ILobbyProps> = ({
   presentation = false,
   handleClick = () => {},
 }) => {
+  const { t } = useTranslation();
   const { users } = useGame();
 
   const qrCodeValue = `${window.location.origin}/game/${code}`;
@@ -32,7 +34,7 @@ export const Lobby: FC<ILobbyProps> = ({
       <div className="lobby-main-section">
         <div className="lobby-code-section">
           <p className="lobby-invite-text">
-            Rejoignez la partie à l'adresse suivante :
+            {t('game.lobby.joinText')}
             <span className="lobby-url">{window.location.origin}</span>
           </p>
           <span className="lobby-code">{code}</span>
@@ -53,20 +55,20 @@ export const Lobby: FC<ILobbyProps> = ({
           className="max-w-xs"
           onClick={handleClick}
         >
-          Démarrer le quizz
+          {t('game.lobby.startQuiz')}
         </Button>
       ) : (
-        <span className="lobby-info-message">En attente du présentateur pour lancer le quizz</span>
+        <span className="lobby-info-message">{t('game.lobby.waitingPresenter')}</span>
       )}
       <div className="lobby-participants-section">
-        <h2 className="lobby-participants-title">Participants</h2>
+        <h2 className="lobby-participants-title">{t('game.lobby.participants')}</h2>
         <div className="lobby-participants-list">
           {users && users.length > 0 ? (
             users.map(user => (
               <Avatar key={user.id} avatar={user.avatar || ''} name={user.name} mode="lobby" />
             ))
           ) : (
-            <div className="lobby-no-participants">Aucun participant pour le moment.</div>
+            <div className="lobby-no-participants">{t('game.lobby.noParticipants')}</div>
           )}
         </div>
       </div>

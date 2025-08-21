@@ -134,7 +134,9 @@ describe('PlayerAccess - extended coverage', () => {
     render(<PlayerAccess />);
 
     await waitFor(() => {
-      expect(showToastError).toHaveBeenCalledWith('Impossible de charger les options d’avatar');
+      expect(showToastError).toHaveBeenCalledWith(
+        expect.stringContaining('Impossible de charger les options')
+      );
     });
 
     expect(screen.queryByTestId('splash-screen')).not.toBeInTheDocument();

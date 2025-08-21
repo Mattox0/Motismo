@@ -138,14 +138,12 @@ describe('AskCreateSection', () => {
     const createQuizButton = screen.getByText('profile.ask_create_section.create_quizz');
     fireEvent.click(createQuizButton);
 
-    // The CreateQuizForm should be rendered inside the modal
     expect(screen.getByText('create_quiz.title.quiz')).toBeInTheDocument();
   });
 
   it('does not show CreateQuizForm when modal is closed', () => {
     render(<AskCreateSection />);
 
-    // Modal is closed by default, so CreateQuizForm should not be rendered
     expect(screen.queryByText('create_quiz.title.quiz')).not.toBeInTheDocument();
     expect(screen.queryByText('create_quiz.title.cards')).not.toBeInTheDocument();
   });
@@ -153,20 +151,16 @@ describe('AskCreateSection', () => {
   it('resets state when modal is closed', () => {
     render(<AskCreateSection />);
 
-    // Open modal
     const createQuizButton = screen.getByText('profile.ask_create_section.create_quizz');
     fireEvent.click(createQuizButton);
 
     expect(screen.getByText('create_quiz.title.quiz')).toBeInTheDocument();
 
-    // Close modal
     const closeButton = screen.getByText('×');
     fireEvent.click(closeButton);
 
-    // Modal should be closed and state reset
     expect(screen.queryByText('create_quiz.title.quiz')).not.toBeInTheDocument();
 
-    // Open cards modal to verify state was reset
     const createCardsButton = screen.getByText('profile.ask_create_section.create_cards');
     fireEvent.click(createCardsButton);
 

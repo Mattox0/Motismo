@@ -39,7 +39,6 @@ export const GamePresentation: FC<IGamePresentationProps> = ({ quizz, code }) =>
   }
 
   if (status === IGameStatus.DISPLAY_QUESTION && currentQuestion) {
-    // faire un switch sur le type de question
     return (
       <QuestionChoicePresentation
         question={currentQuestion}

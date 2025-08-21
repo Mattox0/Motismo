@@ -43,16 +43,16 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
       <Input
-        label="Email"
+        label={t('auth.email')}
         type="email"
         startAdornment={<EmailIcon />}
-        placeholder="votre@email.com"
+        placeholder={t('auth.emailPlaceholder')}
         registration={register('email')}
         error={errors.email?.message}
       />
 
       <Input
-        label="Mot de passe"
+        label={t('auth.password')}
         startAdornment={<KeyIcon />}
         isPassword
         placeholder="••••••••"
@@ -62,7 +62,7 @@ const LoginForm = () => {
       />
 
       <button type="submit" className="btn btn-colored" disabled={isSubmitting}>
-        {isSubmitting ? 'Connexion...' : 'Se connecter'}
+        {isSubmitting ? t('auth.loggingIn') : t('auth.login')}
       </button>
     </form>
   );

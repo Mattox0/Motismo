@@ -120,7 +120,6 @@ describe('QuestionChoicePresentation', () => {
     const showResultsButton = screen.getByTestId('show-results-btn');
     fireEvent.click(showResultsButton);
 
-    // The emit function should be called (mocked)
     expect(showResultsButton).toBeInTheDocument();
   });
 

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useGame } from '@/providers/GameProvider';
 import { IChoiceStatistic } from '@/types/model/IAnswerStatistics';
@@ -12,6 +13,7 @@ interface IChoiceResultProps {
 }
 
 export const ChoiceResult: FC<IChoiceResultProps> = ({ choice, index }) => {
+  const { t } = useTranslation();
   const { myUser } = useGame();
 
   return (
@@ -44,7 +46,7 @@ export const ChoiceResult: FC<IChoiceResultProps> = ({ choice, index }) => {
 
       {choice.users.length > 0 && (
         <div className="choice-result__users">
-          <div className="users-label">Répondu par :</div>
+          <div className="users-label">{t('game.player.answeredBy')}</div>
           <div className="users-list">
             {choice.users.map(user => {
               const isCurrentUser = myUser?.id === user.id;

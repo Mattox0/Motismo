@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Title } from '@/components/Title';
 import { useGame } from '@/providers/GameProvider';
@@ -24,6 +25,7 @@ export const QuestionChoicePresentation: FC<IQuestionChoicePresentationProps> = 
   totalQuestions,
   isTimerFinished = false,
 }) => {
+  const { t } = useTranslation();
   const socket = useSocket();
   const { answerCount } = useGame();
 
@@ -87,7 +89,7 @@ export const QuestionChoicePresentation: FC<IQuestionChoicePresentationProps> = 
 
         {(!question.choices || question.choices.length === 0) && (
           <div className="question-presentation__placeholder">
-            <p className="placeholder-text">Les participants répondent à cette question...</p>
+            <p className="placeholder-text">{t('game.question.participantsAnswering')}</p>
           </div>
         )}
       </div>

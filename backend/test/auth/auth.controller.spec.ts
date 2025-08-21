@@ -279,7 +279,6 @@ describe("AuthController", () => {
         image: publicUrl,
       };
 
-      // capture l'argument passé à create pour vérifier qu'on a bien injecté image
       (mockUserService.create as jest.Mock).mockImplementation((userBody) => {
         expect(userBody.image).toBe(publicUrl);
 
@@ -294,7 +293,6 @@ describe("AuthController", () => {
         send: mockSend,
       };
 
-      // faux fichier multer minimal
       const file = {
         originalname: "avatar.png",
         mimetype: "image/png",

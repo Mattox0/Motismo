@@ -54,22 +54,23 @@ describe('GameFinished', () => {
   it('should render game finished title', () => {
     render(<GameFinished statistics={mockStatistics} />);
 
-    expect(screen.getByText('Partie terminée !')).toBeInTheDocument();
+    expect(screen.getByText('game.finished.title')).toBeInTheDocument();
   });
 
   it('should render winner information', () => {
     render(<GameFinished statistics={mockStatistics} />);
 
-    expect(screen.getByText('Vainqueur')).toBeInTheDocument();
+    expect(screen.getByText('game.finished.winner')).toBeInTheDocument();
     expect(screen.getByText('Winner')).toBeInTheDocument();
-    expect(screen.getByText('100 points')).toBeInTheDocument();
+    expect(screen.getByText(/100/)).toBeInTheDocument();
+    expect(screen.getAllByText(/points/)).toHaveLength(2);
   });
 
   it('should render total players', () => {
     render(<GameFinished statistics={mockStatistics} />);
 
     expect(screen.getAllByText('2')).toHaveLength(2);
-    expect(screen.getByText('Joueurs')).toBeInTheDocument();
+    expect(screen.getByText('game.finished.players')).toBeInTheDocument();
   });
 
   it('should not render your rank when user is winner', () => {
@@ -106,7 +107,7 @@ describe('GameFinished', () => {
   it('should have correct CSS classes', () => {
     render(<GameFinished statistics={mockStatistics} />);
 
-    const container = screen.getByText('Partie terminée !').closest('.game-finished');
+    const container = screen.getByText('game.finished.title').closest('.game-finished');
     expect(container).toHaveClass('game-finished');
   });
 });

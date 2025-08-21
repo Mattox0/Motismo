@@ -1,6 +1,5 @@
 import { poppins } from '../fonts';
 
-// Mock next/font/google
 jest.mock('next/font/google', () => ({
   Poppins: jest.fn(() => ({
     style: { fontFamily: 'Poppins' },

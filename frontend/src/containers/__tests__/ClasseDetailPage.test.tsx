@@ -63,7 +63,7 @@ describe('ClasseDetailPage', () => {
     } as any);
     mockUseRemoveStudentFromClassMutation.mockReturnValue([
       mockRemoveStudent,
-      { isLoading: false },
+      { isLoading: false, reset: jest.fn() },
     ]);
   });
 
@@ -86,7 +86,7 @@ describe('ClasseDetailPage', () => {
   });
 
   it('redirects to class when no code is provided', async () => {
-    const mockParamsWithoutCode = Promise.resolve({ code: undefined });
+    const mockParamsWithoutCode = Promise.resolve({ code: '' });
 
     render(<ClasseDetailPage params={mockParamsWithoutCode} />);
 
@@ -96,7 +96,7 @@ describe('ClasseDetailPage', () => {
   });
 
   it('redirects to class when code is empty array', async () => {
-    const mockParamsWithEmptyArray = Promise.resolve({ code: undefined });
+    const mockParamsWithEmptyArray = Promise.resolve({ code: '' });
 
     render(<ClasseDetailPage params={mockParamsWithEmptyArray} />);
 
@@ -155,7 +155,6 @@ describe('ClasseDetailPage', () => {
       expect(screen.getByText('Test Class')).toBeInTheDocument();
     });
 
-    // Note: This test would need to be expanded if the remove functionality is exposed in the UI
     expect(mockRemoveStudent).toBeDefined();
   });
 
@@ -168,7 +167,6 @@ describe('ClasseDetailPage', () => {
       expect(screen.getByText('Test Class')).toBeInTheDocument();
     });
 
-    // Note: This test would need to be expanded if the remove functionality is exposed in the UI
     expect(mockRemoveStudent).toBeDefined();
   });
 

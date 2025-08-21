@@ -8,7 +8,10 @@
     "about": "A propos",
     "contact": "Contact",
     "login": "Se connecter",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "mySpace": "Mon espace",
+    "myClasses": "Mes classes",
+    "myClass": "Ma classe"
   },
   "hero": {
     "title": "Créez, partagez et jouez à des quizz interactifs",
@@ -44,6 +47,7 @@
     "confirmPasswordPlaceholder": "Confirmez votre mot de passe",
     "registerSuccess": "Inscription réussie",
     "loginSuccess": "Connexion réussie",
+    "loggingIn": "Connexion...",
     "role": "Rôle",
     "student": "Élève",
     "teacher": "Professeur",
@@ -61,7 +65,16 @@
       "create_quizz": "Créer un quizz",
       "create_cards": "Créer des cartes",
       "tag": "Votre espace création"
-    }
+    },
+    "yourQuizzes": "Vos quizz",
+    "yourCards": "Vos cartes",
+    "myAssignedCards": "Mes cartes assignées",
+    "noQuizzesFound": "Aucun quiz trouvé",
+    "noCardsFound": "Aucune carte trouvée",
+    "noAssignedCards": "Aucune carte assignée",
+    "createFirstQuiz": "Créez votre premier quiz pour commencer à apprendre !",
+    "createFirstCard": "Créez votre première carte pour commencer à apprendre !",
+    "noAssignedCardsDescription": "Vos professeurs n'ont pas encore assigné de cartes."
   },
   "card": {
     "cards": "{{ nbCards }} cartes",
@@ -69,7 +82,12 @@
     "button": {
       "primary": "Modifier",
       "secondary": "Lancer"
-    }
+    },
+    "front": "Recto de la carte {{ current }} sur {{ total }}",
+    "back": "Verso de la carte {{ current }} sur {{ total }}",
+    "overlay": "Modifier",
+    "term": "Terme :",
+    "definition": "Définition :"
   },
   "fonctionality": {
     "tag": "Fonctionnalités",
@@ -132,7 +150,10 @@
     "loading": "Chargement...",
     "error": "Une erreur est survenue",
     "saving": "Enregistrement...",
-    "back": "Retour"
+    "back": "Retour",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "toggleMenu": "Basculer le menu"
   },
   "error": {
     "unauthorized": {
@@ -352,5 +373,85 @@
       "error": "Erreur lors de la suppression de l'élève"
     },
     "accessDenied": "Accès refusé. Cette page est réservée aux professeurs."
+  },
+  "contact": {
+    "form": {
+      "firstName": "Prénom *",
+      "lastName": "Nom *",
+      "email": "Email *",
+      "subject": "Sujet *",
+      "message": "Message *",
+      "firstNamePlaceholder": "Votre prénom",
+      "lastNamePlaceholder": "Votre nom",
+      "emailPlaceholder": "votre.email@exemple.com",
+      "subjectPlaceholder": "Sujet de votre message",
+      "messagePlaceholder": "Votre message...",
+      "submit": "Envoyer le message",
+      "sending": "Envoi en cours...",
+      "requiredFields": "* Champs obligatoires"
+    },
+    "success": "Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.",
+    "error": "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer."
+  },
+  "game": {
+    "lobby": {
+      "joinText": "Rejoignez la partie à l'adresse suivante :",
+      "startQuiz": "Démarrer le quizz",
+      "waitingPresenter": "En attente du présentateur pour lancer le quizz",
+      "participants": "Participants",
+      "noParticipants": "Aucun participant pour le moment."
+    },
+    "question": {
+      "participantsAnswering": "Les participants répondent à cette question..."
+    },
+    "finished": {
+      "title": "Partie terminée !",
+      "winner": "Vainqueur",
+      "points": "points",
+      "yourRanking": "Votre classement",
+      "players": "Joueurs",
+      "rankSuffix": {
+        "1": "er",
+        "2": "ème",
+        "3": "ème",
+        "other": "ème"
+      }
+    },
+    "ranking": {
+      "title": "Classement",
+      "players": "joueur",
+      "players_plural": "joueurs",
+      "points": "pts"
+    },
+    "player": {
+      "username": "Pseudo",
+      "usernamePlaceholder": "Votre pseudo",
+      "chooseAvatar": "Choisissez votre avatar",
+      "join": "Rejoindre",
+      "responsePlaceholder": "Votre réponse...",
+      "submit": "Valider",
+      "submitted": "Réponse envoyée",
+      "answeredBy": "Répondu par :",
+      "responses": "réponse",
+      "responses_plural": "réponses"
+    },
+    "errors": {
+      "loadAvatarOptions": "Impossible de charger les options d'avatar",
+      "enterUsername": "Veuillez entrer un pseudo.",
+      "joinGame": "Impossible de rejoindre la partie"
+    }
+  },
+  "splash": {
+    "title": "Motismo",
+    "loading": "Chargement en cours..."
+  },
+  "student": {
+    "removeStudent": "Supprimer l'élève"
+  },
+  "emptyState": {
+    "alt": "État vide"
+  },
+  "social": {
+    "google": "Google"
   }
 }

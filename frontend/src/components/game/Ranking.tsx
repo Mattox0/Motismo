@@ -1,6 +1,7 @@
 import BoltIcon from '@mui/icons-material/Bolt';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FC, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useGame } from '@/providers/GameProvider';
 import { IRankingPlayer, IRankingStatistics } from '@/types/model/IRanking';
@@ -12,6 +13,7 @@ interface IRankingProps {
 }
 
 export const Ranking: FC<IRankingProps> = ({ statistics }) => {
+  const { t } = useTranslation();
   const { myUser } = useGame();
   const [animatedRanking, setAnimatedRanking] = useState<IRankingPlayer[]>([]);
 
@@ -33,7 +35,7 @@ export const Ranking: FC<IRankingProps> = ({ statistics }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            Classement
+            {t('game.ranking.title')}
           </motion.h1>
           <motion.p
             className="ranking__subtitle"
@@ -41,7 +43,8 @@ export const Ranking: FC<IRankingProps> = ({ statistics }) => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            {statistics.totalPlayers} joueur{statistics.totalPlayers > 1 ? 's' : ''}
+            {statistics.totalPlayers}{' '}
+            {t('game.ranking.players', { count: statistics.totalPlayers })}
           </motion.p>
         </div>
 
@@ -94,9 +97,13 @@ export const Ranking: FC<IRankingProps> = ({ statistics }) => {
                       animate={{ scale: 1 }}
                       transition={{ delay: index * 0.1 + 0.2, type: 'spring' }}
                     >
-                      <div className="points-total">{player.points} pts</div>
+                      <div className="points-total">
+                        {player.points} {t('game.ranking.points')}
+                      </div>
                       {player.roundPoints > 0 && (
-                        <div className="points-round">+{player.roundPoints} pts</div>
+                        <div className="points-round">
+                          +{player.roundPoints} {t('game.ranking.points')}
+                        </div>
                       )}
                     </motion.div>
                   </motion.div>

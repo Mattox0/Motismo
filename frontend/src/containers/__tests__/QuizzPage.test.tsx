@@ -97,10 +97,8 @@ describe('QuizzPage', () => {
 
       render(<QuizzPage quizzId="quiz-1" />);
 
-      // The custom‐error component should mount...
       expect(screen.getByTestId('custom-error-page')).toBeInTheDocument();
 
-      // The component should be rendered
       expect(screen.getByTestId('custom-error-page')).toBeInTheDocument();
     });
 
