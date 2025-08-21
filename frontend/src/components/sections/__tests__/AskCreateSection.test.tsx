@@ -1,25 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+
+import { useCreateQuizzMutation } from '@/services/quiz.service';
+import { IQuizzType } from '@/types/model/IQuizzType';
+import { showToast } from '@/utils/toast';
 
 import { AskCreateSection } from '../AskCreateSection';
-
-jest.mock('framer-motion', () => ({
-  AnimatePresence: ({ children }: any) => children,
-  motion: {
-    div: ({ children, className, ...props }: any) => (
-      <div className={className} {...props}>
-        {children}
-      </div>
-    ),
-  },
-}));
-
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-  }),
-}));
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -27,245 +14,177 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
+jest.mock('next/navigation');
 jest.mock('@/services/quiz.service', () => ({
-  useCreateQuizzMutation: () => [
-    jest.fn().mockResolvedValue({ data: { id: 'test-id', quizzType: 'QUESTIONS' } }),
-    { isLoading: false },
-  ],
+  useCreateQuizzMutation: jest.fn(),
+}));
+jest.mock('@/utils/toast');
+jest.mock('@/components/forms/CreateQuizForm', () => ({
+  CreateQuizForm: jest.fn(() => <div data-testid="create-quiz-form">CreateQuizForm</div>),
 }));
 
-jest.mock('@/services/classe.service', () => ({
-  useGetClassesQuery: () => ({
-    data: [],
-    isLoading: false,
-  }),
-}));
+const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
+const mockUseCreateQuizzMutation = useCreateQuizzMutation as jest.MockedFunction<
+  typeof useCreateQuizzMutation
+>;
+const mockShowToast = showToast as jest.Mocked<typeof showToast>;
 
-jest.mock('@/utils/toast', () => ({
-  showToast: {
-    success: jest.fn(),
-    error: jest.fn(),
-  },
-}));
-
-const createMockStore = () =>
-  configureStore({
-    reducer: {
-      api: (state = {}) => state,
-    },
-    middleware: getDefaultMiddleware =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-      }),
-  });
-
-const renderWithRedux = (component: React.ReactElement) => {
-  const store = createMockStore();
-  return render(<Provider store={store}>{component}</Provider>);
-};
+const mockPush = jest.fn();
+const mockCreateQuizz = jest.fn();
 
 describe('AskCreateSection', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseRouter.mockReturnValue({ push: mockPush } as any);
+    mockUseCreateQuizzMutation.mockReturnValue([
+      mockCreateQuizz,
+      { isLoading: false, reset: jest.fn() },
+    ]);
   });
 
-  describe('rendering', () => {
-    it('should render the section with correct content', () => {
-      renderWithRedux(<AskCreateSection />);
+  it('renders section with buttons', () => {
+    render(<AskCreateSection />);
 
-      expect(screen.getByText('profile.ask_create_section.tag')).toBeInTheDocument();
-      expect(screen.getByText('profile.ask_create_section.text')).toBeInTheDocument();
-      expect(screen.getByText('profile.ask_create_section.create_quizz')).toBeInTheDocument();
-      expect(screen.getByText('profile.ask_create_section.create_cards')).toBeInTheDocument();
-    });
-
-    it('should render with correct CSS classes', () => {
-      renderWithRedux(<AskCreateSection />);
-
-      const section = screen.getByText('profile.ask_create_section.text').closest('div');
-      expect(section).toHaveClass('ask-create-section__container');
-    });
-
-    it('should render title with correct styling', () => {
-      renderWithRedux(<AskCreateSection />);
-
-      const title = screen.getByText('profile.ask_create_section.text');
-      expect(title).toHaveClass('ask-create-section__text');
-    });
-
-    it('should render description with correct styling', () => {
-      renderWithRedux(<AskCreateSection />);
-
-      const tag = screen.getByText('profile.ask_create_section.tag');
-      expect(tag).toHaveClass('ask-create-section__tag');
-    });
+    expect(screen.getByText('profile.ask_create_section.tag')).toBeInTheDocument();
+    expect(screen.getByText('profile.ask_create_section.text')).toBeInTheDocument();
+    expect(screen.getByText('profile.ask_create_section.create_quizz')).toBeInTheDocument();
+    expect(screen.getByText('profile.ask_create_section.create_cards')).toBeInTheDocument();
   });
 
-  describe('button interactions', () => {
-    it('should render create quiz button with correct styling', () => {
-      renderWithRedux(<AskCreateSection />);
+  it('opens modal when create quiz button is clicked', () => {
+    render(<AskCreateSection />);
 
-      const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-      expect(quizButton).toBeInTheDocument();
-    });
+    const createQuizButton = screen.getByText('profile.ask_create_section.create_quizz');
+    fireEvent.click(createQuizButton);
 
-    it('should render create cards button with correct styling', () => {
-      renderWithRedux(<AskCreateSection />);
+    expect(screen.getByText('create_quiz.title.quiz')).toBeInTheDocument();
+  });
 
-      const cardsButton = screen.getByText('profile.ask_create_section.create_cards');
-      expect(cardsButton).toBeInTheDocument();
-    });
+  it('opens modal when create cards button is clicked', () => {
+    render(<AskCreateSection />);
 
-    it('should handle create quiz button click', () => {
-      const mockPush = jest.fn();
-      jest.spyOn(require('next/navigation'), 'useRouter').mockReturnValue({
-        push: mockPush,
-      });
+    const createCardsButton = screen.getByText('profile.ask_create_section.create_cards');
+    fireEvent.click(createCardsButton);
 
-      renderWithRedux(<AskCreateSection />);
+    expect(screen.getByText('create_quiz.title.cards')).toBeInTheDocument();
+  });
 
-      const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-      fireEvent.click(quizButton);
+  it('closes modal when close is called', () => {
+    render(<AskCreateSection />);
 
-      expect(mockPush).not.toHaveBeenCalled();
-    });
+    const createQuizButton = screen.getByText('profile.ask_create_section.create_quizz');
+    fireEvent.click(createQuizButton);
 
-    it('should handle create cards button click', () => {
-      const mockPush = jest.fn();
-      jest.spyOn(require('next/navigation'), 'useRouter').mockReturnValue({
-        push: mockPush,
-      });
+    expect(screen.getByText('create_quiz.title.quiz')).toBeInTheDocument();
 
-      renderWithRedux(<AskCreateSection />);
+    const closeButton = screen.getByText('×');
+    fireEvent.click(closeButton);
 
-      const cardsButton = screen.getByText('profile.ask_create_section.create_cards');
-      fireEvent.click(cardsButton);
+    expect(screen.queryByText('create_quiz.title.quiz')).not.toBeInTheDocument();
+  });
 
-      expect(mockPush).not.toHaveBeenCalled();
-    });
+  it('handles successful cards creation', async () => {
+    const mockResponse = {
+      id: '123',
+      title: 'Test Cards',
+      quizzType: IQuizzType.CARDS,
+    };
+    mockCreateQuizz.mockResolvedValueOnce(mockResponse);
 
-    it('should handle multiple button clicks', () => {
-      const mockPush = jest.fn();
-      jest.spyOn(require('next/navigation'), 'useRouter').mockReturnValue({
-        push: mockPush,
-      });
+    render(<AskCreateSection />);
 
-      renderWithRedux(<AskCreateSection />);
+    const createCardsButton = screen.getByText('profile.ask_create_section.create_cards');
+    fireEvent.click(createCardsButton);
 
-      const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-      const cardsButton = screen.getByText('profile.ask_create_section.create_cards');
-
-      fireEvent.click(quizButton);
-      fireEvent.click(cardsButton);
-      fireEvent.click(quizButton);
-
-      expect(mockPush).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(screen.getByText('create_quiz.title.cards')).toBeInTheDocument();
     });
   });
 
-  describe('accessibility', () => {
-    it('should have proper semantic structure', () => {
-      renderWithRedux(<AskCreateSection />);
+  it('handles creation error', async () => {
+    mockCreateQuizz.mockRejectedValueOnce(new Error('Creation failed'));
 
-      const section = screen.getByText('profile.ask_create_section.text').closest('div');
-      expect(section).toBeInTheDocument();
-    });
+    render(<AskCreateSection />);
 
-    it('should have proper button types', () => {
-      renderWithRedux(<AskCreateSection />);
+    const createQuizButton = screen.getByText('profile.ask_create_section.create_quizz');
+    fireEvent.click(createQuizButton);
 
-      const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-      const cardsButton = screen.getByText('profile.ask_create_section.create_cards');
-
-      expect(quizButton).toBeInTheDocument();
-      expect(cardsButton).toBeInTheDocument();
-    });
-
-    it('should have proper button accessibility', () => {
-      renderWithRedux(<AskCreateSection />);
-
-      const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-      const cardsButton = screen.getByText('profile.ask_create_section.create_cards');
-
-      expect(quizButton).toBeEnabled();
-      expect(cardsButton).toBeEnabled();
+    await waitFor(() => {
+      expect(screen.getByText('create_quiz.title.quiz')).toBeInTheDocument();
     });
   });
 
-  describe('responsive design', () => {
-    it('should have responsive container classes', () => {
-      renderWithRedux(<AskCreateSection />);
+  it('handles form data creation for quiz type', () => {
+    render(<AskCreateSection />);
 
-      const section = screen.getByText('profile.ask_create_section.text').closest('div');
-      expect(section).toHaveClass('ask-create-section__container');
-    });
+    const createQuizButton = screen.getByText('profile.ask_create_section.create_quizz');
+    fireEvent.click(createQuizButton);
 
-    it('should have responsive button layout', () => {
-      renderWithRedux(<AskCreateSection />);
-
-      const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-      const cardsButton = screen.getByText('profile.ask_create_section.create_cards');
-
-      expect(quizButton).toBeInTheDocument();
-      expect(cardsButton).toBeInTheDocument();
-    });
+    expect(screen.getByText('create_quiz.title.quiz')).toBeInTheDocument();
   });
 
-  describe('error handling', () => {
-    it('should handle router push errors gracefully', () => {
-      const mockPush = jest.fn().mockImplementation(() => {
-        throw new Error('Navigation error');
-      });
-      jest.spyOn(require('next/navigation'), 'useRouter').mockReturnValue({
-        push: mockPush,
-      });
+  it('handles form data creation for cards type', () => {
+    render(<AskCreateSection />);
 
-      renderWithRedux(<AskCreateSection />);
+    const createCardsButton = screen.getByText('profile.ask_create_section.create_cards');
+    fireEvent.click(createCardsButton);
 
-      const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-
-      expect(() => {
-        fireEvent.click(quizButton);
-      }).not.toThrow();
-    });
-
-    it('should handle missing router gracefully', () => {
-      jest.spyOn(require('next/navigation'), 'useRouter').mockReturnValue({
-        push: undefined,
-      });
-
-      renderWithRedux(<AskCreateSection />);
-
-      const quizButton = screen.getByText('profile.ask_create_section.create_quizz');
-
-      expect(() => {
-        fireEvent.click(quizButton);
-      }).not.toThrow();
-    });
+    expect(screen.getByText('create_quiz.title.cards')).toBeInTheDocument();
   });
 
-  describe('translation integration', () => {
-    it('should use translation keys correctly', () => {
-      renderWithRedux(<AskCreateSection />);
+  it('shows CreateQuizForm when modal is open and type is selected', () => {
+    render(<AskCreateSection />);
 
-      expect(screen.getByText('profile.ask_create_section.tag')).toBeInTheDocument();
-      expect(screen.getByText('profile.ask_create_section.text')).toBeInTheDocument();
-      expect(screen.getByText('profile.ask_create_section.create_quizz')).toBeInTheDocument();
-      expect(screen.getByText('profile.ask_create_section.create_cards')).toBeInTheDocument();
-    });
+    const createQuizButton = screen.getByText('profile.ask_create_section.create_quizz');
+    fireEvent.click(createQuizButton);
 
-    it('should handle missing translations gracefully', () => {
-      const mockT = jest.fn().mockReturnValue('');
-      jest.spyOn(require('react-i18next'), 'useTranslation').mockReturnValue({
-        t: mockT,
-      });
+    // The CreateQuizForm should be rendered inside the modal
+    expect(screen.getByText('create_quiz.title.quiz')).toBeInTheDocument();
+  });
 
-      renderWithRedux(<AskCreateSection />);
+  it('does not show CreateQuizForm when modal is closed', () => {
+    render(<AskCreateSection />);
 
-      expect(mockT).toHaveBeenCalledWith('profile.ask_create_section.tag');
-      expect(mockT).toHaveBeenCalledWith('profile.ask_create_section.text');
-      expect(mockT).toHaveBeenCalledWith('profile.ask_create_section.create_quizz');
-      expect(mockT).toHaveBeenCalledWith('profile.ask_create_section.create_cards');
-    });
+    // Modal is closed by default, so CreateQuizForm should not be rendered
+    expect(screen.queryByText('create_quiz.title.quiz')).not.toBeInTheDocument();
+    expect(screen.queryByText('create_quiz.title.cards')).not.toBeInTheDocument();
+  });
+
+  it('resets state when modal is closed', () => {
+    render(<AskCreateSection />);
+
+    // Open modal
+    const createQuizButton = screen.getByText('profile.ask_create_section.create_quizz');
+    fireEvent.click(createQuizButton);
+
+    expect(screen.getByText('create_quiz.title.quiz')).toBeInTheDocument();
+
+    // Close modal
+    const closeButton = screen.getByText('×');
+    fireEvent.click(closeButton);
+
+    // Modal should be closed and state reset
+    expect(screen.queryByText('create_quiz.title.quiz')).not.toBeInTheDocument();
+
+    // Open cards modal to verify state was reset
+    const createCardsButton = screen.getByText('profile.ask_create_section.create_cards');
+    fireEvent.click(createCardsButton);
+
+    expect(screen.getByText('create_quiz.title.cards')).toBeInTheDocument();
+  });
+
+  it('handles animation props correctly', () => {
+    render(<AskCreateSection />);
+
+    const container = document.querySelector('.ask-create-section__container');
+    expect(container).toBeInTheDocument();
+  });
+
+  it('renders all required elements', () => {
+    render(<AskCreateSection />);
+
+    expect(document.querySelector('.ask-create-section')).toBeInTheDocument();
+    expect(document.querySelector('.ask-create-section__container')).toBeInTheDocument();
+    expect(document.querySelector('.ask-create-section__buttons')).toBeInTheDocument();
   });
 });

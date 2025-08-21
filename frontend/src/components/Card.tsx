@@ -32,6 +32,7 @@ export const Card: FC<ICardProps> = ({
         className="card-header"
         onClick={onCardClick}
         style={{ cursor: onCardClick ? 'pointer' : 'default' }}
+        data-testid="card-header"
       >
         <img className="card-header__image" src={image ?? ''} alt={title} />
         <span className="card-header__badge">{badge}</span>

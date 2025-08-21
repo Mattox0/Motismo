@@ -117,6 +117,9 @@ global.ResizeObserver = class ResizeObserver {
 
 global.fetch = jest.fn();
 
+// Mock URL.createObjectURL
+global.URL.createObjectURL = jest.fn(() => 'mocked-url');
+
 // Polyfill for requestSubmit which is not implemented in jsdom
 if (!HTMLFormElement.prototype.requestSubmit) {
   HTMLFormElement.prototype.requestSubmit = function (submitter) {
