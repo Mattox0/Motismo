@@ -54,7 +54,7 @@ export const Navbar: React.FC = () => {
           href="/profile"
           onClick={() => setIsMenuOpen(false)}
         >
-          Dashboard
+          Mon espace
         </Link>
         {(session?.user.role === IUserRole.Teacher || session?.user.role === IUserRole.Student) && (
           <Link

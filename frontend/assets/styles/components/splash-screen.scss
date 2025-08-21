@@ -19,6 +19,14 @@
   text-align: center;
   gap: 2rem;
   animation: slideUp 0.8s ease-out;
+  
+  @media (max-width: 768px) {
+    gap: 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 1rem;
+  }
 }
 
 .splash-logo {
@@ -29,6 +37,18 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     background: rgba(255, 255, 255, 0.9);
     padding: 16px;
+    
+    @media (max-width: 768px) {
+      padding: 12px;
+      width: 100px;
+      height: 100px;
+    }
+    
+    @media (max-width: 480px) {
+      padding: 8px;
+      width: 80px;
+      height: 80px;
+    }
   }
 }
 
@@ -41,6 +61,14 @@
     margin: 0 0 0.5rem 0;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     letter-spacing: 0.5px;
+    
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+    
+    @media (max-width: 480px) {
+      font-size: 1.75rem;
+    }
   }
   
   p {
@@ -48,6 +76,14 @@
     margin: 0;
     opacity: 0.9;
     font-weight: 300;
+    
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
+    
+    @media (max-width: 480px) {
+      font-size: 0.9rem;
+    }
   }
 }
 
@@ -59,6 +95,18 @@
     border-top: 3px solid white;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+    
+    @media (max-width: 768px) {
+      width: 32px;
+      height: 32px;
+      border-width: 2px;
+    }
+    
+    @media (max-width: 480px) {
+      width: 28px;
+      height: 28px;
+      border-width: 2px;
+    }
   }
 }
 
@@ -114,5 +162,22 @@
   .splash-logo img {
     width: 100px;
     height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .splash-text {
+    h1 {
+      font-size: 1.75rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .splash-logo img {
+    width: 80px;
+    height: 80px;
   }
 }

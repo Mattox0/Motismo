@@ -3,68 +3,192 @@
 
   &__container {
     @apply bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl mx-4;
+    
+    @media (max-width: 768px) {
+      @apply p-6 mx-2;
+    }
+    
+    @media (max-width: 480px) {
+      @apply p-4 mx-1;
+    }
   }
 
   &__header {
     @apply text-center mb-8;
+    
+    @media (max-width: 768px) {
+      @apply mb-6;
+    }
+    
+    @media (max-width: 480px) {
+      @apply mb-4;
+    }
   }
 
   &__title {
     @apply text-3xl font-bold text-gray-800;
+    
+    @media (max-width: 768px) {
+      @apply text-2xl;
+    }
+    
+    @media (max-width: 480px) {
+      @apply text-xl;
+    }
   }
 
   &__winner {
     @apply text-center mb-12;
 
+    @media (max-width: 768px) {
+      @apply mb-8;
+    }
+    
+    @media (max-width: 480px) {
+      @apply mb-6;
+    }
+
     .winner-trophy {
       @apply mx-auto mb-4;
+      
+      @media (max-width: 768px) {
+        @apply mb-3;
+      }
+      
+      @media (max-width: 480px) {
+        @apply mb-2;
+      }
     }
 
     .winner-title {
       @apply text-xl font-semibold text-gray-600 mb-2;
+      
+      @media (max-width: 768px) {
+        @apply text-lg;
+      }
+      
+      @media (max-width: 480px) {
+        @apply text-base;
+      }
     }
 
     .winner-name {
       @apply text-2xl font-bold text-indigo-600 mb-1;
+      
+      @media (max-width: 768px) {
+        @apply text-xl;
+      }
+      
+      @media (max-width: 480px) {
+        @apply text-lg;
+      }
     }
 
     .winner-points {
       @apply text-lg text-gray-500;
+      
+      @media (max-width: 768px) {
+        @apply text-base;
+      }
+      
+      @media (max-width: 480px) {
+        @apply text-sm;
+      }
     }
   }
 
   &__your-rank {
     @apply text-center p-6 bg-gray-50 rounded-lg mb-8;
 
+    @media (max-width: 768px) {
+      @apply p-4 mb-6;
+    }
+    
+    @media (max-width: 480px) {
+      @apply p-3 mb-4;
+    }
+
     h3 {
       @apply text-lg font-semibold text-gray-700 mb-2;
+      
+      @media (max-width: 768px) {
+        @apply text-base;
+      }
+      
+      @media (max-width: 480px) {
+        @apply text-sm;
+      }
     }
 
     .your-rank-position {
       @apply text-3xl font-bold text-indigo-600 mb-1;
 
+      @media (max-width: 768px) {
+        @apply text-2xl;
+      }
+      
+      @media (max-width: 480px) {
+        @apply text-xl;
+      }
+
       .rank-suffix {
         @apply text-lg text-gray-500 ml-1;
+        
+        @media (max-width: 768px) {
+          @apply text-base;
+        }
+        
+        @media (max-width: 480px) {
+          @apply text-sm;
+        }
       }
     }
 
     .your-rank-points {
       @apply text-gray-500;
+      
+      @media (max-width: 768px) {
+        @apply text-sm;
+      }
+      
+      @media (max-width: 480px) {
+        @apply text-xs;
+      }
     }
   }
 
   &__stats {
     @apply flex justify-center gap-8;
 
+    @media (max-width: 768px) {
+      @apply gap-6;
+    }
+    
+    @media (max-width: 480px) {
+      @apply gap-4;
+    }
+
     .stats-item {
       @apply text-center;
 
       .stats-value {
         @apply text-2xl font-bold text-gray-800;
+        
+        @media (max-width: 768px) {
+          @apply text-xl;
+        }
+        
+        @media (max-width: 480px) {
+          @apply text-lg;
+        }
       }
 
       .stats-label {
         @apply text-sm text-gray-500;
+        
+        @media (max-width: 768px) {
+          @apply text-xs;
+        }
       }
     }
   }
