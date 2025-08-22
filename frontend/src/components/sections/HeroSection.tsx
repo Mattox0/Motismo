@@ -67,7 +67,11 @@ export const HeroSection: FC = () => {
           title={t('hero.create.quizz')}
           description={t('hero.create.quizzDescription')}
           button={
-            <Button variant="secondary" startIcon={<LoginIcon />} onClick={() => {}}>
+            <Button
+              variant="secondary"
+              startIcon={<LoginIcon />}
+              onClick={() => router.push('/profile')}
+            >
               {t('hero.create.quizz')}
             </Button>
           }
